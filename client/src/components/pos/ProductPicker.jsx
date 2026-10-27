@@ -117,19 +117,14 @@ const ProductPicker = ({
               return (
                 <div
                   key={p._id}
-                  onClick={() => {
-                    if (!isOutOfStock && !isMaxInCart) {
-                      onAddToCart(p);
-                    }
-                  }}
-                  className={`p-3 rounded-xl text-left flex flex-col justify-between transition border shadow-xs relative cursor-pointer select-none ${
+                  className={`p-3 rounded-xl text-left flex flex-col justify-between transition border shadow-xs relative select-none ${
                     isOutOfStock
-                      ? 'bg-slate-50 border-slate-200 opacity-60 cursor-not-allowed'
+                      ? 'bg-slate-50 border-slate-200 opacity-60'
                       : isMaxInCart
                       ? 'bg-amber-50/40 border-amber-300'
                       : inCartQty > 0
-                      ? 'bg-emerald-50/40 border-emerald-300 hover:border-emerald-500 hover:shadow-sm'
-                      : 'bg-white border-slate-200 hover:border-slate-400 hover:shadow-sm'
+                      ? 'bg-emerald-50/40 border-emerald-300'
+                      : 'bg-white border-slate-200'
                   }`}
                 >
                   {/* Cart quantity badge */}
@@ -177,43 +172,39 @@ const ProductPicker = ({
 
                     {/* Stepper or Add button */}
                     {inCartQty > 0 ? (
-                      <div
-                        className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-lg p-0.5 shadow-xs flex-shrink-0"
-                        onClick={(e) => e.stopPropagation()}
-                      >
+                      <div className="flex items-center gap-0.5 bg-white border border-slate-200 rounded-lg p-0.5 shadow-xs flex-shrink-0">
                         <button
                           type="button"
                           onClick={() => onSubtractFromCart && onSubtractFromCart(p._id)}
-                          className="w-5 h-5 rounded bg-slate-50 hover:bg-rose-50 text-slate-700 hover:text-rose-600 flex items-center justify-center transition border border-slate-200"
+                          className="w-6 h-6 rounded bg-slate-50 hover:bg-rose-50 text-slate-700 hover:text-rose-600 flex items-center justify-center transition border border-slate-200 active:scale-95"
                           title="Subtract 1"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
-                        <span className="w-4 text-center text-[11px] font-mono font-bold text-slate-900">
+                        <span className="w-5 text-center text-[11px] font-mono font-bold text-slate-900">
                           {inCartQty}
                         </span>
                         <button
                           type="button"
                           disabled={availableLeft <= 0}
                           onClick={() => onAddToCart(p)}
-                          className="w-5 h-5 rounded bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white flex items-center justify-center transition border border-emerald-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="w-6 h-6 rounded bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white flex items-center justify-center transition border border-emerald-200 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
                           title={availableLeft <= 0 ? 'No more available' : 'Add 1 more'}
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ) : (
                       <button
                         type="button"
                         disabled={isOutOfStock}
-                        onClick={(e) => {
-                          e.stopPropagation();
+                        onClick={() => {
                           if (!isOutOfStock) onAddToCart(p);
                         }}
-                        className="w-6 h-6 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
-                        title="Add to Bill"
+                        className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition shadow-xs active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                        title={isOutOfStock ? 'Out of stock' : 'Add to Bill'}
                       >
-                        <Plus className="w-3.5 h-3.5" />
+                        <Plus className="w-4 h-4" />
                       </button>
                     )}
                   </div>
