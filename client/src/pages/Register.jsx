@@ -23,13 +23,23 @@ const Register = () => {
     e.preventDefault();
     setError(null);
 
+    if (!formData.name.trim()) {
+      setError('Owner name cannot be empty or only spaces.');
+      return;
+    }
+
+    if (!formData.storeName.trim()) {
+      setError('Store name cannot consist only of spaces. Please enter a valid name.');
+      return;
+    }
+
     if (formData.storePhone.length !== 10 || !/^\d{10}$/.test(formData.storePhone)) {
       setError('Store phone number must be exactly 10 digits.');
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (!formData.password.trim() || formData.password.trim().length < 6) {
+      setError('Password cannot consist only of spaces (must be at least 6 characters).');
       return;
     }
 

@@ -25,6 +25,16 @@ const Settings = () => {
     setSuccessMsg(null);
     setErrorMsg(null);
 
+    if (!formData.name.trim()) {
+      setErrorMsg('Store owner name cannot be empty or only spaces.');
+      return;
+    }
+
+    if (!formData.storeName.trim()) {
+      setErrorMsg('Store name cannot consist only of spaces. It must contain at least one valid character.');
+      return;
+    }
+
     if (formData.storePhone && (!/^\d{10}$/.test(formData.storePhone) || formData.storePhone.length !== 10)) {
       setErrorMsg('Store phone number must be exactly 10 digits.');
       return;

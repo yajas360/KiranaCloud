@@ -8,6 +8,12 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please provide full name'],
       trim: true,
       maxlength: 100,
+      validate: {
+        validator: function (v) {
+          return v && v.trim().length > 0;
+        },
+        message: 'Name cannot consist only of spaces. It must contain at least one valid character.',
+      },
     },
     email: {
       type: String,
@@ -23,13 +29,25 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Please provide password'],
-      minlength: 6,
+      minlength: [6, 'Password must be at least 6 characters long'],
+      validate: {
+        validator: function (v) {
+          return v && v.trim().length >= 6;
+        },
+        message: 'Password cannot consist only of spaces. It must contain at least 6 valid characters.',
+      },
       select: false,
     },
     storeName: {
       type: String,
       default: 'Corner Mart & Superstore',
       trim: true,
+      validate: {
+        validator: function (v) {
+          return v && v.trim().length > 0;
+        },
+        message: 'Store name cannot consist only of spaces. It must contain at least one valid character.',
+      },
     },
     storeAddress: {
       type: String,
@@ -37,7 +55,7 @@ const userSchema = new mongoose.Schema(
     },
     storePhone: {
       type: String,
-      default: '+91 98765 43210',
+      default: '9876543210',
     },
     role: {
       type: String,

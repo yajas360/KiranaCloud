@@ -33,6 +33,16 @@ const Login = () => {
       return;
     }
 
+    if (!identifier.trim()) {
+      setError('Please enter a valid email or 10-digit phone number.');
+      return;
+    }
+
+    if (!password.trim()) {
+      setError('Password cannot consist only of spaces.');
+      return;
+    }
+
     setLoading(true);
     const res = await login(identifier, password);
     setLoading(false);

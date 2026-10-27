@@ -2,16 +2,12 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 
 const sendTokenResponse = (user, statusCode, res) => {
-  const token = jwt.sign(
-    { id: user._id },
-    process.env.JWT_SECRET || 'kiranacloud_super_secret_jwt_key_2026_production',
-    {
-      expiresIn: process.env.JWT_EXPIRES_IN || '7d',
-    }
-  );
+  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  });
 
   const cookieOptions = {
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
@@ -42,6 +38,27 @@ export const register = async (req, res, next) => {
   try {
     const { name, email, password, storeName, storePhone, storeAddress } = req.body;
 
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Owner name cannot be empty or only spaces.',
+      });
+    }
+
+    if (!storeName || storeName.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Store name cannot consist only of spaces. It must contain at least one valid character.',
+      });
+    }
+
+    if (!password || password.trim().length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password cannot consist only of spaces. It must contain at least 6 valid characters.',
+      });
+    }
+
     if (storePhone && !/^\d{10}$/.test(storePhone.trim())) {
       return res.status(400).json({
         success: false,
@@ -61,7 +78,7 @@ export const register = async (req, res, next) => {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
-      storeName: storeName?.trim() || 'My Superstore',
+      storeName: storeName.trim(),
       storePhone: storePhone?.trim() || '9876543210',
       storeAddress: storeAddress?.trim() || 'Main Market Road',
     });
@@ -77,10 +94,17 @@ export const login = async (req, res, next) => {
     const { email, identifier: rawId, password } = req.body;
     const identifier = (email || rawId || '').trim();
 
-    if (!identifier || !password) {
+    if (!identifier || identifier.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide both email/phone and password.',
+        message: 'Please provide a valid email address or 10-digit phone number.',
+      });
+    }
+
+    if (!password || password.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password cannot consist only of spaces. Please enter a valid password.',
       });
     }
 
@@ -135,13 +159,13 @@ export const getMe = async (req, res) => {
       _id: req.user._id,
       name: req.user.name,
       email: req.user.email,
-      storeName: req.user.storeName,
-      storeAddress: req.user.storeAddress,
-      storePhone: req.user.storePhone,
-      role: req.user.role,
-      currency: req.user.currency,
-      currencySymbol: req.user.currencySymbol,
-      taxRate: req.user.taxRate,
+      storeName: user.storeName,
+      storeAddress: user.storeAddress,
+      storePhone: user.storePhone,
+      role: user.role,
+      currency: user.currency,
+      currencySymbol: user.currencySymbol,
+      taxRate: user.taxRate,
       hasGeminiApiKey: Boolean(activeKey),
       geminiKeyMasked: activeKey ? `••••••••${activeKey.slice(-4)}` : '',
     },
@@ -153,9 +177,36 @@ export const updateStoreProfile = async (req, res, next) => {
     const { name, storeName, storePhone, storeAddress, taxRate, currency, currencySymbol, geminiApiKey } = req.body;
     const user = await User.findById(req.user._id).select('+geminiApiKey');
 
-    if (name) user.name = name.trim();
-    if (storeName) user.storeName = storeName.trim();
-    if (storePhone) user.storePhone = storePhone.trim();
+    if (name !== undefined) {
+      if (name.trim().length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Owner name cannot be empty or only spaces.',
+        });
+      }
+      user.name = name.trim();
+    }
+
+    if (storeName !== undefined) {
+      if (storeName.trim().length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Store name cannot consist only of spaces. It must contain at least one valid character.',
+        });
+      }
+      user.storeName = storeName.trim();
+    }
+
+    if (storePhone !== undefined) {
+      if (!/^\d{10}$/.test(storePhone.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Store phone number must be exactly 10 digits.',
+        });
+      }
+      user.storePhone = storePhone.trim();
+    }
+
     if (storeAddress) user.storeAddress = storeAddress.trim();
     if (taxRate !== undefined) user.taxRate = parseFloat(taxRate) || 0;
     if (currency) user.currency = currency.toUpperCase();
