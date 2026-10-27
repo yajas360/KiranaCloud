@@ -1,0 +1,119 @@
+{
+  "info": {
+    "name": "StorePulse POS & Inventory API",
+    "description": "Postman Collection for StorePulse Retail Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Auth - Login Store Owner",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"owner@storepulse.com\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "2. Inventory - Add Product (Cadbury Silk)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{TOKEN}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Cadbury Dairy Milk Silk (150g)\",\n  \"sku\": \"CHOC-CADB-SILK\",\n  \"category\": \"Snacks & Packaged Foods\",\n  \"costPrice\": 140,\n  \"sellingPrice\": 175,\n  \"stockQuantity\": 25,\n  \"minThreshold\": 6,\n  \"unit\": \"pcs\",\n  \"supplier\": \"Mondelez India\",\n  \"shelfLocation\": \"Aisle 4, Shelf B\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "3. Inventory - Get All Products",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{TOKEN}}" }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "4. POS - Complete Customer Checkout",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{TOKEN}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"REPLACE_WITH_PRODUCT_ID\",\n      \"quantity\": 2\n    }\n  ],\n  \"discount\": 10,\n  \"tax\": 15,\n  \"paymentMethod\": \"Cash\",\n  \"amountTendered\": 500,\n  \"customerName\": \"Rohit Sharma\",\n  \"customerPhone\": \"9876543210\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/sales",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "sales"]
+        }
+      }
+    },
+    {
+      "name": "5. Inventory - Get Reorder Sheet",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{TOKEN}}" }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/products/reorder-sheet",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products", "reorder-sheet"]
+        }
+      }
+    },
+    {
+      "name": "6. Analytics - Get Store Metrics & Profit",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{TOKEN}}" }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/analytics/metrics",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "analytics", "metrics"]
+        }
+      }
+    }
+  ]
+}
