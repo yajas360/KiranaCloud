@@ -148,6 +148,15 @@ const Inventory = () => {
       const name = row.name || row.productname || values[0] || '';
       if (!name) continue;
 
+      let rawUnit = (row.unit || values[6] || 'pcs').trim().toLowerCase();
+      if (rawUnit === 'pack' || rawUnit === 'packs' || rawUnit === 'bag' || rawUnit === 'refill' || rawUnit === 'tetra') {
+        rawUnit = 'packet';
+      } else if (rawUnit === 'bottle' || rawUnit === 'bottles' || rawUnit === 'jar' || rawUnit === 'jars' || rawUnit === 'bar') {
+        rawUnit = 'pcs';
+      } else if (!['pcs', 'kg', 'gm', 'liter', 'ml', 'packet', 'box', 'pack', 'bottle', 'can'].includes(rawUnit)) {
+        rawUnit = 'pcs';
+      }
+
       parsed.push({
         name,
         sku: row.sku || row.barcode || values[1] || '',
@@ -155,7 +164,7 @@ const Inventory = () => {
         sellingPrice: parseFloat(row.sellingprice || row.sp || values[3]) || 0,
         costPrice: parseFloat(row.costprice || row.cp || values[4]) || 0,
         stockQuantity: parseInt(row.stockquantity || row.stock || row.qty || values[5], 10) || 0,
-        unit: row.unit || values[6] || 'pcs',
+        unit: rawUnit,
         minThreshold: parseInt(row.minthreshold || row.threshold || values[7], 10) || 5,
         supplier: row.supplier || values[8] || '',
       });

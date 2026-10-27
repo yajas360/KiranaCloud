@@ -12,7 +12,7 @@ export const STORE_CATEGORIES = [
   'Other',
 ];
 
-export const PRODUCT_UNITS = ['pcs', 'kg', 'gm', 'liter', 'ml', 'packet', 'box'];
+export const PRODUCT_UNITS = ['pcs', 'kg', 'gm', 'liter', 'ml', 'packet', 'box', 'pack', 'bottle', 'can'];
 
 const productSchema = new mongoose.Schema(
   {

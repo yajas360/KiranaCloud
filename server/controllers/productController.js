@@ -373,7 +373,21 @@ export const bulkImportProducts = async (req, res, next) => {
       const stockQuantity = parseInt(row.stockQuantity, 10) || 0;
       const minThreshold = parseInt(row.minThreshold, 10) || 5;
       const category = (row.category || 'Other').trim();
-      const unit = (row.unit || 'pcs').trim();
+      let rawUnit = (row.unit || 'pcs').trim().toLowerCase();
+
+      // Normalize common synonyms to valid product unit enums
+      if (rawUnit === 'pack' || rawUnit === 'packs' || rawUnit === 'bag' || rawUnit === 'refill' || rawUnit === 'tetra') {
+        rawUnit = 'packet';
+      } else if (rawUnit === 'bottle' || rawUnit === 'bottles' || rawUnit === 'jar' || rawUnit === 'jars' || rawUnit === 'bar') {
+        rawUnit = 'pcs';
+      } else if (rawUnit === 'l' || rawUnit === 'litre') {
+        rawUnit = 'liter';
+      } else if (rawUnit === 'g' || rawUnit === 'gram' || rawUnit === 'grams') {
+        rawUnit = 'gm';
+      } else if (!['pcs', 'kg', 'gm', 'liter', 'ml', 'packet', 'box', 'pack', 'bottle', 'can'].includes(rawUnit)) {
+        rawUnit = 'pcs';
+      }
+      const unit = rawUnit;
       const supplier = (row.supplier || '').trim();
 
       if (isNaN(sellingPrice) || sellingPrice < 0) {
