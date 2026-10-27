@@ -36,6 +36,7 @@ const CartDrawer = ({
   const [overrideCreditLimit, setOverrideCreditLimit] = useState(false);
   const [showCreditOverride, setShowCreditOverride] = useState(false);
   const [error, setError] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   // Khata Registered Customers
   const [khataCustomers, setKhataCustomers] = useState([]);
@@ -67,7 +68,7 @@ const CartDrawer = ({
   const numTendered = Math.max(0, parseFloat(amountTendered) || grandTotal);
   const changeDue = Math.max(0, numTendered - grandTotal);
 
-  const handleCheckoutSubmit = async (e) => {
+  const handleCheckoutSubmit = (e) => {
     e.preventDefault();
     setError(null);
 
@@ -101,6 +102,12 @@ const CartDrawer = ({
       return;
     }
 
+    // Open confirmation box before completing checkout
+    setIsConfirmOpen(true);
+  };
+
+  const executeCheckout = async () => {
+    setIsConfirmOpen(false);
     const payload = {
       items: cart.map((item) => ({
         productId: item.product._id,
@@ -468,6 +475,84 @@ const CartDrawer = ({
             </span>
           </button>
         </form>
+      )}
+
+      {/* Confirmation Modal before generating Bill */}
+      {isConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border-2 border-slate-200 dark:border-slate-800 p-5 space-y-4">
+            {/* Header */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+                <ShoppingBag className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white">Confirm Bill Checkout</h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Are you sure you want to bill this cart?</p>
+              </div>
+            </div>
+
+            {/* Bill summary preview */}
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">Total Items:</span>
+                <span className="font-bold text-slate-900 dark:text-white">
+                  {cart.reduce((sum, i) => sum + i.quantity, 0)} units ({cart.length} items)
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">Payment Mode:</span>
+                <span className="font-bold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[11px]">
+                  {paymentMethod}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">Customer:</span>
+                <span className="font-bold text-slate-900 dark:text-white truncate max-w-[160px]">
+                  {customerName.trim() || 'Walk-in Customer'}
+                </span>
+              </div>
+
+              {paymentMethod === 'Cash' && amountTendered && (
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Change Due:</span>
+                  <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                    {formatCurrency(changeDue, currency, currencySymbol)}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-700 font-bold">
+                <span className="text-slate-900 dark:text-white">Grand Total:</span>
+                <span className="font-black text-emerald-700 dark:text-emerald-400 text-base font-mono">
+                  {formatCurrency(grandTotal, currency, currencySymbol)}
+                </span>
+              </div>
+            </div>
+
+            {/* Actions: Cancel vs Proceed */}
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setIsConfirmOpen(false)}
+                className="py-2.5 px-3 rounded-xl border-2 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={executeCheckout}
+                className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs active:scale-95 transition shadow-sm disabled:opacity-50 flex items-center justify-center gap-1.5"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>{loading ? 'Billing...' : 'Proceed & Bill'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
