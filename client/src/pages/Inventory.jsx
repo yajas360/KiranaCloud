@@ -9,6 +9,7 @@ import {
   Edit2,
   Trash2,
   AlertTriangle,
+  RefreshCw,
   Upload,
   Download,
   FileSpreadsheet,
@@ -100,12 +101,14 @@ const Inventory = () => {
     }
   };
 
+  const lowStockCount = products.filter(
+    (p) => p.stockQuantity <= p.minThreshold && p.stockQuantity > 0
+  ).length;
+  const outOfStockCount = products.filter((p) => p.stockQuantity === 0).length;
+
   const parseCSV = (text) => {
-    const lines = text
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean);
-    if (lines.length <= 1) return [];
+    const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+    if (lines.length < 2) return [];
 
     const parseRow = (str) => {
       const result = [];
@@ -245,28 +248,25 @@ const Inventory = () => {
     URL.revokeObjectURL(url);
   };
 
-  const lowStockCount = products.filter((p) => p.stockQuantity <= p.minThreshold && p.stockQuantity > 0).length;
-  const outOfStockCount = products.filter((p) => p.stockQuantity <= 0).length;
-
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Top Banner & Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b-2 border-zinc-300 dark:border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight uppercase">Inventory & Stock Catalog</h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+          <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Inventory & Stock Catalog</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Manage wholesale costs, retail pricing, stock availability, and safety thresholds.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={handleExportCSV}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border-2 border-zinc-300 dark:border-zinc-700 rounded-none uppercase tracking-wider transition"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-800 rounded-xl transition shadow-xs"
             title="Export all products to CSV"
           >
-            <Download className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+            <Download className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
             <span className="hidden sm:inline">Export CSV</span>
           </button>
 
@@ -279,18 +279,18 @@ const Inventory = () => {
               setImportSummary(null);
               setIsImportModalOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-none uppercase tracking-wider transition shadow-sm active:translate-y-[1px]"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-800 rounded-xl transition shadow-xs"
             title="Bulk import products from CSV"
           >
-            <Upload className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+            <Upload className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
             <span className="hidden sm:inline">Import CSV</span>
           </button>
 
           <Link
             to="/reorder-sheet"
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-amber-900 dark:text-amber-200 bg-amber-100 dark:bg-amber-950/40 hover:bg-amber-200 dark:hover:bg-amber-900/60 border border-amber-300 dark:border-amber-700 rounded-none uppercase tracking-wider transition shadow-sm active:translate-y-[1px]"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 border-2 border-amber-200 dark:border-amber-800 rounded-xl transition shadow-xs"
           >
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
             <span className="hidden sm:inline">Reorder</span>
             {lowStockCount + outOfStockCount > 0 && ` (${lowStockCount + outOfStockCount})`}
           </Link>
@@ -300,7 +300,7 @@ const Inventory = () => {
               setEditingProduct(null);
               setIsProductModalOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:translate-y-[1px] rounded-none border border-blue-700 uppercase tracking-wider transition shadow-sm"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-95 rounded-xl shadow-sm transition"
           >
             <Plus className="w-4 h-4" />
             <span>Add Product</span>
@@ -309,29 +309,29 @@ const Inventory = () => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white dark:bg-zinc-900 p-3 rounded-none border border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row items-stretch md:items-center gap-2.5 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-stretch md:items-center gap-3">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
           <input
             type="text"
             placeholder="Search by name, SKU, or supplier..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-none border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-600 font-medium"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
           />
         </div>
 
         {/* Category Dropdown */}
-        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+        <div className="flex items-center gap-2">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 text-xs font-semibold rounded-none border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600 uppercase tracking-wider"
+            className="px-3 py-2 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat} className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">
-                {cat === 'All' ? 'All Categories' : cat}
+              <option key={cat} value={cat} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                Category: {cat}
               </option>
             ))}
           </select>
@@ -340,31 +340,31 @@ const Inventory = () => {
           <select
             value={stockStatus}
             onChange={(e) => setStockStatus(e.target.value)}
-            className="px-3 py-2 text-xs font-semibold rounded-none border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600 uppercase tracking-wider"
+            className="px-3 py-2 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
-            <option value="ALL" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">All Stock Statuses</option>
-            <option value="LOW_STOCK" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Low Stock (&le; Buffer)</option>
-            <option value="OUT_OF_STOCK" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Out of Stock (0 Left)</option>
-            <option value="IN_STOCK" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Healthy Stock Only</option>
+            <option value="ALL" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">All Stock Statuses</option>
+            <option value="LOW_STOCK" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">⚠️ Low Stock Only</option>
+            <option value="OUT_OF_STOCK" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">🚫 Out of Stock Only</option>
+            <option value="IN_STOCK" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">✅ Healthy Stock Only</option>
           </select>
 
-          {/* Sort By Dropdown */}
+          {/* Sort By Price Dropdown */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-2 text-xs font-semibold rounded-none border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600 uppercase tracking-wider"
+            className="px-3 py-2 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
-            <option value="default" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Sort: Default</option>
-            <option value="price-asc" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Price: Low to High</option>
-            <option value="price-desc" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Price: High to Low</option>
-            <option value="name-asc" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Name: A to Z</option>
-            <option value="stock-asc" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Stock: Low to High</option>
+            <option value="default" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Sort: Default</option>
+            <option value="price-asc" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Price: Low to High</option>
+            <option value="price-desc" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Price: High to Low</option>
+            <option value="name-asc" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Name: A to Z</option>
+            <option value="stock-asc" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Stock: Low to High</option>
           </select>
         </div>
       </div>
 
       {/* Products Table */}
-      <div className="bg-white dark:bg-zinc-900 rounded-none border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         {loading ? (
           <LoadingSpinner text="Loading inventory records..." size="md" />
         ) : products.length === 0 ? (
@@ -381,7 +381,7 @@ const Inventory = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 uppercase tracking-wider font-bold border-b-2 border-zinc-300 dark:border-zinc-700">
+              <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 uppercase tracking-wider font-bold border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="px-3.5 py-3 text-left whitespace-nowrap">Product & SKU</th>
                   <th className="px-2.5 py-3 whitespace-nowrap">Category</th>
@@ -393,7 +393,7 @@ const Inventory = () => {
                   <th className="px-3.5 py-3 text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 font-medium">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
                 {[...products]
                   .sort((a, b) => {
                     if (sortBy === 'price-asc') return a.sellingPrice - b.sellingPrice;
@@ -403,95 +403,95 @@ const Inventory = () => {
                     return 0;
                   })
                   .map((p) => {
-                    const marginAmount = p.sellingPrice - p.costPrice;
-                    const marginPct =
-                      p.sellingPrice > 0 ? Math.round((marginAmount / p.sellingPrice) * 100) : 0;
+                  const marginAmount = p.sellingPrice - p.costPrice;
+                  const marginPct =
+                    p.sellingPrice > 0 ? Math.round((marginAmount / p.sellingPrice) * 100) : 0;
 
-                    return (
-                      <tr key={p._id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition">
-                        {/* Name & SKU */}
-                        <td className="px-3 py-2.5 whitespace-nowrap min-w-0 max-w-[210px]">
-                          <span className="font-bold text-zinc-900 dark:text-white block text-xs truncate" title={p.name}>
-                            {p.name}
-                          </span>
-                          <span className="text-[10px] font-mono font-semibold text-zinc-400 dark:text-zinc-500 block truncate">
-                            {p.sku}
-                          </span>
-                        </td>
+                  return (
+                    <tr key={p._id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition">
+                      {/* Name & SKU */}
+                      <td className="px-3 py-2.5 whitespace-nowrap min-w-0 max-w-[210px]">
+                        <span className="font-bold text-slate-900 dark:text-white block text-xs truncate" title={p.name}>
+                          {p.name}
+                        </span>
+                        <span className="text-[10px] font-mono font-semibold text-slate-400 dark:text-slate-400 block truncate">
+                          {p.sku}
+                        </span>
+                      </td>
 
-                        {/* Category */}
-                        <td className="px-2.5 py-2.5 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-none text-[10px] font-bold border whitespace-nowrap uppercase tracking-wider ${getCategoryColor(p.category)}`}>
-                            {p.category}
-                          </span>
-                        </td>
+                      {/* Category */}
+                      <td className="px-2.5 py-2.5 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border whitespace-nowrap ${getCategoryColor(p.category)}`}>
+                          {p.category}
+                        </span>
+                      </td>
 
-                        {/* Cost Price */}
-                        <td className="px-2.5 py-2.5 text-right text-zinc-600 dark:text-zinc-300 font-mono whitespace-nowrap">
-                          {formatCurrency(p.costPrice, currency, currencySymbol)}
-                        </td>
+                      {/* Cost Price */}
+                      <td className="px-2.5 py-2.5 text-right text-slate-600 dark:text-slate-300 font-mono whitespace-nowrap">
+                        {formatCurrency(p.costPrice, currency, currencySymbol)}
+                      </td>
 
-                        {/* Selling Price */}
-                        <td className="px-2.5 py-2.5 text-right font-bold text-zinc-900 dark:text-white font-mono whitespace-nowrap">
-                          {formatCurrency(p.sellingPrice, currency, currencySymbol)}
-                        </td>
+                      {/* Selling Price */}
+                      <td className="px-2.5 py-2.5 text-right font-bold text-slate-900 dark:text-white font-mono whitespace-nowrap">
+                        {formatCurrency(p.sellingPrice, currency, currencySymbol)}
+                      </td>
 
-                        {/* Margin */}
-                        <td className="px-2.5 py-2.5 text-right whitespace-nowrap">
-                          <span className="text-emerald-700 dark:text-emerald-400 font-bold font-mono">
-                            +{formatCurrency(marginAmount, currency, currencySymbol)}
-                          </span>
-                          <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-semibold ml-1">
-                            ({marginPct}%)
-                          </span>
-                        </td>
+                      {/* Margin */}
+                      <td className="px-2.5 py-2.5 text-right whitespace-nowrap">
+                        <span className="text-emerald-700 dark:text-emerald-400 font-bold font-mono">
+                          +{formatCurrency(marginAmount, currency, currencySymbol)}
+                        </span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold ml-1">
+                          ({marginPct}%)
+                        </span>
+                      </td>
 
-                        {/* Stock Level */}
-                        <td className="px-2.5 py-2.5 text-center whitespace-nowrap">
-                          <StockBadge stockQuantity={p.stockQuantity} minThreshold={p.minThreshold} />
-                        </td>
+                      {/* Stock Level */}
+                      <td className="px-2.5 py-2.5 text-center whitespace-nowrap">
+                        <StockBadge stockQuantity={p.stockQuantity} minThreshold={p.minThreshold} />
+                      </td>
 
-                        {/* Location */}
-                        <td className="px-2.5 py-2.5 text-zinc-600 dark:text-zinc-300 text-[11px] whitespace-nowrap font-medium">
-                          {p.shelfLocation || 'Aisle 1'}
-                        </td>
+                      {/* Location */}
+                      <td className="px-2.5 py-2.5 text-slate-600 text-[11px] whitespace-nowrap font-medium">
+                        {p.shelfLocation || 'Aisle 1'}
+                      </td>
 
-                        {/* Actions */}
-                        <td className="px-3.5 py-2.5 text-right space-x-1 whitespace-nowrap">
-                          <button
-                            onClick={() => {
-                              setRestockingProduct(p);
-                              setIsRestockModalOpen(true);
-                            }}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-none text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-300 dark:border-blue-700 transition font-bold text-[10px] uppercase tracking-wider"
-                            title="Restock Inbound"
-                          >
-                            <ArrowDownCircle className="w-3.5 h-3.5" />
-                            <span>Restock</span>
-                          </button>
+                      {/* Actions */}
+                      <td className="px-3.5 py-2.5 text-right space-x-1 whitespace-nowrap">
+                        <button
+                          onClick={() => {
+                            setRestockingProduct(p);
+                            setIsRestockModalOpen(true);
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition font-bold text-[11px]"
+                          title="Restock Inbound"
+                        >
+                          <ArrowDownCircle className="w-3.5 h-3.5" />
+                          <span>Restock</span>
+                        </button>
 
-                          <button
-                            onClick={() => {
-                              setEditingProduct(p);
-                              setIsProductModalOpen(true);
-                            }}
-                            className="p-1 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-none border border-zinc-200 dark:border-zinc-700 transition"
-                            title="Edit Product"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
+                        <button
+                          onClick={() => {
+                            setEditingProduct(p);
+                            setIsProductModalOpen(true);
+                          }}
+                          className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+                          title="Edit Product"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
 
-                          <button
-                            onClick={() => handleDelete(p._id, p.name)}
-                            className="p-1 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-none border border-zinc-200 dark:border-zinc-700 transition"
-                            title="Delete Product"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                        <button
+                          onClick={() => handleDelete(p._id, p.name)}
+                          className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                          title="Delete Product"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -526,23 +526,23 @@ const Inventory = () => {
 
       {/* Bulk CSV Import Modal */}
       {isImportModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/70 animate-fade-in">
-          <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-none border-2 border-zinc-300 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[85vh]">
-            <div className="flex items-center justify-between px-6 py-4 border-b-2 border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-none bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 flex items-center justify-center border border-blue-300 dark:border-blue-700">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
                   <FileSpreadsheet className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider">Bulk Import Products (CSV)</h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <h3 className="text-base font-bold text-slate-900">Bulk Import Products (CSV)</h3>
+                  <p className="text-xs text-slate-500">
                     Upload a spreadsheet to batch create or update multiple items at once.
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsImportModalOpen(false)}
-                className="p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-none hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -550,32 +550,32 @@ const Inventory = () => {
 
             <div className="p-6 space-y-4 overflow-y-auto">
               {/* Sample Template Download Card */}
-              <div className="p-3.5 bg-blue-50/60 dark:bg-blue-950/40 border border-blue-300 dark:border-blue-700 rounded-none flex items-center justify-between gap-3 text-xs">
+              <div className="p-3.5 bg-emerald-50/60 border border-emerald-200 rounded-xl flex items-center justify-between gap-3 text-xs">
                 <div>
-                  <span className="font-bold text-blue-950 dark:text-blue-200 block uppercase tracking-wider">Need a starting template?</span>
-                  <span className="text-blue-800 dark:text-blue-300 text-[11px]">
+                  <span className="font-bold text-emerald-950 block">Need a starting template?</span>
+                  <span className="text-emerald-800 text-[11px]">
                     Download our formatted CSV template with required columns and sample rows.
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={handleDownloadSampleCSV}
-                  className="px-3 py-1.5 rounded-none bg-white dark:bg-zinc-800 border border-blue-300 dark:border-blue-700 text-blue-800 dark:text-blue-300 font-bold text-xs uppercase tracking-wider hover:bg-blue-50 dark:hover:bg-zinc-700 transition whitespace-nowrap"
+                  className="px-3 py-1.5 rounded-lg bg-white border border-emerald-300 text-emerald-800 font-bold text-xs hover:bg-emerald-100 transition shadow-2xs whitespace-nowrap"
                 >
                   Download Template
                 </button>
               </div>
 
               {/* Upload Input Area */}
-              <div className="border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-none p-6 text-center transition bg-zinc-50 dark:bg-zinc-800/40">
-                <Upload className="w-8 h-8 text-zinc-400 mx-auto mb-2" />
-                <p className="text-xs font-bold text-zinc-700 dark:text-zinc-200 uppercase tracking-wider">
+              <div className="border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-xl p-6 text-center transition bg-slate-50/40">
+                <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                <p className="text-xs font-bold text-slate-700">
                   {importFileName ? importFileName : 'Choose a .csv file to import'}
                 </p>
-                <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5">
+                <p className="text-[11px] text-slate-400 mt-0.5">
                   Supports Name, SKU, Category, Selling Price, Cost Price, Stock, Unit, Threshold
                 </p>
-                <label className="mt-3 inline-block cursor-pointer px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-none border border-blue-700 uppercase tracking-wider transition">
+                <label className="mt-3 inline-block cursor-pointer px-4 py-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg shadow-sm transition">
                   <span>Browse File</span>
                   <input
                     type="file"
@@ -588,7 +588,7 @@ const Inventory = () => {
 
               {/* Errors */}
               {importError && (
-                <div className="p-3 bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs rounded-none flex items-center gap-2">
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
                   <X className="w-4 h-4 flex-shrink-0" />
                   <span>{importError}</span>
                 </div>
@@ -596,13 +596,13 @@ const Inventory = () => {
 
               {/* Import Success Summary */}
               {importSummary && (
-                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs rounded-none space-y-1">
-                  <div className="flex items-center gap-2 font-bold uppercase tracking-wider">
+                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl space-y-1">
+                  <div className="flex items-center gap-2 font-bold">
                     <Check className="w-4 h-4 text-emerald-600" />
                     <span>{importSummary.message}</span>
                   </div>
                   {importSummary.errors?.length > 0 && (
-                    <div className="text-[11px] text-amber-800 dark:text-amber-300 mt-1 pl-6">
+                    <div className="text-[11px] text-amber-800 mt-1 pl-6">
                       <span className="font-semibold">Notices:</span>
                       <ul className="list-disc list-inside">
                         {importSummary.errors.map((e, idx) => (
@@ -618,16 +618,16 @@ const Inventory = () => {
               {parsedRows.length > 0 && !importSummary && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+                    <span className="font-bold text-slate-700">
                       Previewing {parsedRows.length} items from CSV:
                     </span>
-                    <span className="text-zinc-400 text-[11px]">
+                    <span className="text-slate-400 text-[11px]">
                       Showing first 4 rows
                     </span>
                   </div>
-                  <div className="border-2 border-zinc-300 dark:border-zinc-700 rounded-none overflow-x-auto">
+                  <div className="border border-slate-200 rounded-lg overflow-x-auto">
                     <table className="w-full text-left text-[11px]">
-                      <thead className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-bold border-b border-zinc-300 dark:border-zinc-700 uppercase tracking-wider">
+                      <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
                         <tr>
                           <th className="px-3 py-2">Name</th>
                           <th className="px-2 py-2">SKU</th>
@@ -637,25 +637,25 @@ const Inventory = () => {
                           <th className="px-2 py-2 text-right">Stock</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 font-medium">
+                      <tbody className="divide-y divide-slate-100 font-medium">
                         {parsedRows.slice(0, 4).map((row, idx) => (
-                          <tr key={idx} className="hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                            <td className="px-3 py-1.5 font-bold text-zinc-800 dark:text-zinc-200 truncate max-w-[150px]">
+                          <tr key={idx} className="hover:bg-slate-50">
+                            <td className="px-3 py-1.5 font-bold text-slate-800 truncate max-w-[150px]">
                               {row.name}
                             </td>
-                            <td className="px-2 py-1.5 text-zinc-500 font-mono">
+                            <td className="px-2 py-1.5 text-slate-500 font-mono">
                               {row.sku || 'Auto'}
                             </td>
-                            <td className="px-2 py-1.5 text-zinc-600 dark:text-zinc-300">
+                            <td className="px-2 py-1.5 text-slate-600">
                               {row.category}
                             </td>
-                            <td className="px-2 py-1.5 text-right font-mono font-bold text-zinc-900 dark:text-white">
+                            <td className="px-2 py-1.5 text-right font-mono font-bold text-slate-900">
                               {row.sellingPrice}
                             </td>
-                            <td className="px-2 py-1.5 text-right font-mono text-zinc-500">
+                            <td className="px-2 py-1.5 text-right font-mono text-slate-500">
                               {row.costPrice}
                             </td>
-                            <td className="px-2 py-1.5 text-right font-mono text-emerald-700 dark:text-emerald-400 font-bold">
+                            <td className="px-2 py-1.5 text-right font-mono text-emerald-700 font-bold">
                               {row.stockQuantity}
                             </td>
                           </tr>
@@ -668,11 +668,11 @@ const Inventory = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t-2 border-zinc-300 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-zinc-800/80">
+            <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
               <button
                 type="button"
                 onClick={() => setIsImportModalOpen(false)}
-                className="px-4 py-2 text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-none uppercase tracking-wider transition border border-zinc-300 dark:border-zinc-700"
+                className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-lg transition"
               >
                 {importSummary ? 'Done' : 'Cancel'}
               </button>
@@ -682,7 +682,7 @@ const Inventory = () => {
                   type="button"
                   disabled={importLoading}
                   onClick={handleConfirmImport}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-none border border-blue-700 uppercase tracking-wider transition disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-95 rounded-lg shadow-sm transition disabled:opacity-50"
                 >
                   <Upload className="w-4 h-4" />
                   <span>

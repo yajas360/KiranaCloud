@@ -1,6 +1,5 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { PRODUCT_UNITS } from '../models/Product.js';
 
 describe('Store Inventory & POS Billing Logic', () => {
   test('correctly calculates subtotal, tax, discount, and grand total', () => {
@@ -272,33 +271,5 @@ describe('Store Inventory & POS Billing Logic', () => {
 
     const finalBal = balAfterRefund + billAmount;
     assert.equal(finalBal, -550); // ₹550 surplus remains
-  });
-
-  test('validates CSV product unit normalization and PRODUCT_UNITS inclusion', () => {
-    assert.ok(Array.isArray(PRODUCT_UNITS));
-    assert.ok(PRODUCT_UNITS.includes('litres'));
-    assert.ok(PRODUCT_UNITS.includes('pcs'));
-
-    const normalize = (raw) => {
-      let rawUnit = (raw || 'pcs').trim().toLowerCase();
-      if (rawUnit === 'pack' || rawUnit === 'packs' || rawUnit === 'bag' || rawUnit === 'refill' || rawUnit === 'tetra') {
-        rawUnit = 'packet';
-      } else if (rawUnit === 'bottle' || rawUnit === 'bottles' || rawUnit === 'jar' || rawUnit === 'jars' || rawUnit === 'bar') {
-        rawUnit = 'pcs';
-      } else if (rawUnit === 'l' || rawUnit === 'litre' || rawUnit === 'litres' || rawUnit === 'liter' || rawUnit === 'ltr') {
-        rawUnit = 'litres';
-      } else if (rawUnit === 'g' || rawUnit === 'gram' || rawUnit === 'grams') {
-        rawUnit = 'gm';
-      } else if (!PRODUCT_UNITS.includes(rawUnit)) {
-        rawUnit = 'pcs';
-      }
-      return rawUnit;
-    };
-
-    assert.equal(normalize('litre'), 'litres');
-    assert.equal(normalize('L'), 'litres');
-    assert.equal(normalize('ltr'), 'litres');
-    assert.equal(normalize('unknown_xyz'), 'pcs');
-    assert.equal(normalize('kg'), 'kg');
   });
 });
