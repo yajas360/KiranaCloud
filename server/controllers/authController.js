@@ -42,6 +42,13 @@ export const register = async (req, res, next) => {
   try {
     const { name, email, password, storeName, storePhone, storeAddress } = req.body;
 
+    if (storePhone && !/^\d{10}$/.test(storePhone.trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Store phone number must be exactly 10 digits.',
+      });
+    }
+
     const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
     if (existingUser) {
       return res.status(400).json({
@@ -55,7 +62,7 @@ export const register = async (req, res, next) => {
       email: email.toLowerCase().trim(),
       password,
       storeName: storeName?.trim() || 'My Superstore',
-      storePhone: storePhone?.trim() || '+91 98765 43210',
+      storePhone: storePhone?.trim() || '9876543210',
       storeAddress: storeAddress?.trim() || 'Main Market Road',
     });
 
@@ -67,20 +74,26 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, identifier: rawId, password } = req.body;
+    const identifier = (email || rawId || '').trim();
 
-    if (!email || !password) {
+    if (!identifier || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide both email and password.',
+        message: 'Please provide both email/phone and password.',
       });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
+    const isPhone = /^\d{10}$/.test(identifier);
+    const query = isPhone
+      ? { $or: [{ storePhone: identifier }, { email: identifier.toLowerCase() }] }
+      : { email: identifier.toLowerCase() };
+
+    const user = await User.findOne(query).select('+password');
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email or password.',
+        message: 'Invalid email/phone or password.',
       });
     }
 
@@ -88,7 +101,7 @@ export const login = async (req, res, next) => {
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email or password.',
+        message: 'Invalid email/phone or password.',
       });
     }
 

@@ -23,6 +23,11 @@ const Register = () => {
     e.preventDefault();
     setError(null);
 
+    if (formData.storePhone.length !== 10 || !/^\d{10}$/.test(formData.storePhone)) {
+      setError('Store phone number must be exactly 10 digits.');
+      return;
+    }
+
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters.');
       return;
@@ -93,16 +98,19 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Store Phone Number *</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Store Phone Number (10 digits) *</label>
               <div className="relative">
                 <Phone className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
                 <input
                   type="tel"
                   required
-                  placeholder="e.g. +91 98765 43210"
+                  maxLength={10}
                   value={formData.storePhone}
-                  onChange={(e) => setFormData({ ...formData, storePhone: e.target.value })}
-                  className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  onChange={(e) => {
+                    const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData({ ...formData, storePhone: onlyDigits });
+                  }}
+                  className="w-full pl-10 pr-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                 />
               </div>
             </div>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Store, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { Store, User, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -13,12 +13,28 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const handleIdentifierChange = (e) => {
+    const val = e.target.value;
+    // If the input consists purely of digits, enforce 10-digit limit for Indian phone numbers
+    if (/^\d+$/.test(val)) {
+      setIdentifier(val.slice(0, 10));
+    } else {
+      setIdentifier(val);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
 
-    const res = await login(email, password);
+    // If identifier is numeric, ensure it is exactly 10 digits
+    if (/^\d+$/.test(identifier) && identifier.length !== 10) {
+      setError('Phone number must be exactly 10 digits.');
+      return;
+    }
+
+    setLoading(true);
+    const res = await login(identifier, password);
     setLoading(false);
 
     if (res.success) {
@@ -43,7 +59,6 @@ const Login = () => {
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
         <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl border border-slate-200 shadow-sm space-y-5">
-
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -53,15 +68,16 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Email address</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Email or Phone Number
+              </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+                <User className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
                 <input
-                  type="email"
+                  type="text"
                   required
-                  placeholder="owner@kiranacloud.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={identifier}
+                  onChange={handleIdentifierChange}
                   className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold"
                 />
               </div>
@@ -74,7 +90,6 @@ const Login = () => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
-                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-10 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold"

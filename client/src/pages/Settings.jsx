@@ -25,6 +25,11 @@ const Settings = () => {
     setSuccessMsg(null);
     setErrorMsg(null);
 
+    if (formData.storePhone && (!/^\d{10}$/.test(formData.storePhone) || formData.storePhone.length !== 10)) {
+      setErrorMsg('Store phone number must be exactly 10 digits.');
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await api.patch('/auth/profile', formData);
@@ -93,13 +98,17 @@ const Settings = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Store Phone Number</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Store Phone Number (10 digits)</label>
               <div className="relative">
                 <Phone className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
                 <input
-                  type="text"
+                  type="tel"
+                  maxLength={10}
                   value={formData.storePhone}
-                  onChange={(e) => setFormData({ ...formData, storePhone: e.target.value })}
+                  onChange={(e) => {
+                    const onlyNums = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData({ ...formData, storePhone: onlyNums });
+                  }}
                   className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                 />
               </div>
