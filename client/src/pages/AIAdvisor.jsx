@@ -99,7 +99,7 @@ const AIAdvisor = () => {
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800'
                   : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800'
               }`}>
-                {isAi ? '⚡ Gemini 1.5 Flash Active' : '📊 Calculated Business Logic'}
+                {isAi ? `⚡ ${data?.modelUsed || 'Gemini'} Active` : '📊 Calculated Business Logic'}
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">

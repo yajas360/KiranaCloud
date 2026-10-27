@@ -186,36 +186,44 @@ Respond ONLY with valid JSON matching this exact structure:
 }
 `;
 
-        const geminiResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: promptText }] }],
-              generationConfig: {
-                responseMimeType: 'application/json',
-                temperature: 0.2,
-              },
-            }),
-          }
-        );
+        const candidateModels = ['gemini-3.5-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
+        for (const model of candidateModels) {
+          try {
+            const geminiResponse = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ parts: [{ text: promptText }] }],
+                  generationConfig: {
+                    responseMimeType: 'application/json',
+                    temperature: 0.2,
+                  },
+                }),
+              }
+            );
 
-        if (geminiResponse.ok) {
-          const geminiData = await geminiResponse.json();
-          const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (rawText) {
-            const parsedAdvice = JSON.parse(rawText);
-            return res.status(200).json({
-              success: true,
-              mode,
-              isAiGenerated: true,
-              storeMetrics: storeSummary,
-              advice: parsedAdvice,
-            });
+            if (geminiResponse.ok) {
+              const geminiData = await geminiResponse.json();
+              const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (rawText) {
+                const parsedAdvice = JSON.parse(rawText);
+                return res.status(200).json({
+                  success: true,
+                  mode,
+                  isAiGenerated: true,
+                  modelUsed: model,
+                  storeMetrics: storeSummary,
+                  advice: parsedAdvice,
+                });
+              }
+            } else {
+              console.warn(`Model ${model} returned non-OK status:`, geminiResponse.status);
+            }
+          } catch (modelErr) {
+            console.warn(`Model ${model} failed, trying next:`, modelErr.message);
           }
-        } else {
-          console.error('Gemini API Error:', await geminiResponse.text());
         }
       } catch (geminiErr) {
         console.error('Gemini invocation error, falling back to heuristic engine:', geminiErr.message);

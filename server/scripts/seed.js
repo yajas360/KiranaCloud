@@ -30,11 +30,12 @@ export const seedStoreData = async () => {
       password: 'password123',
       storeName: 'Aman Supermarket & Daily Needs',
       storeAddress: 'Shop #12, Central Plaza, Main Market, MG Road',
-      storePhone: '+91 98112 34567',
+      storePhone: '9811234567',
       role: 'owner',
       currency: 'INR',
       currencySymbol: '₹',
       taxRate: 5,
+      geminiApiKey: process.env.GEMINI_API_KEY || '',
     });
 
     console.log('[Seed] Populating store inventory catalog...');
