@@ -71,6 +71,21 @@ const PosCounter = () => {
     setCart((prevCart) => prevCart.filter((item) => item.product._id !== productId));
   };
 
+  const handleSubtractFromCart = (productId) => {
+    setCart((prevCart) => {
+      const existing = prevCart.find((item) => item.product._id === productId);
+      if (!existing) return prevCart;
+      if (existing.quantity <= 1) {
+        return prevCart.filter((item) => item.product._id !== productId);
+      }
+      return prevCart.map((item) =>
+        item.product._id === productId
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      );
+    });
+  };
+
   const handleClearCart = () => {
     setCart([]);
   };
@@ -111,6 +126,7 @@ const PosCounter = () => {
               products={products}
               cart={cart}
               onAddToCart={handleAddToCart}
+              onSubtractFromCart={handleSubtractFromCart}
             />
           </div>
 
