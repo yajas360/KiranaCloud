@@ -8,6 +8,7 @@ import {
   Calendar,
   CheckCircle,
   FileSpreadsheet,
+  Calculator,
 } from 'lucide-react';
 import api from '../api/axios';
 import { formatCurrency, formatDate } from '../utils/formatters';
@@ -15,6 +16,7 @@ import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import ReceiptModal from '../components/pos/ReceiptModal';
+import DayCloseModal from '../components/analytics/DayCloseModal';
 
 const Invoices = () => {
   const { currency, currencySymbol } = useAuth();
@@ -22,6 +24,9 @@ const Invoices = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('All');
+
+  // Day Close Modal
+  const [isDayCloseOpen, setIsDayCloseOpen] = useState(false);
 
   // Receipt Modal
   const [selectedSale, setSelectedSale] = useState(null);
@@ -80,6 +85,15 @@ const Invoices = () => {
             Audit trail of completed counter checkouts, profit breakdown, and receipt reprints.
           </p>
         </div>
+
+        <button
+          onClick={() => setIsDayCloseOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition self-start sm:self-auto"
+          title="End of day register balancing and Z-Report"
+        >
+          <Calculator className="w-4 h-4 text-emerald-600" />
+          <span>Day-Close (Z-Report)</span>
+        </button>
       </div>
 
       {/* Filter and Search Bar */}
@@ -213,6 +227,13 @@ const Invoices = () => {
           saleData={selectedSale}
         />
       )}
+
+      {/* Day Close / Z-Report Modal */}
+      <DayCloseModal
+        isOpen={isDayCloseOpen}
+        onClose={() => setIsDayCloseOpen(false)}
+        onClosedSuccess={() => fetchSales()}
+      />
     </div>
   );
 };

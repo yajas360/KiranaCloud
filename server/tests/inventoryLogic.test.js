@@ -92,4 +92,33 @@ describe('Store Inventory & POS Billing Logic', () => {
     const isExcessiveBlocked = excessiveDiscount > maxAllowedDiscount;
     assert.equal(isExcessiveBlocked, true);
   });
+
+  test('correctly calculates day-close cash reconciliation and drawer discrepancy', () => {
+    const startingFloat = 1000;
+    const cashSales = 4500;
+    const khataCollected = 800;
+    const expectedCash = startingFloat + cashSales + khataCollected; // 6300
+    assert.equal(expectedCash, 6300);
+
+    // Case 1: Exact match
+    const countedCash1 = 6300;
+    const diff1 = countedCash1 - expectedCash;
+    const status1 = Math.abs(diff1) < 0.01 ? 'MATCHED' : diff1 < 0 ? 'SHORTAGE' : 'SURPLUS';
+    assert.equal(diff1, 0);
+    assert.equal(status1, 'MATCHED');
+
+    // Case 2: Shortage
+    const countedCash2 = 6250;
+    const diff2 = countedCash2 - expectedCash;
+    const status2 = Math.abs(diff2) < 0.01 ? 'MATCHED' : diff2 < 0 ? 'SHORTAGE' : 'SURPLUS';
+    assert.equal(diff2, -50);
+    assert.equal(status2, 'SHORTAGE');
+
+    // Case 3: Surplus
+    const countedCash3 = 6340;
+    const diff3 = countedCash3 - expectedCash;
+    const status3 = Math.abs(diff3) < 0.01 ? 'MATCHED' : diff3 < 0 ? 'SHORTAGE' : 'SURPLUS';
+    assert.equal(diff3, 40);
+    assert.equal(status3, 'SURPLUS');
+  });
 });

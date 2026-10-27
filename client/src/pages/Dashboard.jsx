@@ -9,6 +9,7 @@ import {
   ShoppingCart,
   ArrowRight,
   TrendingDown,
+  Calculator,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -27,6 +28,7 @@ import api from '../api/axios';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import DayCloseModal from '../components/analytics/DayCloseModal';
 
 const DONUT_COLORS = ['#059669', '#2563eb', '#d97706', '#db2777', '#7c3aed', '#0891b2', '#ea580c'];
 
@@ -34,6 +36,7 @@ const Dashboard = () => {
   const { currency, currencySymbol } = useAuth();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDayCloseOpen, setIsDayCloseOpen] = useState(false);
 
   const fetchMetrics = async () => {
     try {
@@ -68,6 +71,22 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-5">
+      {/* Dashboard Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-100">
+        <div>
+          <h2 className="text-xl font-black text-slate-900 tracking-tight">Retail Performance Dashboard</h2>
+          <p className="text-xs text-slate-500">Live overview of sales, profit margins, inventory health, and register balance.</p>
+        </div>
+        <button
+          onClick={() => setIsDayCloseOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-2xs transition self-start sm:self-auto"
+          title="End of day register balancing and Z-Report"
+        >
+          <Calculator className="w-4 h-4 text-emerald-600" />
+          <span>Day-Close (Z-Report)</span>
+        </button>
+      </div>
+
       {/* Low Stock Urgent Warning Banner */}
       {inventoryHealth.lowStockCount > 0 && (
         <div className="px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -307,6 +326,13 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Day Close / Z-Report Modal */}
+      <DayCloseModal
+        isOpen={isDayCloseOpen}
+        onClose={() => setIsDayCloseOpen(false)}
+        onClosedSuccess={() => fetchMetrics()}
+      />
     </div>
   );
 };

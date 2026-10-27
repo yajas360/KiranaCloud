@@ -298,3 +298,132 @@ export const getReorderSheet = async (req, res, next) => {
     next(err);
   }
 };
+
+export const exportProductsCSV = async (req, res, next) => {
+  try {
+    const products = await Product.find({ user: req.user._id }).sort({ name: 1 });
+
+    const headers = [
+      'Name',
+      'SKU',
+      'Category',
+      'Selling Price',
+      'Cost Price',
+      'Stock Quantity',
+      'Unit',
+      'Min Threshold',
+      'Supplier',
+    ];
+
+    const escapeCsv = (val) => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const rows = products.map((p) => [
+      escapeCsv(p.name),
+      escapeCsv(p.sku),
+      escapeCsv(p.category),
+      p.sellingPrice,
+      p.costPrice,
+      p.stockQuantity,
+      escapeCsv(p.unit),
+      p.minThreshold,
+      escapeCsv(p.supplier || ''),
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="storepulse_inventory.csv"');
+    res.status(200).send(csvContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const bulkImportProducts = async (req, res, next) => {
+  try {
+    const { products = [] } = req.body;
+
+    if (!Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No product rows provided in bulk import payload.',
+      });
+    }
+
+    let createdCount = 0;
+    let updatedCount = 0;
+    const errors = [];
+
+    for (let i = 0; i < products.length; i++) {
+      const row = products[i];
+      const name = (row.name || '').trim();
+      const sku = (row.sku || '').trim();
+
+      if (!name) {
+        errors.push(`Row ${i + 1}: Name is missing.`);
+        continue;
+      }
+
+      const sellingPrice = parseFloat(row.sellingPrice);
+      const costPrice = parseFloat(row.costPrice) || 0;
+      const stockQuantity = parseInt(row.stockQuantity, 10) || 0;
+      const minThreshold = parseInt(row.minThreshold, 10) || 5;
+      const category = (row.category || 'Other').trim();
+      const unit = (row.unit || 'pcs').trim();
+      const supplier = (row.supplier || '').trim();
+
+      if (isNaN(sellingPrice) || sellingPrice < 0) {
+        errors.push(`Row ${i + 1} ("${name}"): Invalid selling price.`);
+        continue;
+      }
+
+      let existingProduct = null;
+      if (sku) {
+        existingProduct = await Product.findOne({ user: req.user._id, sku });
+      } else {
+        existingProduct = await Product.findOne({ user: req.user._id, name });
+      }
+
+      if (existingProduct) {
+        existingProduct.name = name;
+        existingProduct.sellingPrice = sellingPrice;
+        if (costPrice > 0) existingProduct.costPrice = costPrice;
+        existingProduct.stockQuantity = Math.max(0, stockQuantity);
+        existingProduct.minThreshold = minThreshold;
+        if (category) existingProduct.category = category;
+        if (unit) existingProduct.unit = unit;
+        if (supplier) existingProduct.supplier = supplier;
+        await existingProduct.save();
+        updatedCount++;
+      } else {
+        await Product.create({
+          user: req.user._id,
+          name,
+          sku: sku || undefined,
+          sellingPrice,
+          costPrice,
+          stockQuantity: Math.max(0, stockQuantity),
+          minThreshold,
+          category,
+          unit,
+          supplier,
+        });
+        createdCount++;
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Bulk import processed: ${createdCount} created, ${updatedCount} updated.`,
+      createdCount,
+      updatedCount,
+      errors,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

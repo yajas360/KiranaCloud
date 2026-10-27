@@ -8,6 +8,8 @@ import {
   deleteProduct,
   restockProduct,
   getReorderSheet,
+  exportProductsCSV,
+  bulkImportProducts,
 } from '../controllers/productController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { validateRequest } from '../middleware/validateRequest.js';
@@ -17,6 +19,8 @@ const router = express.Router();
 router.use(protect);
 
 router.get('/reorder-sheet', getReorderSheet);
+router.get('/export-csv', exportProductsCSV);
+router.post('/bulk-import', bulkImportProducts);
 
 router.route('/')
   .get(getProducts)
