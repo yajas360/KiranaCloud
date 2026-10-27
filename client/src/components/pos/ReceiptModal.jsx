@@ -1,10 +1,11 @@
-import React from 'react';
-import { X, Printer, CheckCircle, Store, Receipt } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Printer, Download, Copy, Check, CheckCircle, Store } from 'lucide-react';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { useAuth } from '../../context/AuthContext';
 
 const ReceiptModal = ({ isOpen, onClose, saleData }) => {
   const { currency, currencySymbol } = useAuth();
+  const [copied, setCopied] = useState(false);
 
   if (!isOpen || !saleData) return null;
 
@@ -24,8 +25,140 @@ const ReceiptModal = ({ isOpen, onClose, saleData }) => {
     store = {},
   } = saleData;
 
+  const generateReceiptText = () => {
+    const sName = store.storeName || 'StorePulse Superstore';
+    const sAddr = store.storeAddress || 'Main Market Road';
+    const sPhone = store.storePhone || '+91 98765 43210';
+    const dt = new Date(date).toLocaleString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    let text = '';
+    text += '========================================\n';
+    text += `       ${sName.toUpperCase()}\n`;
+    text += `     ${sAddr}\n`;
+    text += `       Phone: ${sPhone}\n`;
+    text += '========================================\n';
+    text += `Invoice: ${invoiceNumber}\n`;
+    text += `Date: ${dt}\n`;
+    text += `Customer: ${customerName}${customerPhone ? ` (${customerPhone})` : ''}\n`;
+    text += '----------------------------------------\n';
+    text += 'ITEM                 QTY   PRICE   TOTAL\n';
+    text += '----------------------------------------\n';
+
+    items.forEach((it) => {
+      const name = (it.name || '').substring(0, 18).padEnd(19, ' ');
+      const qty = String(it.quantity).padStart(3, ' ');
+      const price = String(it.sellingPrice).padStart(7, ' ');
+      const total = String(it.total).padStart(7, ' ');
+      text += `${name} ${qty} ${price} ${total}\n`;
+    });
+
+    text += '----------------------------------------\n';
+    text += `Subtotal:              ${currencySymbol}${subtotal}\n`;
+    if (discount > 0) {
+      text += `Discount:             -${currencySymbol}${discount}\n`;
+    }
+    if (tax > 0) {
+      text += `GST Tax:              +${currencySymbol}${tax}\n`;
+    }
+    text += `GRAND TOTAL:           ${currencySymbol}${grandTotal}\n`;
+    text += `Payment Mode:          ${paymentMethod.toUpperCase()}\n`;
+    if (paymentMethod === 'Cash') {
+      text += `Cash Tendered:         ${currencySymbol}${amountTendered}\n`;
+      text += `Change Due:            ${currencySymbol}${changeDue}\n`;
+    }
+    text += '========================================\n';
+    text += '     Thank you for shopping with us!\n';
+    text += '========================================\n';
+    return text;
+  };
+
+  const handleDownload = () => {
+    const text = generateReceiptText();
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${invoiceNumber}_Receipt.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopy = () => {
+    const text = generateReceiptText();
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const handlePrint = () => {
-    window.print();
+    const printFrame = document.createElement('iframe');
+    printFrame.style.position = 'fixed';
+    printFrame.style.right = '0';
+    printFrame.style.bottom = '0';
+    printFrame.style.width = '0';
+    printFrame.style.height = '0';
+    printFrame.style.border = '0';
+    document.body.appendChild(printFrame);
+
+    const receiptEl = document.getElementById('printable-receipt');
+    const receiptHtml = receiptEl ? receiptEl.innerHTML : '';
+    const doc = printFrame.contentWindow.document;
+    doc.open();
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Receipt - ${invoiceNumber}</title>
+          <style>
+            @page { margin: 8mm; size: auto; }
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+              font-size: 11px;
+              color: #111;
+              margin: 0;
+              padding: 10px;
+              width: 320px;
+            }
+            .text-center { text-align: center; }
+            .border-b { border-bottom: 1px dashed #666; padding-bottom: 6px; margin-bottom: 6px; }
+            .border-t { border-top: 1px dashed #666; padding-top: 6px; margin-top: 6px; }
+            .flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+            .font-bold { font-weight: bold; }
+            .font-black { font-weight: 900; }
+            .w-1\\/2 { width: 50%; }
+            .w-1\\/6 { width: 16.66%; text-align: right; }
+            .text-right { text-align: right; }
+          </style>
+        </head>
+        <body>
+          ${receiptHtml}
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    setTimeout(() => {
+      try {
+        printFrame.contentWindow.focus();
+        printFrame.contentWindow.print();
+      } catch (err) {
+        console.error('Print error:', err);
+      } finally {
+        setTimeout(() => {
+          if (document.body.contains(printFrame)) {
+            document.body.removeChild(printFrame);
+          }
+        }, 1500);
+      }
+    }, 250);
   };
 
   return (
@@ -142,19 +275,49 @@ const ReceiptModal = ({ isOpen, onClose, saleData }) => {
         </div>
 
         {/* Modal Actions */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3 flex-shrink-0">
+        <div className="p-3.5 border-t border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1.5 flex-1">
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition shadow-2xs"
+              title="Print via Thermal Printer"
+            >
+              <Printer className="w-3.5 h-3.5 text-slate-600" />
+              <span>Print</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDownload}
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition shadow-2xs"
+              title="Download Digital Invoice Slip (.txt)"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-600" />
+              <span>Download Slip</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCopy}
+              className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border font-bold text-xs transition shadow-2xs ${
+                copied
+                  ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
+              }`}
+              title="Copy text receipt for WhatsApp / SMS"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-600" />}
+              <span>{copied ? 'Copied!' : 'Copy'}</span>
+            </button>
+          </div>
+
           <button
-            onClick={handlePrint}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition shadow-sm"
-          >
-            <Printer className="w-4 h-4 text-slate-500" />
-            <span>Print Receipt</span>
-          </button>
-          <button
+            type="button"
             onClick={onClose}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition shadow-sm"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 active:scale-95 transition shadow-sm ml-auto"
           >
-            <span>Next Customer</span>
+            <span>Next Customer &rarr;</span>
           </button>
         </div>
       </div>
