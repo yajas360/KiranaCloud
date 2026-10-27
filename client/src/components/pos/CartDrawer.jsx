@@ -75,6 +75,11 @@ const CartDrawer = ({
       return;
     }
 
+    if (parseFloat(discount) < 0) {
+      setError('Discount cannot be a negative amount.');
+      return;
+    }
+
     if (paymentMethod === 'Credit' && !customerPhone.trim()) {
       setError('Please select a registered Khata account to issue store credit.');
       return;
@@ -359,10 +364,28 @@ const CartDrawer = ({
               <span>Discount ({currencySymbol}):</span>
               <input
                 type="number"
+                min="0"
                 step="1"
                 placeholder="0"
                 value={discount}
-                onChange={(e) => setDiscount(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === '-' || e.key === 'e' || e.key === '+') {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setDiscount('');
+                    return;
+                  }
+                  const num = parseFloat(val);
+                  if (num < 0 || isNaN(num)) {
+                    setDiscount('0');
+                    return;
+                  }
+                  setDiscount(val);
+                }}
                 className="w-16 px-1.5 py-0.5 text-xs text-right rounded border border-slate-200 bg-white"
               />
             </div>

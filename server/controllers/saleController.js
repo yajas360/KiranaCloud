@@ -21,6 +21,13 @@ export const createSale = async (req, res, next) => {
       });
     }
 
+    if (parseFloat(discount) < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Discount cannot be negative.',
+      });
+    }
+
     // 1. Validate all items & stock availability upfront
     const saleItems = [];
     let subtotal = 0;

@@ -15,7 +15,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 
 const navigation = [
-  { name: 'Billing Counter', to: '/pos', icon: ShoppingCart, highlight: true },
+  { name: 'Billing Counter', to: '/pos', icon: ShoppingCart },
   { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
   { name: 'Inventory', to: '/inventory', icon: Package },
   { name: 'Reorder Sheet', to: '/reorder-sheet', icon: AlertTriangle },
@@ -82,11 +82,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-colors ${
                     isActive
-                      ? item.highlight
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-emerald-50 text-emerald-800 font-extrabold'
-                      : item.highlight
-                      ? 'bg-emerald-50/50 text-emerald-700 hover:bg-emerald-100'
+                      ? 'bg-emerald-600 text-white shadow-xs'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                   }`
                 }
@@ -95,11 +91,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                   <>
                     <Icon
                       className={`w-3.5 h-3.5 flex-shrink-0 ${
-                        isActive
-                          ? item.highlight
-                            ? 'text-white'
-                            : 'text-emerald-700'
-                          : 'text-slate-400'
+                        isActive ? 'text-white' : 'text-slate-400'
                       }`}
                     />
                     <span className="truncate">{item.name}</span>
