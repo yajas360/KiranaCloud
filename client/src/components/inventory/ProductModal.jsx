@@ -98,7 +98,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-xl bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
           <div className="flex items-center gap-2.5">

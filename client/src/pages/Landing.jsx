@@ -111,7 +111,7 @@ const Landing = () => {
 
           {/* Interactive Feature Snapshot Preview */}
           <div className="pt-10 max-w-4xl mx-auto">
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl text-left space-y-5">
+            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm text-left space-y-5">
               <div className="flex flex-wrap items-center justify-between border-b border-slate-100 pb-4 gap-2">
                 <div>
                   <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">

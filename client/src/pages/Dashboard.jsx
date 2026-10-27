@@ -8,8 +8,7 @@ import {
   AlertTriangle,
   ShoppingCart,
   ArrowRight,
-  Sparkles,
-  CheckCircle,
+  TrendingDown,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -29,10 +28,10 @@ import { formatCurrency, formatDate } from '../utils/formatters';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
-const DONUT_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316'];
+const DONUT_COLORS = ['#059669', '#2563eb', '#d97706', '#db2777', '#7c3aed', '#0891b2', '#ea580c'];
 
 const Dashboard = () => {
-  const { currency, currencySymbol, storeName } = useAuth();
+  const { currency, currencySymbol } = useAuth();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +43,7 @@ const Dashboard = () => {
         setMetrics(res.data.data);
       }
     } catch (err) {
-      console.error('Failed to load dashboard metrics', err);
+      console.error('Failed to load metrics', err);
     } finally {
       setLoading(false);
     }
@@ -55,168 +54,149 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return <LoadingSpinner text="Crunching daily revenue, stock, and margins..." size="lg" />;
+    return <LoadingSpinner text="Loading dashboard metrics..." size="md" />;
   }
 
-  const { today = {}, inventoryHealth = {}, last7DaysTrend = [], categoryBreakdown = [], topProducts = [], recentSales = [] } = metrics || {};
+  const {
+    today = {},
+    inventoryHealth = {},
+    last7DaysTrend = [],
+    categoryBreakdown = [],
+    topProducts = [],
+    recentSales = [],
+  } = metrics || {};
 
   return (
-    <div className="space-y-6">
-      {/* Low Stock Warning Banner if items need restocking */}
+    <div className="space-y-5">
+      {/* Low Stock Urgent Warning Banner */}
       {inventoryHealth.lowStockCount > 0 && (
-        <div className="p-4 rounded-3xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500 text-white flex-shrink-0">
-              <AlertTriangle className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-amber-900">
-                {inventoryHealth.lowStockCount} Products Below Safety Threshold
-                {inventoryHealth.outOfStockCount > 0 && ` (${inventoryHealth.outOfStockCount} out of stock)`}
-              </h4>
-              <p className="text-xs text-amber-700">
-                Restock these items to prevent checkout bottlenecks.
-              </p>
-            </div>
+        <div className="px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+            <p className="text-xs font-bold text-amber-900">
+              {inventoryHealth.lowStockCount} items below safety threshold
+              {inventoryHealth.outOfStockCount > 0 && ` (${inventoryHealth.outOfStockCount} out of stock)`}
+            </p>
           </div>
           <Link
             to="/reorder-sheet"
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 rounded-xl transition flex-shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 rounded-lg transition"
           >
-            <span>View Reorder Sheet</span>
+            <span>Open Reorder Sheet</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       )}
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Today's Revenue */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Today's Gross Sales
-            </span>
-            <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
-              <DollarSign className="w-4 h-4" />
-            </div>
+      {/* Primary KPI Metrics Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {/* Today's Gross Sales */}
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider">Today's Sales</span>
+            <DollarSign className="w-4 h-4 text-emerald-600" />
           </div>
           <div>
-            <span className="text-3xl font-black text-slate-900 tracking-tight">
+            <div className="text-2xl font-black text-slate-900 font-mono">
               {formatCurrency(today.revenue, currency, currencySymbol)}
-            </span>
-            <p className="text-xs text-slate-400 mt-1">Total money collected today</p>
+            </div>
+            <p className="text-[11px] text-slate-500 mt-0.5">Gross cash & online sales</p>
           </div>
         </div>
 
         {/* Today's Net Profit */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Today's Net Profit
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider">Net Profit</span>
+            <span className="text-[11px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+              {today.marginPercentage}% Margin
             </span>
-            <div className="p-2 rounded-xl bg-teal-50 text-teal-600">
-              <TrendingUp className="w-4 h-4" />
-            </div>
           </div>
           <div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-emerald-700 tracking-tight">
-                {formatCurrency(today.netProfit, currency, currencySymbol)}
-              </span>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                {today.marginPercentage}% Margin
-              </span>
+            <div className="text-2xl font-black text-emerald-700 font-mono">
+              {formatCurrency(today.netProfit, currency, currencySymbol)}
             </div>
-            <p className="text-xs text-slate-400 mt-1">Selling Price − Wholesale Cost Price</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Selling Price − Wholesale Cost</p>
           </div>
         </div>
 
-        {/* Invoices Count */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Invoices Generated
-            </span>
-            <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
-              <Receipt className="w-4 h-4" />
-            </div>
+        {/* Total Invoices */}
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider">Invoices</span>
+            <Receipt className="w-4 h-4 text-blue-600" />
           </div>
           <div>
-            <span className="text-3xl font-black text-slate-900 tracking-tight">
+            <div className="text-2xl font-black text-slate-900 font-mono">
               {today.billsCount || 0}
-            </span>
-            <p className="text-xs text-slate-400 mt-1">Total customer checkouts today</p>
+            </div>
+            <p className="text-[11px] text-slate-500 mt-0.5">Checkout receipts today</p>
           </div>
         </div>
 
-        {/* Inventory Stock Status */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Catalog Items
-            </span>
-            <div className="p-2 rounded-xl bg-purple-50 text-purple-600">
-              <Package className="w-4 h-4" />
-            </div>
+        {/* Inventory Stock Health */}
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider">Inventory Health</span>
+            <Package className="w-4 h-4 text-slate-600" />
           </div>
           <div>
-            <span className="text-3xl font-black text-slate-900 tracking-tight">
-              {inventoryHealth.totalProducts || 0}
-            </span>
-            <p className="text-xs text-slate-400 mt-1">
-              <span className="text-emerald-600 font-bold">{inventoryHealth.healthyCount} Healthy</span>
+            <div className="text-2xl font-black text-slate-900 font-mono">
+              {inventoryHealth.totalProducts || 0} <span className="text-xs font-normal text-slate-400">SKUs</span>
+            </div>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              <span className="text-emerald-700 font-bold">{inventoryHealth.healthyCount} OK</span>
               {' • '}
-              <span className="text-amber-600 font-bold">{inventoryHealth.lowStockCount} Low</span>
+              <span className="text-amber-700 font-bold">{inventoryHealth.lowStockCount} Low</span>
             </p>
           </div>
         </div>
       </div>
 
       {/* Main Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 7-Day Revenue & Profit Bar Chart */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* 7-Day Performance */}
+        <div className="lg:col-span-8 bg-white rounded-xl p-4 md:p-5 border border-slate-200 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900">7-Day Sales & Profit Performance</h3>
-              <p className="text-xs text-slate-400">Daily revenue compared against wholesale costs</p>
+              <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">7-Day Sales vs. Net Profit</h3>
+              <p className="text-[11px] text-slate-500">Comparing gross revenue against wholesale product cost</p>
             </div>
             <Link
               to="/pos"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-bold hover:bg-emerald-100 transition"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-bold hover:bg-emerald-100 transition"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
               <span>Counter POS</span>
             </Link>
           </div>
 
-          <div className="h-72 w-full">
+          <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={last7DaysTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <BarChart data={last7DaysTrend} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${currencySymbol}${v}`} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} tickFormatter={(v) => `${currencySymbol}${v}`} />
                 <Tooltip
                   formatter={(value, name) => [
                     formatCurrency(value, currency, currencySymbol),
                     name === 'revenue' ? 'Sales Revenue' : 'Net Profit',
                   ]}
-                  contentStyle={{ backgroundColor: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '11px' }}
                 />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-                <Bar dataKey="revenue" name="Sales Revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="profit" name="Net Profit" fill="#0d9488" radius={[4, 4, 0, 0]} />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '6px' }} />
+                <Bar dataKey="revenue" name="Sales Revenue" fill="#10b981" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="profit" name="Net Profit" fill="#059669" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Sales by Category Donut */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        {/* Category Breakdown Donut */}
+        <div className="lg:col-span-4 bg-white rounded-xl p-4 md:p-5 border border-slate-200 shadow-sm space-y-3">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Sales by Category</h3>
-            <p className="text-xs text-slate-400">Revenue distribution across categories</p>
+            <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Category Revenue</h3>
+            <p className="text-[11px] text-slate-500">Sales distribution across catalog</p>
           </div>
 
           <div className="h-64 w-full">
@@ -231,9 +211,9 @@ const Dashboard = () => {
                     data={categoryBreakdown}
                     cx="50%"
                     cy="50%"
-                    innerRadius={55}
-                    outerRadius={80}
-                    paddingAngle={3}
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={2}
                     dataKey="revenue"
                     nameKey="category"
                   >
@@ -243,9 +223,9 @@ const Dashboard = () => {
                   </Pie>
                   <Tooltip
                     formatter={(val) => [formatCurrency(val, currency, currencySymbol), 'Revenue']}
-                    contentStyle={{ backgroundColor: '#0f172a', borderRadius: '12px', border: 'none', color: '#fff', fontSize: '11px' }}
+                    contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '11px' }}
                   />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: '11px' }} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '10px' }} />
                 </PieChart>
               </ResponsiveContainer>
             )}
@@ -253,17 +233,14 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Tables Row: Top Selling Products & Recent Sales */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Dense Data Tables: Top Bestsellers & Recent Receipts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top 5 Bestsellers */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-bold text-slate-900">Top-Selling Products</h3>
-              <p className="text-xs text-slate-400">Highest volume items sold</p>
-            </div>
-            <Link to="/inventory" className="text-xs font-bold text-emerald-600 hover:text-emerald-700">
-              View Inventory
+            <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Top-Selling Products</h3>
+            <Link to="/inventory" className="text-xs font-bold text-emerald-700 hover:underline">
+              Inventory
             </Link>
           </div>
 
@@ -272,21 +249,19 @@ const Dashboard = () => {
           ) : (
             <div className="divide-y divide-slate-100">
               {topProducts.map((p, idx) => (
-                <div key={idx} className="py-2.5 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-6 h-6 rounded-lg bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                <div key={idx} className="py-2 flex items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-5 h-5 rounded bg-slate-100 text-slate-600 font-mono font-bold text-[10px] flex items-center justify-center flex-shrink-0">
                       {idx + 1}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-slate-800 truncate">{p.name}</p>
-                      <span className="text-[10px] text-slate-400 uppercase font-mono">{p.sku}</span>
+                      <p className="font-bold text-slate-800 truncate">{p.name}</p>
+                      <span className="text-[10px] font-mono text-slate-400">{p.sku}</span>
                     </div>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <span className="text-xs font-black text-slate-900 block">
-                      {p.totalUnitsSold} units sold
-                    </span>
-                    <span className="text-[11px] text-emerald-600 font-semibold">
+                  <div className="text-right flex-shrink-0 font-mono">
+                    <span className="font-bold text-slate-900 block">{p.totalUnitsSold} units</span>
+                    <span className="text-[11px] text-emerald-700 font-semibold">
                       {formatCurrency(p.totalRevenue, currency, currencySymbol)}
                     </span>
                   </div>
@@ -297,13 +272,10 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Invoices */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-bold text-slate-900">Recent Customer Bills</h3>
-              <p className="text-xs text-slate-400">Latest completed counter checkouts</p>
-            </div>
-            <Link to="/invoices" className="text-xs font-bold text-emerald-600 hover:text-emerald-700">
+            <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Recent Invoices</h3>
+            <Link to="/invoices" className="text-xs font-bold text-emerald-700 hover:underline">
               All Invoices
             </Link>
           </div>
@@ -313,24 +285,20 @@ const Dashboard = () => {
           ) : (
             <div className="divide-y divide-slate-100">
               {recentSales.map((sale) => (
-                <div key={sale._id} className="py-2.5 flex items-center justify-between gap-3">
+                <div key={sale._id} className="py-2 flex items-center justify-between gap-3 text-xs">
                   <div>
-                    <p className="text-xs font-bold text-slate-800">
-                      {sale.invoiceNumber}{' '}
-                      <span className="text-[10px] font-semibold text-slate-400 font-sans">
-                        • {sale.customerName}
-                      </span>
-                    </p>
-                    <p className="text-[10px] text-slate-400">
-                      {formatDate(sale.date, 'time')} • {sale.items.length} items • {sale.paymentMethod}
+                    <span className="font-mono font-bold text-slate-900">{sale.invoiceNumber}</span>
+                    <span className="text-slate-400 ml-1.5">• {sale.customerName}</span>
+                    <p className="text-[10px] text-slate-400 font-mono">
+                      {formatDate(sale.date, 'time')} • {sale.paymentMethod}
                     </p>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <span className="text-xs font-black text-emerald-700 block">
+                  <div className="text-right font-mono flex-shrink-0">
+                    <span className="font-bold text-slate-900 block">
                       {formatCurrency(sale.grandTotal, currency, currencySymbol)}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      Profit: {formatCurrency(sale.netProfit, currency, currencySymbol)}
+                    <span className="text-[10px] text-emerald-700 font-semibold">
+                      +{formatCurrency(sale.netProfit, currency, currencySymbol)} profit
                     </span>
                   </div>
                 </div>

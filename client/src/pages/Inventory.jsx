@@ -126,16 +126,16 @@ const Inventory = () => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-stretch md:items-center gap-3">
+      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-stretch md:items-center gap-3">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
           <input
             type="text"
             placeholder="Search by name, SKU, or supplier..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 font-medium"
           />
         </div>
 
@@ -144,7 +144,7 @@ const Inventory = () => {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            className="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
           >
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
@@ -157,7 +157,7 @@ const Inventory = () => {
           <select
             value={stockStatus}
             onChange={(e) => setStockStatus(e.target.value)}
-            className="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            className="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
           >
             <option value="ALL">All Stock Statuses</option>
             <option value="LOW_STOCK">⚠️ Low Stock Only</option>
@@ -168,7 +168,7 @@ const Inventory = () => {
       </div>
 
       {/* Products Table */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         {loading ? (
           <LoadingSpinner text="Loading inventory records..." size="md" />
         ) : products.length === 0 ? (

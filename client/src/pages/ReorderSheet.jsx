@@ -78,35 +78,35 @@ const ReorderSheet = () => {
 
       {/* Reorder Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Items to Reorder
             </span>
             <p className="text-2xl font-black text-amber-600 mt-1">{reorderData.length} SKUs</p>
           </div>
-          <div className="p-2.5 rounded-2xl bg-amber-50 text-amber-600">
+          <div className="p-2.5 rounded-lg bg-amber-50 text-amber-600 border border-amber-100">
             <AlertTriangle className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Est. Wholesale Budget
             </span>
             <p className="text-2xl font-black text-slate-900 mt-1">
               {formatCurrency(totalBudget, currency, currencySymbol)}
             </p>
           </div>
-          <div className="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600">
+          <div className="p-2.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
             <Truck className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="p-5 rounded-3xl bg-emerald-50 border border-emerald-100 flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200/80 flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
               Store Buffer Health
             </span>
             <p className="text-xs text-emerald-800 font-semibold mt-1">
@@ -115,12 +115,12 @@ const ReorderSheet = () => {
                 : 'Restocking these items prevents lost counter sales.'}
             </p>
           </div>
-          <PackageCheck className="w-6 h-6 text-emerald-600" />
+          <PackageCheck className="w-6 h-6 text-emerald-600 flex-shrink-0" />
         </div>
       </div>
 
       {/* Printable Sheet Table */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         {loading ? (
           <LoadingSpinner text="Generating purchase order calculations..." size="md" />
         ) : reorderData.length === 0 ? (

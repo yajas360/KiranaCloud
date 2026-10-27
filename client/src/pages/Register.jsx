@@ -53,7 +53,7 @@ const Register = () => {
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white py-8 px-6 sm:px-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
+        <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl border border-slate-200 shadow-sm space-y-5">
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />

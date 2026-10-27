@@ -107,7 +107,7 @@
           { "key": "Authorization", "value": "Bearer {{TOKEN}}" }
         ],
         "url": {
-          "raw": "http://localhost:5000/api/analytics/metrics",
+          "raw": "http://localhost:50 00/api/analytics/metrics",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5000",

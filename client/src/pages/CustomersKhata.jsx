@@ -135,51 +135,51 @@ const CustomersKhata = () => {
 
       {/* KPI Card */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Total Outstanding Khata Debt
             </span>
-            <p className="text-3xl font-black text-rose-600 mt-1">
+            <p className="text-2xl font-black text-rose-600 mt-1">
               {formatCurrency(totalCredit, currency, currencySymbol)}
             </p>
             <p className="text-[11px] text-slate-400 mt-0.5">Total credit owed by customers to your store</p>
           </div>
-          <div className="p-3 rounded-2xl bg-rose-50 text-rose-600">
-            <CreditCard className="w-6 h-6" />
+          <div className="p-2.5 rounded-lg bg-rose-50 text-rose-600 border border-rose-100">
+            <CreditCard className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Active Khata Accounts
             </span>
-            <p className="text-3xl font-black text-slate-900 mt-1">{customers.length}</p>
+            <p className="text-2xl font-black text-slate-900 mt-1">{customers.length}</p>
             <p className="text-[11px] text-slate-400 mt-0.5">Registered credit ledger customers</p>
           </div>
-          <div className="p-3 rounded-2xl bg-purple-50 text-purple-600">
-            <Users className="w-6 h-6" />
+          <div className="p-2.5 rounded-lg bg-purple-50 text-purple-600 border border-purple-100">
+            <Users className="w-5 h-5" />
           </div>
         </div>
       </div>
 
       {/* Search Input */}
-      <div className="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm">
+      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
         <div className="relative">
-          <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
           <input
             type="text"
             placeholder="Search customer by name or phone number..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
           />
         </div>
       </div>
 
       {/* Customers List */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         {loading ? (
           <LoadingSpinner text="Loading customer credit ledgers..." size="md" />
         ) : customers.length === 0 ? (
@@ -246,7 +246,7 @@ const CustomersKhata = () => {
       {/* Payment Settlement Modal */}
       {payingCustomer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+          <div className="relative w-full max-w-md bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
               <div>
                 <h3 className="text-base font-bold text-slate-900">Record Credit Payment</h3>
@@ -261,14 +261,14 @@ const CustomersKhata = () => {
             </div>
 
             {paymentError && (
-              <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
+              <div className="mx-6 mt-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{paymentError}</span>
               </div>
             )}
 
             <form onSubmit={handleRecordPayment} className="p-6 space-y-4">
-              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center text-xs">
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex justify-between items-center text-xs">
                 <span className="text-slate-500 font-medium">Current Debt Owed:</span>
                 <span className="font-bold text-rose-600 text-sm">
                   {formatCurrency(payingCustomer.balance, currency, currencySymbol)}
@@ -286,7 +286,7 @@ const CustomersKhata = () => {
                   placeholder="e.g. 500"
                   value={paymentAmount}
                   onChange={(e) => setPaymentAmount(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-bold"
                 />
               </div>
 
@@ -297,7 +297,7 @@ const CustomersKhata = () => {
                   placeholder="e.g. Paid in Cash, GPay UPI reference #1234"
                   value={paymentNotes}
                   onChange={(e) => setPaymentNotes(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3.5 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
               </div>
 
@@ -305,14 +305,14 @@ const CustomersKhata = () => {
                 <button
                   type="button"
                   onClick={() => setPayingCustomer(null)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={paymentLoading}
-                  className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm transition disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition disabled:opacity-50"
                 >
                   <Check className="w-4 h-4" />
                   <span>{paymentLoading ? 'Saving...' : 'Record Payment'}</span>
@@ -326,7 +326,7 @@ const CustomersKhata = () => {
       {/* Add Customer Modal */}
       {isAddCustomerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+          <div className="relative w-full max-w-md bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
               <h3 className="text-base font-bold text-slate-900">Register Khata Customer</h3>
               <button
@@ -338,7 +338,7 @@ const CustomersKhata = () => {
             </div>
 
             {addError && (
-              <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
+              <div className="mx-6 mt-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{addError}</span>
               </div>
@@ -353,7 +353,7 @@ const CustomersKhata = () => {
                   placeholder="e.g. Ramesh Kumar"
                   value={newCustName}
                   onChange={(e) => setNewCustName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-semibold"
                 />
               </div>
 
@@ -365,7 +365,7 @@ const CustomersKhata = () => {
                   placeholder="e.g. 9876543210"
                   value={newCustPhone}
                   onChange={(e) => setNewCustPhone(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-mono"
                 />
               </div>
 
@@ -376,7 +376,7 @@ const CustomersKhata = () => {
                   placeholder="5000"
                   value={newCustLimit}
                   onChange={(e) => setNewCustLimit(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3.5 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
               </div>
 
@@ -384,14 +384,14 @@ const CustomersKhata = () => {
                 <button
                   type="button"
                   onClick={() => setIsAddCustomerOpen(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={addLoading}
-                  className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm transition disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition disabled:opacity-50"
                 >
                   <Check className="w-4 h-4" />
                   <span>{addLoading ? 'Creating...' : 'Register Customer'}</span>

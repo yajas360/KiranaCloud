@@ -55,7 +55,7 @@ const Login = () => {
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white py-8 px-6 sm:px-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
+        <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl border border-slate-200 shadow-sm space-y-5">
           {/* 1-Click Demo Button */}
           <button
             type="button"

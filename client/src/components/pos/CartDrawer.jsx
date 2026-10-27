@@ -76,19 +76,15 @@ const CartDrawer = ({
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm flex flex-col h-full overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-full overflow-hidden">
       {/* Cart Header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-slate-50/70 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
-            <ShoppingBag className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-800">Active Counter Bill</h3>
-            <span className="text-[11px] font-semibold text-slate-500">
-              {cart.reduce((sum, i) => sum + i.quantity, 0)} items in cart
-            </span>
-          </div>
+          <ShoppingBag className="w-4 h-4 text-emerald-700" />
+          <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">Counter Bill</h3>
+          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-700">
+            {cart.reduce((sum, i) => sum + i.quantity, 0)} items
+          </span>
         </div>
 
         {cart.length > 0 && (
@@ -97,18 +93,18 @@ const CartDrawer = ({
             onClick={onClearCart}
             className="text-[11px] font-bold text-rose-600 hover:text-rose-700 hover:underline"
           >
-            Clear Cart
+            Clear
           </button>
         )}
       </div>
 
       {/* Cart Items List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {cart.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-48 text-center text-slate-400">
-            <ShoppingBag className="w-8 h-8 text-slate-300 mb-2" />
-            <p className="text-xs font-semibold">Cart is currently empty</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Click products on the left to add items</p>
+          <div className="flex flex-col items-center justify-center h-44 text-center text-slate-400">
+            <ShoppingBag className="w-6 h-6 text-slate-300 mb-1" />
+            <p className="text-xs font-bold text-slate-600">Cart is empty</p>
+            <p className="text-[11px] text-slate-400">Click products on the left to add items</p>
           </div>
         ) : (
           cart.map((item) => {
@@ -118,33 +114,33 @@ const CartDrawer = ({
             return (
               <div
                 key={item.product._id}
-                className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3"
+                className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2 text-xs"
               >
                 <div className="min-w-0 flex-1">
-                  <h5 className="text-xs font-bold text-slate-800 truncate">{item.product.name}</h5>
-                  <p className="text-[10px] text-slate-400">
+                  <h5 className="font-bold text-slate-900 truncate leading-snug">{item.product.name}</h5>
+                  <p className="text-[11px] font-mono text-slate-500 mt-0.5">
                     {formatCurrency(item.product.sellingPrice, currency, currencySymbol)} × {item.quantity}{' '}
-                    = <span className="font-bold text-slate-700">{formatCurrency(itemTotal, currency, currencySymbol)}</span>
+                    = <span className="font-bold text-slate-900">{formatCurrency(itemTotal, currency, currencySymbol)}</span>
                   </p>
                 </div>
 
                 {/* Stepper */}
-                <div className="flex items-center gap-1.5 flex-shrink-0">
+                <div className="flex items-center gap-1 flex-shrink-0">
                   <button
                     type="button"
                     onClick={() => onUpdateQuantity(item.product._id, item.quantity - 1)}
-                    className="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 flex items-center justify-center"
+                    className="w-5 h-5 rounded bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 flex items-center justify-center"
                   >
                     <Minus className="w-3 h-3" />
                   </button>
-                  <span className="text-xs font-bold w-5 text-center text-slate-800">
+                  <span className="text-xs font-mono font-bold w-5 text-center text-slate-900">
                     {item.quantity}
                   </span>
                   <button
                     type="button"
                     disabled={isMaxStock}
                     onClick={() => onUpdateQuantity(item.product._id, item.quantity + 1)}
-                    className="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-40 flex items-center justify-center"
+                    className="w-5 h-5 rounded bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 disabled:opacity-40 flex items-center justify-center"
                   >
                     <Plus className="w-3 h-3" />
                   </button>
@@ -152,9 +148,9 @@ const CartDrawer = ({
                   <button
                     type="button"
                     onClick={() => onRemoveItem(item.product._id)}
-                    className="p-1 text-slate-400 hover:text-rose-500 rounded-md transition ml-1"
+                    className="p-1 text-slate-400 hover:text-rose-600 transition ml-0.5"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-3 h-3" />
                   </button>
                 </div>
               </div>
@@ -165,38 +161,35 @@ const CartDrawer = ({
 
       {/* Bill Controls & Checkout Form */}
       {cart.length > 0 && (
-        <form onSubmit={handleCheckoutSubmit} className="p-4 border-t border-slate-100 bg-slate-50/50 space-y-3.5 flex-shrink-0">
+        <form onSubmit={handleCheckoutSubmit} className="p-3.5 border-t border-slate-200 bg-slate-50/70 space-y-3 flex-shrink-0">
           {error && (
-            <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-[11px] text-rose-700 flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          {/* Customer Details Accordion/Inputs */}
+          {/* Customer Inputs */}
           <div className="grid grid-cols-2 gap-2 text-xs">
             <input
               type="text"
-              placeholder="Customer Name (opt)"
+              placeholder="Customer Name"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
+              className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
             />
             <input
               type="tel"
               placeholder="Customer Phone"
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
-              className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
+              className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs font-mono"
             />
           </div>
 
           {/* Payment Method Selector */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-              Payment Method
-            </label>
-            <div className="grid grid-cols-4 gap-1.5">
+            <div className="grid grid-cols-4 gap-1">
               {[
                 { id: 'Cash', icon: Banknote },
                 { id: 'UPI', icon: QrCode },
@@ -209,14 +202,14 @@ const CartDrawer = ({
                     key={pm.id}
                     type="button"
                     onClick={() => setPaymentMethod(pm.id)}
-                    className={`py-2 px-1 rounded-xl text-xs font-bold flex flex-col items-center gap-1 transition ${
+                    className={`py-1.5 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-0.5 transition ${
                       paymentMethod === pm.id
-                        ? 'bg-emerald-600 text-white shadow-sm'
+                        ? 'bg-slate-900 text-white'
                         : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
-                    <span className="text-[10px]">{pm.id}</span>
+                    <span>{pm.id}</span>
                   </button>
                 );
               })}
@@ -225,28 +218,28 @@ const CartDrawer = ({
 
           {/* Cash Tendered Input (if cash) */}
           {paymentMethod === 'Cash' && (
-            <div className="flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 text-xs">
-              <span className="text-slate-500 font-medium">Cash Given:</span>
+            <div className="flex items-center justify-between gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs">
+              <span className="text-slate-500 font-semibold">Tendered:</span>
               <input
                 type="number"
                 placeholder={grandTotal.toString()}
                 value={amountTendered}
                 onChange={(e) => setAmountTendered(e.target.value)}
-                className="w-24 px-2 py-1 text-xs font-bold rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-right"
+                className="w-20 px-1.5 py-0.5 text-xs font-mono font-bold rounded border border-slate-200 text-right"
               />
-              <span className="text-slate-400">|</span>
-              <span className="text-slate-500">Change:</span>
-              <span className="font-bold text-emerald-700 ml-auto">
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-500 font-semibold">Change:</span>
+              <span className="font-mono font-black text-emerald-700 ml-auto">
                 {formatCurrency(changeDue, currency, currencySymbol)}
               </span>
             </div>
           )}
 
           {/* Math Breakdown */}
-          <div className="space-y-1 text-xs pt-1 border-t border-slate-200 text-slate-600">
+          <div className="space-y-1 text-xs border-t border-slate-200 pt-2 text-slate-600 font-mono">
             <div className="flex justify-between">
               <span>Subtotal:</span>
-              <span className="font-semibold text-slate-800">
+              <span className="font-bold text-slate-900">
                 {formatCurrency(subtotal, currency, currencySymbol)}
               </span>
             </div>
@@ -259,26 +252,26 @@ const CartDrawer = ({
                 placeholder="0"
                 value={discount}
                 onChange={(e) => setDiscount(e.target.value)}
-                className="w-20 px-2 py-0.5 text-xs text-right rounded-lg border border-slate-200 bg-white"
+                className="w-16 px-1.5 py-0.5 text-xs text-right rounded border border-slate-200 bg-white"
               />
             </div>
 
             <div className="flex justify-between items-center">
-              <label className="flex items-center gap-1.5 cursor-pointer">
+              <label className="flex items-center gap-1.5 cursor-pointer font-sans text-xs">
                 <input
                   type="checkbox"
                   checked={applyTax}
                   onChange={(e) => setApplyTax(e.target.checked)}
-                  className="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5"
+                  className="rounded text-emerald-600 focus:ring-emerald-500 w-3 h-3"
                 />
                 <span>GST Tax ({taxRate}%):</span>
               </label>
               <span>{formatCurrency(tax, currency, currencySymbol)}</span>
             </div>
 
-            <div className="flex justify-between text-base font-black text-slate-900 pt-1.5 border-t border-slate-200">
+            <div className="flex justify-between text-sm font-black text-slate-900 border-t border-slate-200 pt-1.5">
               <span>Grand Total:</span>
-              <span className="text-emerald-700">
+              <span className="text-emerald-700 text-base">
                 {formatCurrency(grandTotal, currency, currencySymbol)}
               </span>
             </div>
@@ -288,7 +281,7 @@ const CartDrawer = ({
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-2xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 active:scale-95 transition shadow-lg shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-lg bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 active:scale-95 transition shadow-sm disabled:opacity-50 flex items-center justify-center gap-1.5"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>
