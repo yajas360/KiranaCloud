@@ -171,4 +171,54 @@ describe('Store Inventory & POS Billing Logic', () => {
     assert.equal(validateCreditLimit(-100), false);
     assert.equal(validateCreditLimit(600000), false);
   });
+
+  test('Khata advance credit logic when customer overpays and subsequent bill drawdown', () => {
+    // 1. Initial State: Customer has ₹200 existing debt
+    let balance = 200;
+    const creditLimit = 5000;
+
+    // Helper functions matching Customer model virtuals
+    const getAdvanceCredit = (bal) => (bal < 0 ? Math.abs(bal) : 0);
+    const getDebtDue = (bal) => (bal > 0 ? bal : 0);
+
+    assert.equal(getDebtDue(balance), 200);
+    assert.equal(getAdvanceCredit(balance), 0);
+
+    // 2. Customer pays ₹500 (overpaying ₹300)
+    const payment = 500;
+    balance = Math.round((balance - payment) * 100) / 100;
+    assert.equal(balance, -300);
+    assert.equal(getDebtDue(balance), 0);
+    assert.equal(getAdvanceCredit(balance), 300);
+
+    // 3. Customer makes subsequent Khata credit purchase of ₹180
+    const bill1 = 180;
+    const prevBal1 = balance;
+    const hadAdvance1 = prevBal1 < 0;
+    const advanceAvailable1 = hadAdvance1 ? Math.abs(prevBal1) : 0;
+    const advanceUsed1 = hadAdvance1 ? Math.min(advanceAvailable1, bill1) : 0;
+
+    assert.equal(advanceUsed1, 180);
+    balance = Math.round((prevBal1 + bill1) * 100) / 100;
+    assert.equal(balance, -120);
+    assert.equal(getAdvanceCredit(balance), 120);
+    assert.equal(getDebtDue(balance), 0);
+
+    // 4. Customer makes another purchase of ₹300 (exceeding remaining advance of ₹120)
+    const bill2 = 300;
+    const prevBal2 = balance;
+    const hadAdvance2 = prevBal2 < 0;
+    const advanceAvailable2 = hadAdvance2 ? Math.abs(prevBal2) : 0;
+    const advanceUsed2 = hadAdvance2 ? Math.min(advanceAvailable2, bill2) : 0;
+
+    assert.equal(advanceUsed2, 120);
+    balance = Math.round((prevBal2 + bill2) * 100) / 100;
+    assert.equal(balance, 180); // turned into ₹180 debt
+    assert.equal(getAdvanceCredit(balance), 0);
+    assert.equal(getDebtDue(balance), 180);
+
+    // Check credit limit room is correctly calculated
+    const remainingCreditRoom = Math.max(0, creditLimit - balance);
+    assert.equal(remainingCreditRoom, 4820);
+  });
 });

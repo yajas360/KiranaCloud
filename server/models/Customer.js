@@ -56,9 +56,8 @@ const customerSchema = new mongoose.Schema(
       },
     },
     balance: {
-      type: Number, // Total outstanding credit owed to store
+      type: Number, // Net Khata balance (> 0 = Debt owed to store, < 0 = Advance credit saved by customer)
       default: 0,
-      min: [0, 'Balance cannot be negative'],
     },
     creditLimit: {
       type: Number,
@@ -73,8 +72,20 @@ const customerSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+// Virtual helper: Advance credit customer has stored (when balance is negative)
+customerSchema.virtual('advanceCredit').get(function () {
+  return this.balance < 0 ? Math.abs(this.balance) : 0;
+});
+
+// Virtual helper: Outstanding debt owed by customer (when balance is positive)
+customerSchema.virtual('debtDue').get(function () {
+  return this.balance > 0 ? this.balance : 0;
+});
 
 customerSchema.index({ user: 1, phone: 1 }, { unique: true });
 

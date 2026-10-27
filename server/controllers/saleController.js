@@ -172,12 +172,23 @@ export const createSale = async (req, res, next) => {
 
     // 6. Update Customer Khata Credit ledger
     if (paymentMethod === 'Credit' && khataCustomer) {
-      khataCustomer.balance += grandTotal;
+      const prevBal = khataCustomer.balance || 0;
+      const hadAdvance = prevBal < 0;
+      const advanceAvailable = hadAdvance ? Math.abs(prevBal) : 0;
+      const advanceUsed = hadAdvance ? Math.min(advanceAvailable, grandTotal) : 0;
+
+      khataCustomer.balance = Math.round((prevBal + grandTotal) * 100) / 100;
+
+      let note = 'Credit sale at Billing Counter';
+      if (advanceUsed > 0) {
+        note += ` (Applied ₹${advanceUsed.toFixed(2)} from saved Advance Credit)`;
+      }
+
       khataCustomer.history.push({
         type: 'PURCHASE',
         amount: grandTotal,
         invoiceNumber,
-        notes: 'Credit sale at Billing Counter',
+        notes: note,
         date: new Date(),
       });
       await khataCustomer.save();
@@ -331,7 +342,7 @@ export const voidSale = async (req, res, next) => {
     if (sale.paymentMethod === 'Credit' && sale.customerPhone) {
       const customer = await Customer.findOne({ user: req.user._id, phone: sale.customerPhone });
       if (customer) {
-        customer.balance = Math.max(0, customer.balance - sale.grandTotal);
+        customer.balance = Math.round((customer.balance - sale.grandTotal) * 100) / 100;
         customer.history.push({
           type: 'PAYMENT',
           amount: sale.grandTotal,

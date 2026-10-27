@@ -287,22 +287,50 @@ const CartDrawer = ({
                   className="w-full px-2.5 py-1.5 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs font-semibold text-slate-900 dark:text-white"
                 >
                   <option value="">-- Choose Registered Customer --</option>
-                  {khataCustomers.map((c) => (
-                    <option key={c._id} value={c._id} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-                      {c.name} ({c.phone}) — Debt: {currencySymbol}{c.balance} / Limit: {currencySymbol}{c.creditLimit}
-                    </option>
-                  ))}
+                  {khataCustomers.map((c) => {
+                    const balanceNum = Number(c.balance) || 0;
+                    const balanceLabel = balanceNum < 0
+                      ? `🌟 Advance: +${currencySymbol}${Math.abs(balanceNum)}`
+                      : balanceNum > 0
+                        ? `Debt: ${currencySymbol}${balanceNum}`
+                        : `Settled (₹0)`;
+                    return (
+                      <option key={c._id} value={c._id} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+                        {c.name} ({c.phone}) — {balanceLabel} / Limit: {currencySymbol}{c.creditLimit}
+                      </option>
+                    );
+                  })}
                 </select>
               )}
 
               {selectedCustomerId && (() => {
                 const cust = khataCustomers.find((c) => c._id === selectedCustomerId);
                 if (!cust) return null;
-                const remaining = Math.max(0, cust.creditLimit - cust.balance);
+                const balanceNum = Number(cust.balance) || 0;
+                const isAdvance = balanceNum < 0;
+                const advanceAmount = Math.abs(balanceNum);
+                const remaining = isAdvance ? cust.creditLimit + advanceAmount : Math.max(0, cust.creditLimit - balanceNum);
                 return (
-                  <div className="flex justify-between items-center text-[10px] font-mono text-emerald-800 dark:text-emerald-300 pt-0.5">
-                    <span>Available Credit Room:</span>
-                    <span className="font-bold">{formatCurrency(remaining, currency, currencySymbol)}</span>
+                  <div className="space-y-1 pt-1">
+                    {isAdvance ? (
+                      <div className="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 flex items-center justify-between text-[11px] text-emerald-800 dark:text-emerald-300">
+                        <span className="font-semibold flex items-center gap-1">
+                          <span>🌟 Saved Advance Credit:</span>
+                        </span>
+                        <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                          +{formatCurrency(advanceAmount, currency, currencySymbol)}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between items-center text-[10px] font-mono text-slate-600 dark:text-slate-400">
+                        <span>Current Khata Debt:</span>
+                        <span className="font-bold text-rose-600 dark:text-rose-400">{formatCurrency(balanceNum, currency, currencySymbol)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-[10px] font-mono text-emerald-800 dark:text-emerald-300">
+                      <span>Available Credit Room:</span>
+                      <span className="font-bold">{formatCurrency(remaining, currency, currencySymbol)}</span>
+                    </div>
                   </div>
                 );
               })()}

@@ -25,6 +25,7 @@ const CustomersKhata = () => {
   const { currency, currencySymbol, storeName } = useAuth();
   const [customers, setCustomers] = useState([]);
   const [totalCredit, setTotalCredit] = useState(0);
+  const [totalAdvance, setTotalAdvance] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -53,6 +54,7 @@ const CustomersKhata = () => {
       if (res.data.success) {
         setCustomers(res.data.data);
         setTotalCredit(res.data.totalOutstandingCredit || 0);
+        setTotalAdvance(res.data.totalAdvanceCredit || 0);
       }
     } catch (err) {
       console.error('Failed to load customers', err);
@@ -153,7 +155,14 @@ const CustomersKhata = () => {
   const sendWhatsAppReminder = (customer) => {
     const cleanPhone = (customer.phone || '').replace(/[^0-9]/g, '');
     const phoneWithCountry = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
-    const msg = `Hello ${customer.name}, this is a gentle reminder from ${storeName || 'our store'} regarding your outstanding store credit balance of ${currencySymbol}${customer.balance.toFixed(2)}. Kindly clear your dues via cash or UPI at your earliest convenience. Thank you!`;
+    let msg = '';
+    if (customer.balance > 0) {
+      msg = `Hello ${customer.name}, this is a gentle reminder from ${storeName || 'our store'} regarding your outstanding store credit balance of ${currencySymbol}${customer.balance.toFixed(2)}. Kindly clear your dues via cash or UPI at your earliest convenience. Thank you!`;
+    } else if (customer.balance < 0) {
+      msg = `Hello ${customer.name}, greetings from ${storeName || 'our store'}! You currently have an Advance Store Credit of ${currencySymbol}${Math.abs(customer.balance).toFixed(2)} in your Khata account. You can use this balance for your next grocery purchase. Thank you!`;
+    } else {
+      msg = `Hello ${customer.name}, thank you for shopping with ${storeName || 'our store'}! Your Khata credit account is currently fully settled (₹0.00 dues). Have a great day!`;
+    }
     const url = `https://wa.me/${phoneWithCountry}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');
   };
@@ -162,9 +171,9 @@ const CustomersKhata = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-black text-slate-900 tracking-tight">Customer Khata (Credit Ledger)</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Track customer store credit, outstanding dues, and cash/UPI payment settlements.
+          <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Customer Khata (Credit Ledger)</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Track customer credit, advance deposits, outstanding dues, and cash/UPI settlements.
           </p>
         </div>
 
@@ -177,32 +186,47 @@ const CustomersKhata = () => {
         </button>
       </div>
 
-      {/* KPI Card */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-between">
+      {/* KPI Cards: Debt, Advance Credit & Total Accounts */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              Total Outstanding Khata Debt
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Total Outstanding Debt
             </span>
-            <p className="text-2xl font-black text-rose-600 mt-1">
+            <p className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-1">
               {formatCurrency(totalCredit, currency, currencySymbol)}
             </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Total credit owed by customers to your store</p>
+            <p className="text-[10px] text-slate-400 mt-0.5">Credit owed by customers to store</p>
           </div>
-          <div className="p-2.5 rounded-lg bg-rose-50 text-rose-600 border border-rose-100">
+          <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
             <CreditCard className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+              Customer Advance Credit
+            </span>
+            <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">
+              +{formatCurrency(totalAdvance, currency, currencySymbol)}
+            </p>
+            <p className="text-[10px] text-slate-400 mt-0.5">Prepaid store credit usable next time</p>
+          </div>
+          <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+            <ArrowDownRight className="w-5 h-5" />
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Active Khata Accounts
             </span>
-            <p className="text-2xl font-black text-slate-900 mt-1">{customers.length}</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Registered credit ledger customers</p>
+            <p className="text-2xl font-black text-slate-900 dark:text-white mt-1">{customers.length}</p>
+            <p className="text-[10px] text-slate-400 mt-0.5">Registered credit ledger customers</p>
           </div>
-          <div className="p-2.5 rounded-lg bg-purple-50 text-purple-600 border border-purple-100">
+          <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
             <Users className="w-5 h-5" />
           </div>
         </div>
@@ -237,38 +261,55 @@ const CustomersKhata = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50/80 text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
+              <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 uppercase tracking-wider font-bold border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="px-5 py-3.5">Customer Name</th>
                   <th className="px-4 py-3.5">Phone Number</th>
-                  <th className="px-4 py-3.5 text-right font-bold text-rose-600">
-                    Outstanding Debt
+                  <th className="px-4 py-3.5 text-right font-bold text-slate-700 dark:text-slate-200">
+                    Khata Balance / Status
                   </th>
-                  <th className="px-4 py-3.5 text-right text-slate-500">Credit Limit</th>
+                  <th className="px-4 py-3.5 text-right text-slate-500 dark:text-slate-400">Credit Limit</th>
                   <th className="px-4 py-3.5 text-center">Transactions</th>
                   <th className="px-5 py-3.5 text-right">Settlement Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
                 {customers.map((c) => (
-                  <tr key={c._id} className="hover:bg-slate-50/60 transition">
+                  <tr key={c._id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition">
                     <td className="px-5 py-3.5">
-                      <span className="font-bold text-slate-900 block">{c.name}</span>
+                      <span className="font-bold text-slate-900 dark:text-white block">{c.name}</span>
                     </td>
-                    <td className="px-4 py-3.5 text-slate-600 font-mono">
+                    <td className="px-4 py-3.5 text-slate-600 dark:text-slate-300 font-mono">
                       {c.phone}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-black text-rose-600 text-sm">
-                      {formatCurrency(c.balance, currency, currencySymbol)}
+                    <td className="px-4 py-3.5 text-right font-black text-sm">
+                      {c.balance > 0 ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-rose-600 dark:text-rose-400 font-black">
+                            {formatCurrency(c.balance, currency, currencySymbol)} Due
+                          </span>
+                          <span className="text-[10px] text-rose-500/80 font-normal">Customer owes store</span>
+                        </div>
+                      ) : c.balance < 0 ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-emerald-700 dark:text-emerald-400 font-black flex items-center gap-1">
+                            <span className="px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[9px] font-bold">Advance Credit</span>
+                            +{formatCurrency(Math.abs(c.balance), currency, currencySymbol)}
+                          </span>
+                          <span className="text-[10px] text-emerald-600/80 dark:text-emerald-400/80 font-normal">Saved for next bill</span>
+                        </div>
+                      ) : (
+                        <span className="text-slate-400 dark:text-slate-500 font-semibold">₹0.00 (All Cleared)</span>
+                      )}
                     </td>
-                    <td className="px-4 py-3.5 text-right text-slate-500">
+                    <td className="px-4 py-3.5 text-right text-slate-500 dark:text-slate-400 font-mono">
                       {formatCurrency(c.creditLimit, currency, currencySymbol)}
                     </td>
                     <td className="px-4 py-3.5 text-center">
                       <button
                         type="button"
                         onClick={() => setSelectedLedgerCustomer(c)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[10px] transition"
                         title="Click to view full transaction ledger"
                       >
                         <History className="w-3 h-3 text-slate-500" />
@@ -276,24 +317,28 @@ const CustomersKhata = () => {
                       </button>
                     </td>
                     <td className="px-5 py-3.5 text-right space-x-1.5 whitespace-nowrap">
-                      {c.balance > 0 && (
-                        <button
-                          onClick={() => sendWhatsAppReminder(c)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-green-50 hover:bg-green-600 text-green-700 hover:text-white font-bold text-[11px] border border-green-200 transition shadow-2xs"
-                          title="Send WhatsApp payment reminder"
-                        >
-                          <MessageSquare className="w-3.5 h-3.5" />
-                          <span>Remind</span>
-                        </button>
-                      )}
+                      <button
+                        onClick={() => sendWhatsAppReminder(c)}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-bold text-[11px] border transition shadow-2xs ${
+                          c.balance > 0
+                            ? 'bg-green-50 dark:bg-green-950/60 hover:bg-green-600 text-green-700 dark:text-green-300 hover:text-white border-green-200 dark:border-green-800'
+                            : c.balance < 0
+                            ? 'bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-600 text-emerald-700 dark:text-emerald-300 hover:text-white border-emerald-200 dark:border-emerald-800'
+                            : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                        title={c.balance > 0 ? 'Send WhatsApp payment reminder' : c.balance < 0 ? 'Send WhatsApp advance credit note' : 'Send WhatsApp settlement confirmation'}
+                      >
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        <span>{c.balance > 0 ? 'Remind' : c.balance < 0 ? 'Statement' : 'WhatsApp'}</span>
+                      </button>
 
                       <button
                         onClick={() => {
                           setPayingCustomer(c);
                           setPaymentAmount(c.balance > 0 ? c.balance.toString() : '');
                         }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-[11px] border border-emerald-200 transition shadow-2xs"
-                        title="Record Cash/UPI settlement"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 font-bold text-[11px] border border-emerald-300 dark:border-emerald-700 transition shadow-2xs"
+                        title="Record Cash/UPI settlement or advance deposit"
                       >
                         <ArrowDownRight className="w-3.5 h-3.5" />
                         <span>Record Payment</span>
@@ -340,15 +385,21 @@ const CustomersKhata = () => {
             )}
 
             <form onSubmit={handleRecordPayment} className="p-6 space-y-4">
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex justify-between items-center text-xs">
-                <span className="text-slate-500 font-medium">Current Debt Owed:</span>
-                <span className="font-bold text-rose-600 text-sm">
-                  {formatCurrency(payingCustomer.balance, currency, currencySymbol)}
+              <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">
+                  {payingCustomer.balance > 0 ? 'Current Debt Owed:' : payingCustomer.balance < 0 ? 'Current Advance Credit:' : 'Khata Status:'}
+                </span>
+                <span className={`font-black text-sm ${payingCustomer.balance > 0 ? 'text-rose-600 dark:text-rose-400' : payingCustomer.balance < 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>
+                  {payingCustomer.balance > 0
+                    ? formatCurrency(payingCustomer.balance, currency, currencySymbol)
+                    : payingCustomer.balance < 0
+                    ? `+${formatCurrency(Math.abs(payingCustomer.balance), currency, currencySymbol)} (Advance)`
+                    : 'All Cleared (₹0.00)'}
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Payment Amount Received ({currencySymbol}) *
                 </label>
                 <input
@@ -358,23 +409,55 @@ const CustomersKhata = () => {
                   placeholder="e.g. 500"
                   value={paymentAmount}
                   onChange={(e) => setPaymentAmount(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-lg border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold shadow-sm transition"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-white focus:bg-white text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold shadow-sm transition"
                 />
-                <div className="flex flex-wrap gap-1.5 mt-1.5">
+
+                {/* Overpayment & Advance Credit Live Preview */}
+                {parseFloat(paymentAmount) > 0 && (() => {
+                  const pAmt = parseFloat(paymentAmount) || 0;
+                  const currentBal = payingCustomer.balance || 0;
+                  const resultingBal = Math.round((currentBal - pAmt) * 100) / 100;
+
+                  if (resultingBal < 0) {
+                    const advance = Math.abs(resultingBal);
+                    return (
+                      <div className="mt-2 p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-[11px] text-emerald-800 dark:text-emerald-200">
+                        <span className="font-bold">🌟 Customer will have +{formatCurrency(advance, currency, currencySymbol)} saved as Advance Credit!</span>
+                        <p className="text-[10px] text-emerald-700 dark:text-emerald-300 mt-0.5">
+                          This excess payment is saved in their Khata and will automatically be used to cover their next bill at checkout.
+                        </p>
+                      </div>
+                    );
+                  } else if (resultingBal === 0) {
+                    return (
+                      <div className="mt-2 p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
+                        ✓ All debt will be fully cleared (₹0.00 balance).
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="mt-2 p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] text-slate-700 dark:text-slate-300">
+                        Remaining debt after payment: <span className="font-bold text-rose-600 dark:text-rose-400">{formatCurrency(resultingBal, currency, currencySymbol)}</span>
+                      </div>
+                    );
+                  }
+                })()}
+
+                <div className="flex flex-wrap gap-1.5 mt-2">
                   {payingCustomer.balance > 0 && (
                     <button
                       type="button"
                       onClick={() => setPaymentAmount(payingCustomer.balance.toString())}
-                      className="px-2 py-0.5 rounded bg-slate-100 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 hover:text-emerald-700 border border-slate-200 transition"
+                      className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-700 border border-slate-200 dark:border-slate-700 transition"
                     >
-                      Full ({formatCurrency(payingCustomer.balance, currency, currencySymbol)})
+                      Exact Due ({formatCurrency(payingCustomer.balance, currency, currencySymbol)})
                     </button>
                   )}
                   {payingCustomer.balance > 1 && (
                     <button
                       type="button"
                       onClick={() => setPaymentAmount(Math.round(payingCustomer.balance / 2).toString())}
-                      className="px-2 py-0.5 rounded bg-slate-100 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 hover:text-emerald-700 border border-slate-200 transition"
+                      className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-700 border border-slate-200 dark:border-slate-700 transition"
                     >
                       50% ({formatCurrency(Math.round(payingCustomer.balance / 2), currency, currencySymbol)})
                     </button>
@@ -382,32 +465,39 @@ const CustomersKhata = () => {
                   <button
                     type="button"
                     onClick={() => setPaymentAmount('500')}
-                    className="px-2 py-0.5 rounded bg-slate-100 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 hover:text-emerald-700 border border-slate-200 transition"
+                    className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-700 border border-slate-200 dark:border-slate-700 transition"
                   >
                     {currencySymbol}500
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentAmount('1000')}
-                    className="px-2 py-0.5 rounded bg-slate-100 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 hover:text-emerald-700 border border-slate-200 transition"
+                    className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-700 border border-slate-200 dark:border-slate-700 transition"
                   >
                     {currencySymbol}1,000
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentAmount('2000')}
+                    className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 text-[10px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-700 border border-slate-200 dark:border-slate-700 transition"
+                  >
+                    {currencySymbol}2,000
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Payment Notes / Mode</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Payment Notes / Mode</label>
                 <input
                   type="text"
                   placeholder="e.g. Paid in Cash, GPay UPI reference #1234"
                   value={paymentNotes}
                   onChange={(e) => setPaymentNotes(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  className="w-full px-3.5 py-2 text-xs rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setPayingCustomer(null)}
@@ -451,16 +541,27 @@ const CustomersKhata = () => {
             </div>
 
             {/* Balances summary */}
-            <div className="grid grid-cols-2 gap-3 p-4 bg-slate-50 border-b border-slate-100">
-              <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-2xs">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Current Balance Owed</span>
-                <span className="text-base font-black text-rose-600">
-                  {formatCurrency(selectedLedgerCustomer.balance, currency, currencySymbol)}
+            <div className="grid grid-cols-2 gap-3 p-4 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800">
+              <div className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                  {selectedLedgerCustomer.balance > 0 ? 'Current Debt Owed' : selectedLedgerCustomer.balance < 0 ? '🌟 Advance Store Credit' : 'Khata Balance'}
                 </span>
+                <span className={`text-base font-black ${selectedLedgerCustomer.balance > 0 ? 'text-rose-600 dark:text-rose-400' : selectedLedgerCustomer.balance < 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>
+                  {selectedLedgerCustomer.balance > 0
+                    ? formatCurrency(selectedLedgerCustomer.balance, currency, currencySymbol)
+                    : selectedLedgerCustomer.balance < 0
+                    ? `+${formatCurrency(Math.abs(selectedLedgerCustomer.balance), currency, currencySymbol)} (Saved)`
+                    : '₹0.00 (All Cleared)'}
+                </span>
+                {selectedLedgerCustomer.balance < 0 && (
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium block mt-0.5">
+                    Will auto-apply to next bill
+                  </span>
+                )}
               </div>
-              <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-2xs">
+              <div className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block">Credit Limit Ceiling</span>
-                <span className="text-base font-black text-slate-700">
+                <span className="text-base font-black text-slate-700 dark:text-slate-200">
                   {formatCurrency(selectedLedgerCustomer.creditLimit, currency, currencySymbol)}
                 </span>
               </div>

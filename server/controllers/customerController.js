@@ -12,12 +12,14 @@ export const getCustomers = async (req, res, next) => {
 
     const customers = await Customer.find(query).sort({ balance: -1, updatedAt: -1 });
 
-    const totalOutstandingCredit = customers.reduce((sum, c) => sum + (c.balance || 0), 0);
+    const totalOutstandingCredit = customers.reduce((sum, c) => sum + (c.balance > 0 ? c.balance : 0), 0);
+    const totalAdvanceCredit = customers.reduce((sum, c) => sum + (c.balance < 0 ? Math.abs(c.balance) : 0), 0);
 
     res.status(200).json({
       success: true,
       count: customers.length,
       totalOutstandingCredit,
+      totalAdvanceCredit,
       data: customers,
     });
   } catch (err) {
@@ -139,19 +141,39 @@ export const recordPayment = async (req, res, next) => {
       });
     }
 
-    customer.balance = Math.max(0, customer.balance - paymentAmount);
+    const previousBalance = customer.balance || 0;
+    // Overpaying stores excess as negative balance (advance store credit for future bills)
+    customer.balance = Math.round((previousBalance - paymentAmount) * 100) / 100;
+
+    let noteText = (notes || '').trim();
+    if (previousBalance > 0 && paymentAmount > previousBalance) {
+      const overpaid = Math.round((paymentAmount - previousBalance) * 100) / 100;
+      noteText = `${noteText ? noteText + ' • ' : ''}Cleared ₹${previousBalance.toFixed(2)} debt + ₹${overpaid.toFixed(2)} saved as Advance Store Credit`;
+    } else if (previousBalance <= 0) {
+      noteText = `${noteText ? noteText + ' • ' : ''}Added ₹${paymentAmount.toFixed(2)} to Advance Store Credit`;
+    }
+
     customer.history.push({
       type: 'PAYMENT',
       amount: paymentAmount,
-      notes: notes.trim(),
+      notes: noteText || 'Cash settlement',
       date: new Date(),
     });
 
     await customer.save();
 
+    let message = '';
+    if (customer.balance < 0) {
+      message = `Payment of ₹${paymentAmount.toFixed(2)} recorded! Customer has an Advance Store Credit of ₹${Math.abs(customer.balance).toFixed(2)} saved for future bills.`;
+    } else if (customer.balance === 0) {
+      message = `Payment of ₹${paymentAmount.toFixed(2)} recorded! All outstanding debt fully cleared (₹0.00).`;
+    } else {
+      message = `Payment of ₹${paymentAmount.toFixed(2)} recorded. Remaining debt: ₹${customer.balance.toFixed(2)}.`;
+    }
+
     res.status(200).json({
       success: true,
-      message: `Payment of ₹${paymentAmount.toFixed(2)} recorded. New balance: ₹${customer.balance.toFixed(2)}.`,
+      message,
       data: customer,
     });
   } catch (err) {
