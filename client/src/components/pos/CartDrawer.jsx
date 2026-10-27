@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Trash2,
   Plus,
@@ -10,7 +11,9 @@ import {
   UserCheck,
   AlertCircle,
   CheckCircle2,
+  User,
 } from 'lucide-react';
+import api from '../../api/axios';
 import { formatCurrency } from '../../utils/formatters';
 import { useAuth } from '../../context/AuthContext';
 
@@ -34,6 +37,25 @@ const CartDrawer = ({
   const [showCreditOverride, setShowCreditOverride] = useState(false);
   const [error, setError] = useState(null);
 
+  // Khata Registered Customers
+  const [khataCustomers, setKhataCustomers] = useState([]);
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
+  const [loadingKhata, setLoadingKhata] = useState(false);
+
+  useEffect(() => {
+    if (paymentMethod === 'Credit') {
+      setLoadingKhata(true);
+      api.get('/customers')
+        .then((res) => {
+          if (res.data.success) {
+            setKhataCustomers(res.data.data);
+          }
+        })
+        .catch((err) => console.error('Failed to load Khata customers', err))
+        .finally(() => setLoadingKhata(false));
+    }
+  }, [paymentMethod]);
+
   // Math Calculations
   const subtotal = cart.reduce((sum, item) => sum + item.product.sellingPrice * item.quantity, 0);
   const numDiscount = Math.min(subtotal, Math.max(0, parseFloat(discount) || 0));
@@ -54,7 +76,7 @@ const CartDrawer = ({
     }
 
     if (paymentMethod === 'Credit' && !customerPhone.trim()) {
-      setError('Customer phone number is required for Store Credit (Khata) sales.');
+      setError('Please select a registered Khata account to issue store credit.');
       return;
     }
 
@@ -197,30 +219,84 @@ const CartDrawer = ({
             </div>
           )}
 
-          {paymentMethod === 'Credit' && !error && (
-            <div className="p-2 rounded-lg bg-slate-100/90 border border-slate-200 text-[11px] text-slate-700 flex items-center justify-between">
-              <span>Khata Credit Mode</span>
-              <span className="text-[10px] font-bold text-slate-500">Subject to ₹5,000 safety limit</span>
+          {/* Customer Selection or Inputs */}
+          {paymentMethod === 'Credit' ? (
+            <div className="space-y-1.5 p-2.5 rounded-lg bg-emerald-50/50 border border-emerald-200">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-bold text-emerald-950 flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Khata Account *</span>
+                </span>
+                <Link to="/khata" className="text-[10px] text-emerald-700 hover:underline font-bold">
+                  + Manage Khata
+                </Link>
+              </div>
+
+              {loadingKhata ? (
+                <p className="text-[11px] text-slate-500 py-1">Loading registered Khata accounts...</p>
+              ) : khataCustomers.length === 0 ? (
+                <div className="text-[11px] text-rose-700 bg-rose-50 p-2 rounded border border-rose-200">
+                  <span>No registered Khata accounts found. </span>
+                  <Link to="/khata" className="font-bold underline text-rose-800">
+                    Register a customer in Khata first
+                  </Link>
+                </div>
+              ) : (
+                <select
+                  value={selectedCustomerId}
+                  onChange={(e) => {
+                    const custId = e.target.value;
+                    setSelectedCustomerId(custId);
+                    const found = khataCustomers.find((c) => c._id === custId);
+                    if (found) {
+                      setCustomerName(found.name);
+                      setCustomerPhone(found.phone);
+                    } else {
+                      setCustomerName('');
+                      setCustomerPhone('');
+                    }
+                  }}
+                  className="w-full px-2.5 py-1.5 rounded-md border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs font-semibold text-slate-800"
+                >
+                  <option value="">-- Choose Registered Customer --</option>
+                  {khataCustomers.map((c) => (
+                    <option key={c._id} value={c._id}>
+                      {c.name} ({c.phone}) — Debt: {currencySymbol}{c.balance} / Limit: {currencySymbol}{c.creditLimit}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {selectedCustomerId && (() => {
+                const cust = khataCustomers.find((c) => c._id === selectedCustomerId);
+                if (!cust) return null;
+                const remaining = Math.max(0, cust.creditLimit - cust.balance);
+                return (
+                  <div className="flex justify-between items-center text-[10px] font-mono text-emerald-800 pt-0.5">
+                    <span>Available Credit Room:</span>
+                    <span className="font-bold">{formatCurrency(remaining, currency, currencySymbol)}</span>
+                  </div>
+                );
+              })()}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <input
+                type="text"
+                placeholder="Customer Name (Optional)"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
+              />
+              <input
+                type="tel"
+                placeholder="Customer Phone (Optional)"
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
+                className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs font-mono"
+              />
             </div>
           )}
-
-          {/* Customer Inputs */}
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <input
-              type="text"
-              placeholder="Customer Name"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
-            />
-            <input
-              type="tel"
-              placeholder="Customer Phone"
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-              className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs font-mono"
-            />
-          </div>
 
           {/* Payment Method Selector */}
           <div>

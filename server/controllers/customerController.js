@@ -119,3 +119,26 @@ export const recordPayment = async (req, res, next) => {
     next(err);
   }
 };
+
+export const deleteCustomer = async (req, res, next) => {
+  try {
+    const customer = await Customer.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: 'Customer not found or already deleted.',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Customer account "${customer.name}" deleted successfully.`,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

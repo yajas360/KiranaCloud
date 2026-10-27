@@ -10,6 +10,7 @@ import {
   AlertCircle,
   X,
   CreditCard,
+  Trash2,
 } from 'lucide-react';
 import api from '../api/axios';
 import { formatCurrency, formatDate } from '../utils/formatters';
@@ -111,6 +112,18 @@ const CustomersKhata = () => {
       setAddError(err.response?.data?.message || 'Failed to register customer.');
     } finally {
       setAddLoading(false);
+    }
+  };
+
+  const handleDeleteCustomer = async (id, name) => {
+    if (!window.confirm(`Are you sure you want to delete "${name}" from your Khata ledger?`)) {
+      return;
+    }
+    try {
+      await api.delete(`/customers/${id}`);
+      fetchCustomers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete customer.');
     }
   };
 
@@ -223,16 +236,25 @@ const CustomersKhata = () => {
                     <td className="px-4 py-3.5 text-center text-slate-500">
                       {c.history?.length || 0} entries
                     </td>
-                    <td className="px-5 py-3.5 text-right">
+                    <td className="px-5 py-3.5 text-right space-x-1.5 whitespace-nowrap">
                       <button
                         onClick={() => {
                           setPayingCustomer(c);
                           setPaymentAmount(c.balance > 0 ? c.balance.toString() : '');
                         }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-[11px] border border-emerald-200 transition shadow-sm"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-[11px] border border-emerald-200 transition shadow-2xs"
+                        title="Record Cash/UPI settlement"
                       >
                         <ArrowDownRight className="w-3.5 h-3.5" />
                         <span>Record Payment</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteCustomer(c._id, c.name)}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                        title="Delete Khata Account"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>

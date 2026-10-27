@@ -97,8 +97,16 @@ export const createSale = async (req, res, next) => {
         phone: customerPhone.trim(),
       });
 
-      const currentBalance = khataCustomer ? khataCustomer.balance : 0;
-      const creditLimit = khataCustomer ? (khataCustomer.creditLimit || 5000) : 5000;
+      if (!khataCustomer) {
+        return res.status(404).json({
+          success: false,
+          customerNotFound: true,
+          message: `Customer with phone "${customerPhone.trim()}" is not registered in your Khata Ledger. Credit sales are only allowed for pre-registered Khata accounts.`,
+        });
+      }
+
+      const currentBalance = khataCustomer.balance || 0;
+      const creditLimit = khataCustomer.creditLimit || 5000;
       const projectedDebt = currentBalance + grandTotal;
 
       if (projectedDebt > creditLimit && !req.body.overrideCreditLimit) {
@@ -125,36 +133,17 @@ export const createSale = async (req, res, next) => {
     const count = await Sale.countDocuments({ user: req.user._id });
     const invoiceNumber = `INV-${String(count + 1).padStart(4, '0')}`;
 
-    // 6. Handle Customer Khata Credit ledger update
-    if (paymentMethod === 'Credit' && customerPhone) {
-      if (!khataCustomer) {
-        khataCustomer = await Customer.create({
-          user: req.user._id,
-          name: customerName?.trim() || 'Credit Customer',
-          phone: customerPhone.trim(),
-          balance: grandTotal,
-          creditLimit: 5000,
-          history: [
-            {
-              type: 'PURCHASE',
-              amount: grandTotal,
-              invoiceNumber,
-              notes: 'Credit sale at Billing Counter',
-              date: new Date(),
-            },
-          ],
-        });
-      } else {
-        khataCustomer.balance += grandTotal;
-        khataCustomer.history.push({
-          type: 'PURCHASE',
-          amount: grandTotal,
-          invoiceNumber,
-          notes: 'Credit sale at Billing Counter',
-          date: new Date(),
-        });
-        await khataCustomer.save();
-      }
+    // 6. Update Customer Khata Credit ledger
+    if (paymentMethod === 'Credit' && khataCustomer) {
+      khataCustomer.balance += grandTotal;
+      khataCustomer.history.push({
+        type: 'PURCHASE',
+        amount: grandTotal,
+        invoiceNumber,
+        notes: 'Credit sale at Billing Counter',
+        date: new Date(),
+      });
+      await khataCustomer.save();
     }
 
     // 5. Create Sale Record

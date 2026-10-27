@@ -5,6 +5,7 @@ import {
   getCustomerById,
   createCustomer,
   recordPayment,
+  deleteCustomer,
 } from '../controllers/customerController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { validateRequest } from '../middleware/validateRequest.js';
@@ -25,7 +26,8 @@ router.route('/')
   );
 
 router.route('/:id')
-  .get(getCustomerById);
+  .get(getCustomerById)
+  .delete(deleteCustomer);
 
 router.post(
   '/:id/payment',
