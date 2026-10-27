@@ -39,7 +39,16 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
     } catch (err) {
-      const message = err.response?.data?.message || 'Login failed. Invalid credentials.';
+      let message = 'Login failed. Please try again.';
+      if (err.response?.data?.message) {
+        message = err.response.data.message;
+      } else if (err.response?.status === 401) {
+        message = 'Invalid email or password. If you do not have an account, click Register Store below.';
+      } else if (err.response?.status === 500) {
+        message = 'Server database error. Please try again.';
+      } else if (!err.response) {
+        message = 'Network error: Cannot reach server at http://localhost:5000.';
+      }
       setAuthError(message);
       return { success: false, message };
     }

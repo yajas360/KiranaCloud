@@ -15,15 +15,8 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 const Landing = () => {
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
-  const handleDemoLogin = async () => {
-    const res = await login('owner@storepulse.com', 'password123');
-    if (res.success) {
-      navigate('/dashboard');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col justify-between">
@@ -50,13 +43,6 @@ const Landing = () => {
               </Link>
             ) : (
               <>
-                <button
-                  onClick={handleDemoLogin}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Explore Demo Store</span>
-                </button>
                 <Link
                   to="/login"
                   className="px-3.5 py-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition"
@@ -92,13 +78,13 @@ const Landing = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
-            <button
-              onClick={handleDemoLogin}
+            <Link
+              to="/login"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 active:scale-95 transition shadow-lg shadow-emerald-600/25"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>Launch Demo Store (Instant Login)</span>
-            </button>
+              <span>Sign In to Terminal</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
 
             <Link
               to="/register"

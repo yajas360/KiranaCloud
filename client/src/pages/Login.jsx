@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Store, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
+import { Store, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
@@ -28,19 +28,6 @@ const Login = () => {
     }
   };
 
-  const handleFillDemo = async () => {
-    setEmail('owner@storepulse.com');
-    setPassword('password123');
-    setLoading(true);
-    const res = await login('owner@storepulse.com', 'password123');
-    setLoading(false);
-    if (res.success) {
-      navigate('/dashboard');
-    } else {
-      setError(res.message);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
@@ -56,23 +43,6 @@ const Login = () => {
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
         <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl border border-slate-200 shadow-sm space-y-5">
-          {/* 1-Click Demo Button */}
-          <button
-            type="button"
-            onClick={handleFillDemo}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 transition shadow-sm"
-          >
-            <Sparkles className="w-4 h-4 text-emerald-600" />
-            <span>Click to Autofill & Login with Demo Store</span>
-          </button>
-
-          <div className="relative flex py-1 items-center">
-            <div className="flex-grow border-t border-slate-200"></div>
-            <span className="flex-shrink mx-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-              Or sign in with email
-            </span>
-            <div className="flex-grow border-t border-slate-200"></div>
-          </div>
 
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
