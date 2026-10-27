@@ -215,7 +215,7 @@ export const deleteProduct = async (req, res, next) => {
 
 export const restockProduct = async (req, res, next) => {
   try {
-    const { additionalStock, newCostPrice } = req.body;
+    const { additionalStock, newCostPrice, newSellingPrice } = req.body;
     const qty = parseInt(additionalStock, 10);
 
     if (isNaN(qty) || qty <= 0) {
@@ -234,8 +234,11 @@ export const restockProduct = async (req, res, next) => {
     }
 
     product.stockQuantity += qty;
-    if (newCostPrice && parseFloat(newCostPrice) > 0) {
+    if (newCostPrice !== undefined && newCostPrice !== '' && !isNaN(parseFloat(newCostPrice))) {
       product.costPrice = parseFloat(newCostPrice);
+    }
+    if (newSellingPrice !== undefined && newSellingPrice !== '' && !isNaN(parseFloat(newSellingPrice))) {
+      product.sellingPrice = parseFloat(newSellingPrice);
     }
 
     await product.save();
@@ -273,6 +276,7 @@ export const getReorderSheet = async (req, res, next) => {
         minThreshold: p.minThreshold,
         unit: p.unit,
         costPrice: p.costPrice,
+        sellingPrice: p.sellingPrice,
         supplier: p.supplier,
         suggestedOrderQty,
         estimatedCost,

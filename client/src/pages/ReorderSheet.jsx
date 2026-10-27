@@ -181,6 +181,7 @@ const ReorderSheet = () => {
                             stockQuantity: item.currentStock,
                             unit: item.unit,
                             costPrice: item.costPrice,
+                            sellingPrice: item.sellingPrice,
                           });
                           setIsRestockModalOpen(true);
                         }}
