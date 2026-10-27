@@ -106,26 +106,34 @@ export const createSale = async (req, res, next) => {
     const numTendered = Math.max(0, parseFloat(amountTendered) || grandTotal);
     const changeDue = Math.max(0, numTendered - grandTotal);
 
+    // Sanitize phone number (strip spaces/symbols/prefixes)
+    let sanitizedPhone = String(customerPhone || '').replace(/\D/g, '');
+    if (sanitizedPhone.length === 12 && sanitizedPhone.startsWith('91')) {
+      sanitizedPhone = sanitizedPhone.slice(2);
+    } else if (sanitizedPhone.length === 11 && sanitizedPhone.startsWith('0')) {
+      sanitizedPhone = sanitizedPhone.slice(1);
+    }
+
     // 3. Khata Credit validation upfront (before decrementing inventory stock)
     let khataCustomer = null;
     if (paymentMethod === 'Credit') {
-      if (!customerPhone || !customerPhone.trim()) {
+      if (!sanitizedPhone || !/^[6-9]\d{9}$/.test(sanitizedPhone)) {
         return res.status(400).json({
           success: false,
-          message: 'Customer phone number is required to record a Khata credit purchase.',
+          message: 'A valid 10-digit mobile number starting with 6, 7, 8, or 9 is required to record a Khata credit purchase.',
         });
       }
 
       khataCustomer = await Customer.findOne({
         user: req.user._id,
-        phone: customerPhone.trim(),
+        phone: sanitizedPhone,
       });
 
       if (!khataCustomer) {
         return res.status(404).json({
           success: false,
           customerNotFound: true,
-          message: `Customer with phone "${customerPhone.trim()}" is not registered in your Khata Ledger. Credit sales are only allowed for pre-registered Khata accounts.`,
+          message: `Customer with phone "${sanitizedPhone}" is not registered in your Khata Ledger. Credit sales are only allowed for pre-registered Khata accounts.`,
         });
       }
 
@@ -144,6 +152,11 @@ export const createSale = async (req, res, next) => {
           excess: projectedDebt - creditLimit,
         });
       }
+    } else if (sanitizedPhone && !/^[6-9]\d{9}$/.test(sanitizedPhone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Optional customer phone must be a valid 10-digit mobile number.',
+      });
     }
 
     // 4. Decrement stock for all items
@@ -185,7 +198,7 @@ export const createSale = async (req, res, next) => {
       amountTendered: numTendered,
       changeDue,
       customerName: customerName.trim() || 'Walk-in Customer',
-      customerPhone: customerPhone?.trim() || '',
+      customerPhone: sanitizedPhone,
       date: new Date(),
     });
 

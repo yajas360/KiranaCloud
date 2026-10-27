@@ -136,4 +136,40 @@ describe('Store Inventory & POS Billing Logic', () => {
     const exactChange = Math.max(0, exactTendered - grandTotal);
     assert.equal(exactChange, 0);
   });
+
+  test('validates customer 10-digit mobile number format and credit limits', () => {
+    const isValidIndianMobile = (phone) => {
+      let clean = String(phone || '').replace(/\D/g, '');
+      if (clean.length === 12 && clean.startsWith('91')) clean = clean.slice(2);
+      if (clean.length === 11 && clean.startsWith('0')) clean = clean.slice(1);
+      return /^[6-9]\d{9}$/.test(clean);
+    };
+
+    // Valid 10-digit phone numbers
+    assert.equal(isValidIndianMobile('9876543210'), true);
+    assert.equal(isValidIndianMobile('+91 98765 43210'), true);
+    assert.equal(isValidIndianMobile('09876543210'), true);
+    assert.equal(isValidIndianMobile('8123456789'), true);
+    assert.equal(isValidIndianMobile('7012345678'), true);
+    assert.equal(isValidIndianMobile('6398765432'), true);
+
+    // Invalid phone numbers
+    assert.equal(isValidIndianMobile('1234567890'), false); // starts with 1
+    assert.equal(isValidIndianMobile('0123456789'), false); // starts with 1 after strip
+    assert.equal(isValidIndianMobile('987654321'), false);  // 9 digits
+    assert.equal(isValidIndianMobile('98765432100'), false); // 11 digits
+    assert.equal(isValidIndianMobile('abcdefghij'), false); // letters
+    assert.equal(isValidIndianMobile(''), false); // empty
+
+    // Customer credit limit bounds
+    const validateCreditLimit = (limit) => {
+      const num = parseFloat(limit);
+      return !isNaN(num) && num >= 0 && num <= 500000;
+    };
+
+    assert.equal(validateCreditLimit(5000), true);
+    assert.equal(validateCreditLimit(0), true);
+    assert.equal(validateCreditLimit(-100), false);
+    assert.equal(validateCreditLimit(600000), false);
+  });
 });

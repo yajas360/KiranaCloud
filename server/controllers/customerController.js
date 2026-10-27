@@ -48,26 +48,65 @@ export const createCustomer = async (req, res, next) => {
   try {
     const { name, phone, creditLimit = 5000 } = req.body;
 
-    if (!name || !phone) {
+    if (!name || name.trim().length < 2) {
       return res.status(400).json({
         success: false,
-        message: 'Customer name and phone number are required.',
+        message: 'Customer name is required and must be at least 2 characters long.',
       });
     }
 
-    const existing = await Customer.findOne({ user: req.user._id, phone: phone.trim() });
+    if (!phone) {
+      return res.status(400).json({
+        success: false,
+        message: 'Customer phone number is required.',
+      });
+    }
+
+    // Sanitize phone to digits (support raw 10 digits, +91-prefix, or leading 0)
+    let cleanPhone = String(phone).replace(/\D/g, '');
+    if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
+      cleanPhone = cleanPhone.slice(2);
+    } else if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) {
+      cleanPhone = cleanPhone.slice(1);
+    }
+
+    // Validate 10-digit mobile number format
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone number must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9 (e.g., 9876543210).',
+      });
+    }
+
+    // Validate credit limit
+    const parsedLimit = parseFloat(creditLimit);
+    if (isNaN(parsedLimit) || parsedLimit < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Credit limit must be a valid non-negative number.',
+      });
+    }
+
+    if (parsedLimit > 500000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Credit limit cannot exceed ₹5,00,000.',
+      });
+    }
+
+    const existing = await Customer.findOne({ user: req.user._id, phone: cleanPhone });
     if (existing) {
       return res.status(400).json({
         success: false,
-        message: 'A customer with this phone number already exists.',
+        message: `A customer with phone number ${cleanPhone} already exists (${existing.name}).`,
       });
     }
 
     const customer = await Customer.create({
       user: req.user._id,
       name: name.trim(),
-      phone: phone.trim(),
-      creditLimit: parseFloat(creditLimit) || 5000,
+      phone: cleanPhone,
+      creditLimit: parsedLimit,
     });
 
     res.status(201).json({

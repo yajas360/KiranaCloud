@@ -96,6 +96,11 @@ const CartDrawer = ({
       return;
     }
 
+    if (customerPhone.trim() && !/^[6-9]\d{9}$/.test(customerPhone.trim())) {
+      setError('Customer phone must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
+      return;
+    }
+
     const payload = {
       items: cart.map((item) => ({
         productId: item.product._id,
@@ -306,9 +311,10 @@ const CartDrawer = ({
               />
               <input
                 type="tel"
-                placeholder="Customer Phone (Optional)"
+                maxLength={10}
+                placeholder="Phone (10 digits)"
                 value={customerPhone}
-                onChange={(e) => setCustomerPhone(e.target.value)}
+                onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                 className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs font-mono"
               />
             </div>

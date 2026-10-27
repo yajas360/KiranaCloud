@@ -98,8 +98,25 @@ const CustomersKhata = () => {
     e.preventDefault();
     setAddError(null);
 
-    if (!newCustName.trim() || !newCustPhone.trim()) {
-      setAddError('Customer Name and Phone Number are required.');
+    if (!newCustName.trim() || newCustName.trim().length < 2) {
+      setAddError('Customer Name must be at least 2 characters long.');
+      return;
+    }
+
+    const cleanPhone = newCustPhone.replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      setAddError('Phone Number must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.');
+      return;
+    }
+
+    const limit = parseFloat(newCustLimit);
+    if (isNaN(limit) || limit < 0) {
+      setAddError('Credit limit cannot be negative.');
+      return;
+    }
+
+    if (limit > 500000) {
+      setAddError('Credit limit cannot exceed 5,00,000.');
       return;
     }
 
@@ -107,8 +124,8 @@ const CustomersKhata = () => {
       setAddLoading(true);
       await api.post('/customers', {
         name: newCustName.trim(),
-        phone: newCustPhone.trim(),
-        creditLimit: parseFloat(newCustLimit) || 5000,
+        phone: cleanPhone,
+        creditLimit: limit,
       });
       setIsAddCustomerOpen(false);
       setNewCustName('');
@@ -576,24 +593,58 @@ const CustomersKhata = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number *</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-700">Phone Number *</label>
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {newCustPhone.length}/10 digits
+                  </span>
+                </div>
                 <input
                   type="tel"
                   required
-                  placeholder="e.g. 9876543210"
+                  maxLength={10}
+                  placeholder="e.g. 9876543210 (10 digits)"
                   value={newCustPhone}
-                  onChange={(e) => setNewCustPhone(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-mono"
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setNewCustPhone(digits);
+                  }}
+                  className={`w-full px-3.5 py-2.5 text-xs rounded-lg border focus:outline-none focus:ring-1 font-mono transition ${
+                    newCustPhone.length === 10 && /^[6-9]\d{9}$/.test(newCustPhone)
+                      ? 'border-emerald-500 focus:ring-emerald-500 bg-emerald-50/20'
+                      : newCustPhone.length > 0 && (!/^[6-9]/.test(newCustPhone) || newCustPhone.length < 10)
+                      ? 'border-amber-400 focus:ring-amber-400'
+                      : 'border-slate-200 focus:ring-emerald-500'
+                  }`}
                 />
+                <p className="mt-1 text-[10px]">
+                  {newCustPhone.length === 10 && /^[6-9]\d{9}$/.test(newCustPhone) ? (
+                    <span className="text-emerald-600 font-medium">✓ Valid 10-digit mobile number</span>
+                  ) : newCustPhone.length > 0 && !/^[6-9]/.test(newCustPhone) ? (
+                    <span className="text-rose-500 font-medium">⚠ Indian mobile numbers must start with 6, 7, 8, or 9</span>
+                  ) : (
+                    <span className="text-slate-400">Must be a 10-digit mobile number (starts with 6, 7, 8, or 9)</span>
+                  )}
+                </p>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">Credit Limit ({currencySymbol})</label>
                 <input
                   type="number"
+                  min="0"
+                  max="500000"
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === 'e' || e.key === 'E') e.preventDefault();
+                  }}
                   placeholder="5000"
                   value={newCustLimit}
-                  onChange={(e) => setNewCustLimit(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || parseFloat(val) >= 0) {
+                      setNewCustLimit(val);
+                    }
+                  }}
                   className="w-full px-3.5 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
               </div>
