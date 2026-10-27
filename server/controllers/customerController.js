@@ -12,14 +12,31 @@ export const getCustomers = async (req, res, next) => {
 
     const customers = await Customer.find(query).sort({ balance: -1, updatedAt: -1 });
 
+    // Automatic self-healing: reconcile customer balance directly from transaction ledger history
+    for (const c of customers) {
+      if (Array.isArray(c.history) && c.history.length > 0) {
+        const computedBal = c.history.reduce((sum, h) => {
+          if (h.type === 'PURCHASE') return sum + (Number(h.amount) || 0);
+          if (h.type === 'PAYMENT') return sum - (Number(h.amount) || 0);
+          if (h.type === 'REFUND') return sum + (Number(h.amount) || 0);
+          return sum;
+        }, 0);
+        const rounded = Math.round(computedBal * 100) / 100;
+        if (Math.abs(c.balance - rounded) > 0.001) {
+          c.balance = rounded;
+          await c.save();
+        }
+      }
+    }
+
     const totalOutstandingCredit = customers.reduce((sum, c) => sum + (c.balance > 0 ? c.balance : 0), 0);
     const totalAdvanceCredit = customers.reduce((sum, c) => sum + (c.balance < 0 ? Math.abs(c.balance) : 0), 0);
 
     res.status(200).json({
       success: true,
       count: customers.length,
-      totalOutstandingCredit,
-      totalAdvanceCredit,
+      totalOutstandingCredit: Math.round(totalOutstandingCredit * 100) / 100,
+      totalAdvanceCredit: Math.round(totalAdvanceCredit * 100) / 100,
       data: customers,
     });
   } catch (err) {
@@ -35,6 +52,20 @@ export const getCustomerById = async (req, res, next) => {
         success: false,
         message: 'Customer not found or access denied.',
       });
+    }
+
+    if (Array.isArray(customer.history) && customer.history.length > 0) {
+      const computedBal = customer.history.reduce((sum, h) => {
+        if (h.type === 'PURCHASE') return sum + (Number(h.amount) || 0);
+        if (h.type === 'PAYMENT') return sum - (Number(h.amount) || 0);
+        if (h.type === 'REFUND') return sum + (Number(h.amount) || 0);
+        return sum;
+      }, 0);
+      const rounded = Math.round(computedBal * 100) / 100;
+      if (Math.abs(customer.balance - rounded) > 0.001) {
+        customer.balance = rounded;
+        await customer.save();
+      }
     }
 
     res.status(200).json({
@@ -123,13 +154,13 @@ export const createCustomer = async (req, res, next) => {
 
 export const recordPayment = async (req, res, next) => {
   try {
-    const { amount, notes = 'Cash settlement' } = req.body;
+    const { amount, notes = 'Cash settlement', isRefund = false } = req.body;
     const paymentAmount = parseFloat(amount);
 
     if (isNaN(paymentAmount) || paymentAmount <= 0) {
       return res.status(400).json({
         success: false,
-        message: 'Payment amount must be a positive number.',
+        message: 'Amount must be a positive number.',
       });
     }
 
@@ -142,15 +173,49 @@ export const recordPayment = async (req, res, next) => {
     }
 
     const previousBalance = customer.balance || 0;
-    // Overpaying stores excess as negative balance (advance store credit for future bills)
+
+    if (isRefund) {
+      // Refund cash payout from customer's surplus advance credit
+      const currentAdvance = previousBalance < 0 ? Math.abs(previousBalance) : 0;
+      if (currentAdvance <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Customer does not have any surplus advance credit to refund.',
+        });
+      }
+      if (paymentAmount > currentAdvance) {
+        return res.status(400).json({
+          success: false,
+          message: `Refund amount (₹${paymentAmount}) cannot exceed available surplus credit (₹${currentAdvance}).`,
+        });
+      }
+
+      customer.balance = Math.round((previousBalance + paymentAmount) * 100) / 100;
+      customer.history.push({
+        type: 'REFUND',
+        amount: paymentAmount,
+        notes: (notes || '').trim() || 'Cash refund of surplus advance balance',
+        date: new Date(),
+      });
+
+      await customer.save();
+
+      return res.status(200).json({
+        success: true,
+        message: `Refund of ₹${paymentAmount.toFixed(2)} cash returned to customer. Remaining surplus: ₹${Math.abs(customer.balance).toFixed(2)}.`,
+        data: customer,
+      });
+    }
+
+    // Normal Payment received from customer
     customer.balance = Math.round((previousBalance - paymentAmount) * 100) / 100;
 
     let noteText = (notes || '').trim();
     if (previousBalance > 0 && paymentAmount > previousBalance) {
       const overpaid = Math.round((paymentAmount - previousBalance) * 100) / 100;
-      noteText = `${noteText ? noteText + ' • ' : ''}Cleared ₹${previousBalance.toFixed(2)} debt + ₹${overpaid.toFixed(2)} saved as Advance Store Credit`;
+      noteText = `${noteText ? noteText + ' • ' : ''}Cleared ₹${previousBalance.toFixed(2)} debt + ₹${overpaid.toFixed(2)} saved as Advance Surplus`;
     } else if (previousBalance <= 0) {
-      noteText = `${noteText ? noteText + ' • ' : ''}Added ₹${paymentAmount.toFixed(2)} to Advance Store Credit`;
+      noteText = `${noteText ? noteText + ' • ' : ''}Added ₹${paymentAmount.toFixed(2)} to Advance Surplus`;
     }
 
     customer.history.push({

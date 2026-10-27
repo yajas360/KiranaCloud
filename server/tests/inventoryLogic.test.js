@@ -221,4 +221,55 @@ describe('Store Inventory & POS Billing Logic', () => {
     const remainingCreditRoom = Math.max(0, creditLimit - balance);
     assert.equal(remainingCreditRoom, 4820);
   });
+
+  test('Gopal ledger scenario: reconciles true surplus from historical purchases and payments', () => {
+    // Exact history from user screenshot:
+    // INV-0004: +47 purchase
+    // Payment: -500 payment
+    // INV-0005: +47 purchase
+    // Payment: -500 payment
+    const history = [
+      { type: 'PURCHASE', amount: 47, invoiceNumber: 'INV-0004' },
+      { type: 'PAYMENT', amount: 500 },
+      { type: 'PURCHASE', amount: 47, invoiceNumber: 'INV-0005' },
+      { type: 'PAYMENT', amount: 500 },
+    ];
+
+    // Compute net balance from history:
+    const computedBal = history.reduce((sum, h) => {
+      if (h.type === 'PURCHASE') return sum + h.amount;
+      if (h.type === 'PAYMENT') return sum - h.amount;
+      if (h.type === 'REFUND') return sum + h.amount;
+      return sum;
+    }, 0);
+
+    assert.equal(computedBal, -906);
+
+    const isSurplus = computedBal < 0;
+    const surplusHeldByStore = isSurplus ? Math.abs(computedBal) : 0;
+    assert.equal(isSurplus, true);
+    assert.equal(surplusHeldByStore, 906);
+
+    // Gopal gets a partial cash refund of ₹206:
+    const refundAmount = 206;
+    history.push({ type: 'REFUND', amount: refundAmount, notes: 'Cash refund of surplus' });
+
+    const balAfterRefund = history.reduce((sum, h) => {
+      if (h.type === 'PURCHASE') return sum + h.amount;
+      if (h.type === 'PAYMENT') return sum - h.amount;
+      if (h.type === 'REFUND') return sum + h.amount;
+      return sum;
+    }, 0);
+
+    assert.equal(balAfterRefund, -700);
+    assert.equal(Math.abs(balAfterRefund), 700); // ₹700 surplus left
+
+    // Next time Gopal buys groceries for ₹150:
+    const billAmount = 150;
+    const advanceUsed = Math.min(Math.abs(balAfterRefund), billAmount);
+    assert.equal(advanceUsed, 150);
+
+    const finalBal = balAfterRefund + billAmount;
+    assert.equal(finalBal, -550); // ₹550 surplus remains
+  });
 });

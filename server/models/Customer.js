@@ -4,7 +4,7 @@ const creditHistorySchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ['PURCHASE', 'PAYMENT'],
+      enum: ['PURCHASE', 'PAYMENT', 'REFUND'],
       required: true,
     },
     amount: {

@@ -313,13 +313,23 @@ const CartDrawer = ({
                 return (
                   <div className="space-y-1 pt-1">
                     {isAdvance ? (
-                      <div className="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 flex items-center justify-between text-[11px] text-emerald-800 dark:text-emerald-300">
-                        <span className="font-semibold flex items-center gap-1">
-                          <span>🌟 Saved Advance Credit:</span>
-                        </span>
-                        <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                          +{formatCurrency(advanceAmount, currency, currencySymbol)}
-                        </span>
+                      <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 text-xs text-emerald-800 dark:text-emerald-200 space-y-1">
+                        <div className="flex items-center justify-between font-bold text-[11px]">
+                          <span className="flex items-center gap-1">
+                            <span>🌟 Customer Surplus Advance:</span>
+                          </span>
+                          <span className="font-mono font-black text-emerald-700 dark:text-emerald-400">
+                            +{formatCurrency(advanceAmount, currency, currencySymbol)}
+                          </span>
+                        </div>
+                        {grandTotal > 0 && (
+                          <div className="text-[10px] text-emerald-700 dark:text-emerald-300 font-medium">
+                            Will apply {formatCurrency(Math.min(advanceAmount, grandTotal), currency, currencySymbol)} from surplus.
+                            {advanceAmount >= grandTotal
+                              ? ` Remaining surplus after bill: +${formatCurrency(advanceAmount - grandTotal, currency, currencySymbol)}.`
+                              : ` Remaining ₹${(grandTotal - advanceAmount).toFixed(2)} will be billed as new Khata debt.`}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="flex justify-between items-center text-[10px] font-mono text-slate-600 dark:text-slate-400">
