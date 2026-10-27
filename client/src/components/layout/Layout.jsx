@@ -20,12 +20,12 @@ const Layout = () => {
   const title = pageTitles[location.pathname] || 'KiranaCloud POS';
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex transition-colors">
-      {/* Slim Compact Left Sidebar (width: 44 / 176px) */}
+    <div className="min-h-screen bg-zinc-100 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex transition-colors">
+      {/* Slim Compact Left Sidebar (width: 48 / 192px) */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area - Maximized Full-Frame Space */}
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-44">
+      <div className="flex-1 flex flex-col min-w-0 lg:pl-48">
         <Header onOpenSidebar={() => setSidebarOpen(true)} title={title} />
 
         <main className="flex-1 p-3 md:p-4 w-full max-w-[1600px] mx-auto overflow-x-hidden">

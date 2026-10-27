@@ -5,9 +5,6 @@ import {
   Filter,
   Eye,
   Ban,
-  Calendar,
-  CheckCircle,
-  FileSpreadsheet,
   Calculator,
 } from 'lucide-react';
 import api from '../api/axios';
@@ -77,36 +74,36 @@ const Invoices = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-200 dark:border-zinc-800">
         <div>
-          <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Sales & Customer Invoices</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <h2 className="text-lg font-black text-zinc-900 dark:text-white tracking-tight uppercase">Sales & Customer Invoices</h2>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
             Audit trail of completed counter checkouts, profit breakdown, and receipt reprints.
           </p>
         </div>
 
         <button
           onClick={() => setIsDayCloseOpen(true)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-xs transition self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-none transition self-start sm:self-auto uppercase tracking-wider shadow-sm active:translate-y-[1px]"
           title="End of day register balancing and Z-Report"
         >
-          <Calculator className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-          <span>Day-Close (Z-Report)</span>
+          <Calculator className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+          <span>Day-Close Register</span>
         </button>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center gap-3">
+      <div className="bg-white dark:bg-zinc-900 p-3 rounded-none border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center gap-2.5 shadow-sm">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
           <input
             type="text"
             placeholder="Search by Invoice Number, Customer Name, or Phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-none border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-600 font-medium"
           />
         </div>
 
@@ -114,19 +111,19 @@ const Invoices = () => {
           <select
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value)}
-            className="px-3 py-2 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 w-full sm:w-auto"
+            className="px-3 py-2 text-xs font-semibold rounded-none border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-600 w-full sm:w-auto uppercase tracking-wider"
           >
-            <option value="All" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">All Payment Modes</option>
-            <option value="Cash" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Cash Payments</option>
-            <option value="UPI" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">UPI (GPay/PhonePe)</option>
-            <option value="Card" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Debit / Credit Card</option>
-            <option value="Credit" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Store Credit (Khata)</option>
+            <option value="All" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">All Payment Modes</option>
+            <option value="Cash" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Cash Payments</option>
+            <option value="UPI" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">UPI (GPay/PhonePe)</option>
+            <option value="Card" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Debit / Credit Card</option>
+            <option value="Credit" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">Store Credit (Khata)</option>
           </select>
         </div>
       </div>
 
       {/* Invoices Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-none border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
         {loading ? (
           <LoadingSpinner text="Fetching billing records..." size="md" />
         ) : sales.length === 0 ? (
@@ -138,7 +135,7 @@ const Invoices = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 uppercase tracking-wider font-bold border-b border-slate-200 dark:border-slate-800">
+              <thead className="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 uppercase tracking-wider font-bold border-b-2 border-zinc-300 dark:border-zinc-700">
                 <tr>
                   <th className="px-4 py-3">Invoice #</th>
                   <th className="px-3 py-3">Date & Time</th>
@@ -151,42 +148,42 @@ const Invoices = () => {
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 font-medium">
                 {sales.map((sale) => (
-                  <tr key={sale._id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition">
-                    <td className="px-4 py-2.5 font-bold text-slate-900 dark:text-white font-mono">
+                  <tr key={sale._id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition">
+                    <td className="px-4 py-2.5 font-bold text-zinc-900 dark:text-white font-mono">
                       {sale.invoiceNumber}
                     </td>
-                    <td className="px-3 py-2.5 text-slate-500 dark:text-slate-400">
-                      <span className="block font-semibold text-slate-700 dark:text-slate-200">{formatDate(sale.date, 'short')}</span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500">{formatDate(sale.date, 'time')}</span>
+                    <td className="px-3 py-2.5 text-zinc-500 dark:text-zinc-400">
+                      <span className="block font-semibold text-zinc-700 dark:text-zinc-200">{formatDate(sale.date, 'short')}</span>
+                      <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">{formatDate(sale.date, 'time')}</span>
                     </td>
                     <td className="px-3 py-2.5">
-                      <span className="font-bold text-slate-800 dark:text-slate-100 block">{sale.customerName}</span>
+                      <span className="font-bold text-zinc-900 dark:text-zinc-100 block">{sale.customerName}</span>
                       {sale.customerPhone && (
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{sale.customerPhone}</span>
+                        <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">{sale.customerPhone}</span>
                       )}
                     </td>
-                    <td className="px-3 py-2.5 text-center text-slate-600 dark:text-slate-300 font-semibold">
+                    <td className="px-3 py-2.5 text-center text-zinc-600 dark:text-zinc-300 font-semibold">
                       {sale.items.length} items
                     </td>
-                    <td className="px-3 py-2.5 text-right font-black text-slate-900 dark:text-white font-mono text-sm">
+                    <td className="px-3 py-2.5 text-right font-black text-zinc-900 dark:text-white font-mono text-sm">
                       {formatCurrency(sale.grandTotal, currency, currencySymbol)}
                     </td>
                     <td className="px-3 py-2.5 text-right font-bold text-emerald-700 dark:text-emerald-400 font-mono">
                       +{formatCurrency(sale.netProfit, currency, currencySymbol)}
                     </td>
                     <td className="px-3 py-2.5 text-center whitespace-nowrap">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 uppercase whitespace-nowrap">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-none text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700 uppercase whitespace-nowrap font-mono">
                         {sale.paymentMethod}
                       </span>
                     </td>
                     <td className="px-3 py-2.5 text-center whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap ${
+                        className={`inline-flex items-center px-2 py-0.5 rounded-none text-[10px] font-bold uppercase whitespace-nowrap border ${
                           sale.status === 'COMPLETED'
-                            ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
-                            : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-800'
+                            : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-300 dark:border-rose-800'
                         }`}
                       >
                         {sale.status}
@@ -195,7 +192,7 @@ const Invoices = () => {
                     <td className="px-4 py-2.5 text-right space-x-1.5 whitespace-nowrap">
                       <button
                         onClick={() => handleViewReceipt(sale)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-bold text-[11px] border border-emerald-200 dark:border-emerald-800 transition"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-none bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-800 dark:text-blue-300 font-bold text-[10px] uppercase tracking-wider border border-blue-300 dark:border-blue-700 transition"
                         title="View / Print Receipt"
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -205,7 +202,7 @@ const Invoices = () => {
                       {sale.status === 'COMPLETED' && (
                         <button
                           onClick={() => handleVoidSale(sale._id, sale.invoiceNumber)}
-                          className="p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition"
+                          className="p-1 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-none border border-zinc-200 dark:border-zinc-700 transition"
                           title="Void / Cancel Sale"
                         >
                           <Ban className="w-3.5 h-3.5" />

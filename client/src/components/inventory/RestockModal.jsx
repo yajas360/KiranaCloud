@@ -57,29 +57,29 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border-2 border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/70 animate-fade-in">
+      <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-none border border-zinc-200 dark:border-zinc-700 overflow-hidden shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/80">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/80">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+            <div className="p-2 rounded-none bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700">
               <ArrowDownCircle className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Restock Product & Update Pricing</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Record incoming stock and adjust wholesale / retail rates</p>
+              <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider">Restock Product & Pricing</h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Record incoming stock and adjust wholesale / retail rates</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-none hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-400 flex items-center gap-2">
+          <div className="mx-6 mt-4 p-3 rounded-none bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
           </div>
@@ -87,14 +87,14 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
 
         {/* Product details preview */}
         <div className="p-6 space-y-4">
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+          <div className="p-3.5 rounded-none bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-300 dark:border-zinc-700">
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block font-mono">
               {product.sku} • {product.category}
             </span>
-            <h4 className="text-sm font-bold text-slate-800 dark:text-white mt-0.5">{product.name}</h4>
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 dark:border-slate-700 text-xs">
-              <span className="text-slate-500 dark:text-slate-400">Current Stock:</span>
-              <span className="font-bold text-slate-800 dark:text-white">
+            <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-0.5">{product.name}</h4>
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-zinc-200 dark:border-zinc-700 text-xs">
+              <span className="text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[10px]">Current Stock:</span>
+              <span className="font-bold text-zinc-900 dark:text-white font-mono">
                 {currentStock} {formatUnit(product.unit)}
               </span>
             </div>
@@ -102,7 +102,7 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1 uppercase tracking-wider">
                 Additional Quantity Received ({formatUnit(product.unit)}) *
               </label>
               <input
@@ -113,22 +113,22 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
                 placeholder="e.g. 20"
                 value={additionalStock}
                 onChange={(e) => setAdditionalStock(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm rounded-xl border-2 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold font-mono shadow-sm transition"
+                className="w-full px-3.5 py-2.5 text-sm rounded-none border-2 border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold font-mono transition"
               />
-              <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold block mt-1">
+              <span className="text-[11px] text-blue-700 dark:text-blue-400 font-semibold block mt-1 font-mono">
                 New resulting inventory: {projectedStock} {formatUnit(product.unit)}
               </span>
             </div>
 
             {/* Price Updates: Cost Price & Selling Price */}
-            <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2.5">
-              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+            <div className="p-3.5 rounded-none bg-zinc-100 dark:bg-zinc-800/60 border-2 border-zinc-300 dark:border-zinc-700 space-y-2.5">
+              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block">
                 Batch Pricing Updates (Optional)
               </span>
 
               <div className="grid grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-[11px] font-bold text-zinc-700 dark:text-zinc-300 mb-1 uppercase tracking-wider">
                     Cost Price ({currencySymbol})
                   </label>
                   <input
@@ -137,13 +137,13 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
                     placeholder={product.costPrice?.toString()}
                     value={newCostPrice}
                     onChange={(e) => setNewCostPrice(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 hover:border-slate-400 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold font-mono shadow-sm transition"
+                    className="w-full px-3 py-2 text-xs rounded-none border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold font-mono transition"
                   />
-                  <span className="text-[9px] text-slate-500 dark:text-slate-400 block mt-0.5">Wholesale rate</span>
+                  <span className="text-[9px] text-zinc-500 dark:text-zinc-400 block mt-0.5">Wholesale rate</span>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-[11px] font-bold text-zinc-700 dark:text-zinc-300 mb-1 uppercase tracking-wider">
                     Selling Price ({currencySymbol})
                   </label>
                   <input
@@ -152,33 +152,33 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
                     placeholder={product.sellingPrice?.toString()}
                     value={newSellingPrice}
                     onChange={(e) => setNewSellingPrice(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 hover:border-slate-400 text-emerald-700 dark:text-emerald-400 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold font-mono shadow-sm transition"
+                    className="w-full px-3 py-2 text-xs rounded-none border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold font-mono transition"
                   />
-                  <span className="text-[9px] text-slate-500 dark:text-slate-400 block mt-0.5">Retail / MRP</span>
+                  <span className="text-[9px] text-zinc-500 dark:text-zinc-400 block mt-0.5">Retail / MRP</span>
                 </div>
               </div>
 
               {/* Dynamic Margin Indicator */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700 text-xs">
-                <span className="text-slate-500 dark:text-slate-400 font-medium">Projected Margin:</span>
+              <div className="flex items-center justify-between pt-2 border-t border-zinc-200 dark:border-zinc-700 text-xs">
+                <span className="text-zinc-500 dark:text-zinc-400 font-medium">Projected Margin:</span>
                 <span className="font-bold text-emerald-700 dark:text-emerald-400 font-mono">
                   +{formatCurrency(newMargin, currency, currencySymbol)} ({newMarginPct}%)
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t-2 border-zinc-200 dark:border-zinc-800">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
+                className="px-4 py-2 text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-none border-2 border-zinc-300 dark:border-zinc-700 uppercase tracking-wider transition"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-95 rounded-xl shadow-sm transition disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-none border border-blue-700 uppercase tracking-wider transition disabled:opacity-50"
               >
                 <Check className="w-4 h-4" />
                 <span>{loading ? 'Updating...' : `Restock & Update Rates`}</span>

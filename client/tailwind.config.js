@@ -1,4 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+function cv(name) {
+  return `rgb(var(--color-${name}) / <alpha-value>)`;
+}
+
 export default {
   darkMode: 'class',
   content: [
@@ -7,20 +11,106 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Arimo', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        none: '0px',
+        xs: '1px',
+        sm: '2px',
+        DEFAULT: '2px',
+        md: '2px',
+        lg: '2px',
+        xl: '3px',
+        '2xl': '3px',
+        '3xl': '3px',
+        full: '9999px',
+      },
       colors: {
+        // Theme-aware zinc mapped to Spring Green Harmony in Light Mode and Night Owl in Dark Mode
+        zinc: {
+          50: cv('zinc-50'),
+          100: cv('zinc-100'),
+          200: cv('zinc-200'),
+          300: cv('zinc-300'),
+          400: cv('zinc-400'),
+          500: cv('zinc-500'),
+          600: cv('zinc-600'),
+          700: cv('zinc-700'),
+          800: cv('zinc-800'),
+          900: cv('zinc-900'),
+          950: cv('zinc-950'),
+        },
+        // Theme-aware blue mapped to Spring Green Pine/Forest in Light Mode and Night Owl Slate/Steel in Dark Mode
+        blue: {
+          50: cv('blue-50'),
+          100: cv('blue-100'),
+          200: cv('blue-200'),
+          300: cv('blue-300'),
+          400: cv('blue-400'),
+          500: cv('blue-500'),
+          600: cv('blue-600'),
+          700: cv('blue-700'),
+          800: cv('blue-800'),
+          900: cv('blue-900'),
+          950: cv('blue-950'),
+        },
         brand: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981',
-          600: '#059669',
-          700: '#047857',
-          800: '#065f46',
-          900: '#064e3b',
-        }
-      }
+          50: cv('blue-50'),
+          100: cv('blue-100'),
+          200: cv('blue-200'),
+          300: cv('blue-300'),
+          400: cv('blue-400'),
+          500: cv('blue-500'),
+          600: cv('blue-600'),
+          700: cv('blue-700'),
+          800: cv('blue-800'),
+          900: cv('blue-900'),
+        },
+        amber: {
+          50: cv('amber-50'),
+          100: cv('amber-100'),
+          200: cv('amber-200'),
+          300: cv('amber-300'),
+          400: cv('amber-400'),
+          500: cv('amber-500'),
+          600: cv('amber-600'),
+          700: cv('amber-700'),
+          800: cv('amber-800'),
+          900: cv('amber-900'),
+          950: cv('amber-950'),
+        },
+        emerald: {
+          50: cv('emerald-50'),
+          100: cv('emerald-100'),
+          200: cv('emerald-200'),
+          300: cv('emerald-300'),
+          400: cv('emerald-400'),
+          500: cv('emerald-500'),
+          600: cv('emerald-600'),
+          700: cv('emerald-700'),
+          800: cv('emerald-800'),
+          900: cv('emerald-900'),
+          950: cv('emerald-950'),
+        },
+        rose: {
+          50: cv('rose-50'),
+          100: cv('rose-100'),
+          200: cv('rose-200'),
+          300: cv('rose-300'),
+          400: cv('rose-400'),
+          500: cv('rose-500'),
+          600: cv('rose-600'),
+          700: cv('rose-700'),
+          800: cv('rose-800'),
+          900: cv('rose-900'),
+          950: cv('rose-950'),
+        },
+      },
+      boxShadow: {
+        solid: '2px 2px 0px 0px rgba(0, 0, 0, 0.08)',
+        'solid-dark': '2px 2px 0px 0px rgba(0, 0, 0, 0.45)',
+      },
     },
   },
   plugins: [],

@@ -4,16 +4,164 @@
 
 :root {
   color-scheme: light;
+  font-family: 'Arimo', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* ======================================================== */
+  /* LIGHT MODE PALETTE: "Spring Green Harmony"               */
+  /* Swatches: #006148, #22763A, #448526, #669413, #88A300,    */
+  /*           #95A700, #A6AB00, #B1B200, #88880A, #7D7D00     */
+  /* ======================================================== */
+  --color-zinc-50: 247 250 248;     /* #F7FAF8 Clean crisp sage-tinted white */
+  --color-zinc-100: 242 246 243;    /* #F2F6F3 Page Canvas Background */
+  --color-zinc-200: 226 235 229;    /* #E2EBE5 Subtle dividers */
+  --color-zinc-300: 203 216 207;    /* #CBD8CF Crisp solid border */
+  --color-zinc-400: 124 147 133;    /* #7C9385 Muted sage text */
+  --color-zinc-500: 86 110 96;      /* #566E60 Secondary label */
+  --color-zinc-600: 61 84 71;       /* #3D5447 Body secondary */
+  --color-zinc-700: 42 63 51;       /* #2A3F33 Strong label text */
+  --color-zinc-800: 27 46 36;       /* #1B2E24 Deep contrast text */
+  --color-zinc-900: 12 29 21;       /* #0C1D15 Primary forest ink text */
+  --color-zinc-950: 5 16 11;        /* #05100B Deepest forest text */
+
+  /* Primary Action Colors (Spring Green Harmony) */
+  --color-blue-50: 237 245 239;     /* #EDF5EF Light forest tint */
+  --color-blue-100: 213 232 217;    /* #D5E8D9 */
+  --color-blue-200: 178 212 187;    /* #B2D4BB */
+  --color-blue-300: 136 163 0;      /* #88A300 Spring chartreuse */
+  --color-blue-400: 68 133 38;      /* #448526 Vibrant grass green */
+  --color-blue-500: 34 118 58;      /* #22763A Vibrant forest green */
+  --color-blue-600: 0 97 72;        /* #006148 Deep pine green (Primary Action / Brand) */
+  --color-blue-700: 0 77 57;        /* #004D39 Dark pine green (Hover Action) */
+  --color-blue-800: 0 58 43;        /* #003A2B Pressed Action */
+  --color-blue-900: 0 38 28;        /* #00261C */
+  --color-blue-950: 0 24 17;        /* #001811 */
+
+  /* Golden Olive & Chartreuse Warnings/Metrics (Spring Green Harmony) */
+  --color-amber-50: 250 251 232;    /* #FAFBE8 */
+  --color-amber-100: 244 247 206;   /* #F4F7CE */
+  --color-amber-200: 230 239 162;   /* #E6EFA2 */
+  --color-amber-300: 210 226 110;   /* #D2E26E */
+  --color-amber-400: 177 178 0;     /* #B1B200 Olive chartreuse */
+  --color-amber-500: 149 167 0;     /* #95A700 Golden olive */
+  --color-amber-600: 136 163 0;     /* #88A300 Chartreuse */
+  --color-amber-700: 102 125 0;     /* #667D00 Deep olive */
+  --color-amber-800: 78 96 0;       /* #4E6000 */
+  --color-amber-900: 54 67 0;       /* #364300 */
+  --color-amber-950: 30 38 0;       /* #1E2600 */
+
+  /* Emerald / Positive / Khata Surplus (Spring Green Harmony) */
+  --color-emerald-50: 237 245 239;
+  --color-emerald-100: 213 232 217;
+  --color-emerald-200: 178 212 187;
+  --color-emerald-300: 102 148 19;  /* #669413 Leaf green */
+  --color-emerald-400: 68 133 38;   /* #448526 Grass green */
+  --color-emerald-500: 34 118 58;   /* #22763A Forest green */
+  --color-emerald-600: 0 97 72;     /* #006148 Deep pine green */
+  --color-emerald-700: 0 77 57;
+  --color-emerald-800: 0 58 43;
+  --color-emerald-900: 0 38 28;
+  --color-emerald-950: 0 24 17;
+
+  /* Rose / Debt / Critical Alert */
+  --color-rose-50: 254 242 242;
+  --color-rose-100: 254 226 226;
+  --color-rose-200: 254 202 202;
+  --color-rose-300: 252 165 165;
+  --color-rose-400: 248 113 113;
+  --color-rose-500: 225 29 72;
+  --color-rose-600: 163 5 8;        /* #A30508 Deep crimson accent from palette */
+  --color-rose-700: 136 4 6;
+  --color-rose-800: 105 5 7;
+  --color-rose-900: 76 6 8;
+  --color-rose-950: 45 3 4;
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* ======================================================== */
+  /* DARK MODE PALETTE: "Night Owl"                           */
+  /* Swatches: #020D14, #1A1C1D, #222426, #323638, #4A5C65     */
+  /* ======================================================== */
+  --color-zinc-50: 248 250 252;     /* #F8FAFC */
+  --color-zinc-100: 240 244 248;    /* #F0F4F8 Clean high-contrast white text */
+  --color-zinc-200: 216 226 232;    /* #D8E2E8 */
+  --color-zinc-300: 180 195 203;    /* #B4C3CB */
+  --color-zinc-400: 141 159 168;    /* #8D9FA8 Night Owl muted slate text */
+  --color-zinc-500: 106 123 132;    /* #6A7B84 */
+  --color-zinc-600: 66 73 78;       /* #42494E */
+  --color-zinc-700: 50 54 56;       /* #323638 Night Owl border & divider */
+  --color-zinc-800: 34 36 38;       /* #222426 Night Owl elevated card / subpanel */
+  --color-zinc-900: 26 28 29;       /* #1A1C1D Night Owl card / surface panel */
+  --color-zinc-950: 2 13 20;        /* #020D14 Night Owl deep canvas black */
+
+  /* Night Owl Slate / Steel Blue Accent Actions */
+  --color-blue-50: 20 29 34;        /* #141D22 */
+  --color-blue-100: 28 42 50;       /* #1C2A32 */
+  --color-blue-200: 43 63 74;       /* #2B3F4A */
+  --color-blue-300: 145 167 180;    /* #91A7B4 */
+  --color-blue-400: 110 134 148;    /* #6E8694 */
+  --color-blue-500: 90 112 123;     /* #5A707B Night Owl steel hover */
+  --color-blue-600: 74 92 101;      /* #4A5C65 Night Owl steel / slate blue accent */
+  --color-blue-700: 58 74 82;       /* #3A4A52 Night Owl pressed accent */
+  --color-blue-800: 44 56 63;       /* #2C383F */
+  --color-blue-900: 30 39 44;       /* #1E272C */
+  --color-blue-950: 14 20 24;       /* #0E1418 */
+
+  /* Night Owl Warm Bronze Amber Alerts */
+  --color-amber-50: 34 31 20;
+  --color-amber-100: 46 41 25;
+  --color-amber-200: 70 62 35;
+  --color-amber-300: 212 173 102;   /* #D4AD66 */
+  --color-amber-400: 229 189 115;   /* #E5BD73 */
+  --color-amber-500: 245 205 130;   /* #F5CD82 */
+  --color-amber-600: 212 163 83;
+  --color-amber-700: 178 133 60;
+  --color-amber-800: 138 100 39;
+  --color-amber-900: 94 66 21;
+  --color-amber-950: 50 35 7;
+
+  /* Night Owl Sage / Teal Emerald Success */
+  --color-emerald-50: 16 32 26;
+  --color-emerald-100: 23 48 38;
+  --color-emerald-200: 34 71 57;
+  --color-emerald-300: 126 224 185; /* #7EE0B9 */
+  --color-emerald-400: 94 200 158;  /* #5EC89E */
+  --color-emerald-500: 61 168 126;
+  --color-emerald-600: 45 130 96;
+  --color-emerald-700: 32 94 69;
+  --color-emerald-800: 22 66 48;
+  --color-emerald-900: 14 43 31;
+  --color-emerald-950: 8 25 18;
+
+  /* Night Owl Muted Brick Rose Alerts */
+  --color-rose-50: 36 18 20;
+  --color-rose-100: 50 24 27;
+  --color-rose-200: 75 34 38;
+  --color-rose-300: 252 165 165;
+  --color-rose-400: 248 113 113;    /* #F87171 */
+  --color-rose-500: 225 60 70;
+  --color-rose-600: 196 54 59;      /* #C4363B */
+  --color-rose-700: 158 40 44;
+  --color-rose-800: 120 30 33;
+  --color-rose-900: 84 20 22;
+  --color-rose-950: 48 10 12;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: rgb(var(--color-zinc-100));
+  color: rgb(var(--color-zinc-900));
+  font-family: 'Arimo', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Custom scrollbars */
+.dark body {
+  background-color: rgb(var(--color-zinc-950));
+  color: rgb(var(--color-zinc-100));
+}
+
+/* Solid Industrial Scrollbars (No rounded bubbles) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -24,12 +172,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
+  background: rgb(var(--color-zinc-300));
+  border-radius: 0px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-zinc-700));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: rgb(var(--color-blue-600));
 }
 
 /* Print Styles for POS Receipts */
