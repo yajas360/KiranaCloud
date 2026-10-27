@@ -1,0 +1,112 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api/axios';
+
+const AuthContext = createContext(null);
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
+
+  const checkAuth = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/auth/me');
+      if (res.data.success) {
+        setUser(res.data.user);
+      }
+    } catch (err) {
+      setUser(null);
+      localStorage.removeItem('storepulse_token');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const login = async (email, password) => {
+    setAuthError(null);
+    try {
+      const res = await api.post('/auth/login', { email, password });
+      if (res.data.success) {
+        setUser(res.data.user);
+        if (res.data.token) {
+          localStorage.setItem('storepulse_token', res.data.token);
+        }
+        return { success: true };
+      }
+    } catch (err) {
+      const message = err.response?.data?.message || 'Login failed. Invalid credentials.';
+      setAuthError(message);
+      return { success: false, message };
+    }
+  };
+
+  const register = async (formData) => {
+    setAuthError(null);
+    try {
+      const res = await api.post('/auth/register', formData);
+      if (res.data.success) {
+        setUser(res.data.user);
+        if (res.data.token) {
+          localStorage.setItem('storepulse_token', res.data.token);
+        }
+        return { success: true };
+      }
+    } catch (err) {
+      const message = err.response?.data?.message || 'Registration failed. Please try again.';
+      setAuthError(message);
+      return { success: false, message };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (err) {
+      console.warn('Logout error', err);
+    } finally {
+      setUser(null);
+      localStorage.removeItem('storepulse_token');
+    }
+  };
+
+  const updateProfile = (updatedData) => {
+    setUser((prev) => ({ ...prev, ...updatedData }));
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        authError,
+        isAuthenticated: !!user,
+        storeName: user?.storeName || 'Corner Mart',
+        storeAddress: user?.storeAddress || '',
+        storePhone: user?.storePhone || '',
+        currency: user?.currency || 'INR',
+        currencySymbol: user?.currencySymbol || '₹',
+        taxRate: user?.taxRate || 5,
+        login,
+        register,
+        logout,
+        checkAuth,
+        updateProfile,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
