@@ -201,14 +201,14 @@ const Inventory = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50/80 text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
                 <tr>
-                  <th className="px-5 py-3.5">Product & SKU</th>
-                  <th className="px-4 py-3.5 whitespace-nowrap">Category</th>
-                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Cost Price</th>
-                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Selling Price</th>
-                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Margin / Unit</th>
-                  <th className="px-4 py-3.5 text-center whitespace-nowrap">Stock Level</th>
-                  <th className="px-4 py-3.5 whitespace-nowrap">Location</th>
-                  <th className="px-5 py-3.5 text-right whitespace-nowrap">Actions</th>
+                  <th className="px-3.5 py-3 text-left whitespace-nowrap">Product & SKU</th>
+                  <th className="px-2.5 py-3 whitespace-nowrap">Category</th>
+                  <th className="px-2.5 py-3 text-right whitespace-nowrap">Cost</th>
+                  <th className="px-2.5 py-3 text-right whitespace-nowrap">Price</th>
+                  <th className="px-2.5 py-3 text-right whitespace-nowrap">Margin</th>
+                  <th className="px-2.5 py-3 text-center whitespace-nowrap">Stock Level</th>
+                  <th className="px-2.5 py-3 whitespace-nowrap">Location</th>
+                  <th className="px-3.5 py-3 text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
@@ -228,57 +228,60 @@ const Inventory = () => {
                   return (
                     <tr key={p._id} className="hover:bg-slate-50/60 transition">
                       {/* Name & SKU */}
-                      <td className="px-5 py-3.5">
-                        <span className="font-bold text-slate-900 block">{p.name}</span>
-                        <span className="text-[10px] font-mono font-bold text-slate-400">
+                      <td className="px-3.5 py-2.5 whitespace-nowrap">
+                        <span className="font-bold text-slate-900 block text-xs whitespace-nowrap">
+                          {p.name}
+                        </span>
+                        <span className="text-[10px] font-mono font-semibold text-slate-400 block whitespace-nowrap">
                           {p.sku}
                         </span>
                       </td>
 
                       {/* Category */}
-                      <td className="px-4 py-3.5 whitespace-nowrap">
+                      <td className="px-2.5 py-2.5 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border whitespace-nowrap ${getCategoryColor(p.category)}`}>
                           {p.category}
                         </span>
                       </td>
 
                       {/* Cost Price */}
-                      <td className="px-4 py-3.5 text-right text-slate-600">
+                      <td className="px-2.5 py-2.5 text-right text-slate-600 font-mono whitespace-nowrap">
                         {formatCurrency(p.costPrice, currency, currencySymbol)}
                       </td>
 
                       {/* Selling Price */}
-                      <td className="px-4 py-3.5 text-right font-bold text-slate-900">
+                      <td className="px-2.5 py-2.5 text-right font-bold text-slate-900 font-mono whitespace-nowrap">
                         {formatCurrency(p.sellingPrice, currency, currencySymbol)}
                       </td>
 
                       {/* Margin */}
-                      <td className="px-4 py-3.5 text-right">
-                        <span className="text-emerald-700 font-bold block">
+                      <td className="px-2.5 py-2.5 text-right whitespace-nowrap">
+                        <span className="text-emerald-700 font-bold font-mono">
                           +{formatCurrency(marginAmount, currency, currencySymbol)}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-semibold">{marginPct}%</span>
+                        <span className="text-[10px] text-slate-400 font-semibold ml-1">
+                          ({marginPct}%)
+                        </span>
                       </td>
 
                       {/* Stock Level */}
-                      <td className="px-4 py-3.5 text-center">
+                      <td className="px-2.5 py-2.5 text-center whitespace-nowrap">
                         <StockBadge stockQuantity={p.stockQuantity} minThreshold={p.minThreshold} />
                       </td>
 
-                      {/* Location & Supplier */}
-                      <td className="px-4 py-3.5 text-slate-500">
-                        <span className="block text-slate-700 font-semibold">{p.shelfLocation || 'Aisle 1'}</span>
-                        <span className="text-[10px] text-slate-400 truncate block">{p.supplier || 'Wholesale'}</span>
+                      {/* Location */}
+                      <td className="px-2.5 py-2.5 text-slate-600 text-[11px] whitespace-nowrap font-medium">
+                        {p.shelfLocation || 'Aisle 1'}
                       </td>
 
                       {/* Actions */}
-                      <td className="px-5 py-3.5 text-right space-x-1 whitespace-nowrap">
+                      <td className="px-3.5 py-2.5 text-right space-x-1 whitespace-nowrap">
                         <button
                           onClick={() => {
                             setRestockingProduct(p);
                             setIsRestockModalOpen(true);
                           }}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition font-bold text-[11px]"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition font-bold text-[11px]"
                           title="Restock Inbound"
                         >
                           <ArrowDownCircle className="w-3.5 h-3.5" />
@@ -290,7 +293,7 @@ const Inventory = () => {
                             setEditingProduct(p);
                             setIsProductModalOpen(true);
                           }}
-                          className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+                          className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
                           title="Edit Product"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -298,7 +301,7 @@ const Inventory = () => {
 
                         <button
                           onClick={() => handleDelete(p._id, p.name)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                          className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
                           title="Delete Product"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
