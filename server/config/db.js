@@ -4,7 +4,11 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 let mongodInstance = null;
 
 export const connectDB = async () => {
-  const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/spendwise';
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
+
+  const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kiranacloud';
   
   try {
     // Attempt standard connection first with a short timeout
