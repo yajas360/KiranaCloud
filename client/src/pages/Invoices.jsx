@@ -161,14 +161,14 @@ const Invoices = () => {
                     <td className="px-4 py-3.5 text-right font-bold text-emerald-700">
                       +{formatCurrency(sale.netProfit, currency, currencySymbol)}
                     </td>
-                    <td className="px-4 py-3.5 text-center">
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200 uppercase">
+                    <td className="px-4 py-3.5 text-center whitespace-nowrap">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200 uppercase whitespace-nowrap">
                         {sale.paymentMethod}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-center">
+                    <td className="px-4 py-3.5 text-center whitespace-nowrap">
                       <span
-                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                        className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap ${
                           sale.status === 'COMPLETED'
                             ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : 'bg-rose-50 text-rose-700 border border-rose-200'

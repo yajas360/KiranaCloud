@@ -202,13 +202,13 @@ const Inventory = () => {
               <thead className="bg-slate-50/80 text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
                 <tr>
                   <th className="px-5 py-3.5">Product & SKU</th>
-                  <th className="px-4 py-3.5">Category</th>
-                  <th className="px-4 py-3.5 text-right">Cost Price</th>
-                  <th className="px-4 py-3.5 text-right">Selling Price</th>
-                  <th className="px-4 py-3.5 text-right">Margin / Unit</th>
-                  <th className="px-4 py-3.5 text-center">Stock Level</th>
-                  <th className="px-4 py-3.5">Location</th>
-                  <th className="px-5 py-3.5 text-right">Actions</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Category</th>
+                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Cost Price</th>
+                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Selling Price</th>
+                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Margin / Unit</th>
+                  <th className="px-4 py-3.5 text-center whitespace-nowrap">Stock Level</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Location</th>
+                  <th className="px-5 py-3.5 text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
@@ -236,8 +236,8 @@ const Inventory = () => {
                       </td>
 
                       {/* Category */}
-                      <td className="px-4 py-3.5">
-                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${getCategoryColor(p.category)}`}>
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border whitespace-nowrap ${getCategoryColor(p.category)}`}>
                           {p.category}
                         </span>
                       </td>

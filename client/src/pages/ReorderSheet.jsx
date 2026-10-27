@@ -122,18 +122,18 @@ const ReorderSheet = () => {
               <thead className="bg-slate-50/80 text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
                 <tr>
                   <th className="px-5 py-3.5">Item & SKU</th>
-                  <th className="px-4 py-3.5">Category</th>
-                  <th className="px-4 py-3.5 text-center">Current Stock</th>
-                  <th className="px-4 py-3.5 text-center">Safety Threshold</th>
-                  <th className="px-4 py-3.5 text-center font-bold text-emerald-700">
+                  <th className="px-4 py-3.5 whitespace-nowrap">Category</th>
+                  <th className="px-4 py-3.5 text-center whitespace-nowrap">Current Stock</th>
+                  <th className="px-4 py-3.5 text-center whitespace-nowrap">Safety Threshold</th>
+                  <th className="px-4 py-3.5 text-center font-bold text-emerald-700 whitespace-nowrap">
                     Suggested Order Qty
                   </th>
-                  <th className="px-4 py-3.5 text-right">Cost Price / Unit</th>
-                  <th className="px-4 py-3.5 text-right font-bold text-slate-900">
+                  <th className="px-4 py-3.5 text-right whitespace-nowrap">Cost Price / Unit</th>
+                  <th className="px-4 py-3.5 text-right font-bold text-slate-900 whitespace-nowrap">
                     Estimated Cost
                   </th>
-                  <th className="px-4 py-3.5">Supplier</th>
-                  <th className="px-5 py-3.5 text-right">Action</th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Supplier</th>
+                  <th className="px-5 py-3.5 text-right whitespace-nowrap">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
@@ -143,8 +143,8 @@ const ReorderSheet = () => {
                       <span className="font-bold text-slate-900 block">{item.name}</span>
                       <span className="text-[10px] font-mono text-slate-400">{item.sku}</span>
                     </td>
-                    <td className="px-4 py-3.5">
-                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${getCategoryColor(item.category)}`}>
+                    <td className="px-4 py-3.5 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border whitespace-nowrap ${getCategoryColor(item.category)}`}>
                         {item.category}
                       </span>
                     </td>
