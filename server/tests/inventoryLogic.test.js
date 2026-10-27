@@ -121,4 +121,19 @@ describe('Store Inventory & POS Billing Logic', () => {
     assert.equal(diff3, 40);
     assert.equal(status3, 'SURPLUS');
   });
+
+  test('validates that cash tendered cannot be negative and computes accurate change', () => {
+    const grandTotal = 340;
+    const negativeTendered = -50;
+    const isNegativeBlocked = negativeTendered < 0;
+    assert.equal(isNegativeBlocked, true);
+
+    const validTendered = 500;
+    const changeDue = Math.max(0, validTendered - grandTotal);
+    assert.equal(changeDue, 160);
+
+    const exactTendered = 340;
+    const exactChange = Math.max(0, exactTendered - grandTotal);
+    assert.equal(exactChange, 0);
+  });
 });

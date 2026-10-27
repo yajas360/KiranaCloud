@@ -64,7 +64,7 @@ const CartDrawer = ({
   const tax = applyTax ? Math.round((discountedSubtotal * (taxRate || 5)) / 100) : 0;
   const grandTotal = discountedSubtotal + tax;
 
-  const numTendered = parseFloat(amountTendered) || grandTotal;
+  const numTendered = Math.max(0, parseFloat(amountTendered) || grandTotal);
   const changeDue = Math.max(0, numTendered - grandTotal);
 
   const handleCheckoutSubmit = async (e) => {
@@ -83,6 +83,11 @@ const CartDrawer = ({
 
     if (parseFloat(discount) > maxDiscount) {
       setError(`Discount cannot exceed 50% of bill value (Max: ${currencySymbol}${maxDiscount}).`);
+      return;
+    }
+
+    if (paymentMethod === 'Cash' && amountTendered !== '' && parseFloat(amountTendered) < 0) {
+      setError('Amount tendered cannot be a negative value.');
       return;
     }
 
@@ -344,9 +349,28 @@ const CartDrawer = ({
               <span className="text-slate-500 font-semibold">Tendered:</span>
               <input
                 type="number"
+                min="0"
+                step="1"
                 placeholder={grandTotal.toString()}
                 value={amountTendered}
-                onChange={(e) => setAmountTendered(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === '-' || e.key === 'e' || e.key === '+') {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setAmountTendered('');
+                    return;
+                  }
+                  const num = parseFloat(val);
+                  if (num < 0 || isNaN(num)) {
+                    setAmountTendered('0');
+                    return;
+                  }
+                  setAmountTendered(val);
+                }}
                 className="w-20 px-1.5 py-0.5 text-xs font-mono font-bold rounded border border-slate-200 text-right"
               />
               <span className="text-slate-300">|</span>

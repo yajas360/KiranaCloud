@@ -99,10 +99,12 @@ const saleSchema = new mongoose.Schema(
     amountTendered: {
       type: Number,
       default: 0,
+      min: 0,
     },
     changeDue: {
       type: Number,
       default: 0,
+      min: 0,
     },
     customerName: {
       type: String,

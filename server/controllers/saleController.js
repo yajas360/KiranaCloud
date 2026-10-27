@@ -96,7 +96,14 @@ export const createSale = async (req, res, next) => {
     const grandTotal = Math.max(0, subtotal - numDiscount + numTax);
     const netProfit = (subtotal - numDiscount) - totalCost;
 
-    const numTendered = parseFloat(amountTendered) || grandTotal;
+    if (parseFloat(amountTendered) < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Amount tendered cannot be negative.',
+      });
+    }
+
+    const numTendered = Math.max(0, parseFloat(amountTendered) || grandTotal);
     const changeDue = Math.max(0, numTendered - grandTotal);
 
     // 3. Khata Credit validation upfront (before decrementing inventory stock)
