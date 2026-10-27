@@ -228,11 +228,11 @@ const Inventory = () => {
                   return (
                     <tr key={p._id} className="hover:bg-slate-50/60 transition">
                       {/* Name & SKU */}
-                      <td className="px-3.5 py-2.5 whitespace-nowrap">
-                        <span className="font-bold text-slate-900 block text-xs whitespace-nowrap">
+                      <td className="px-3 py-2.5 whitespace-nowrap min-w-0 max-w-[210px]">
+                        <span className="font-bold text-slate-900 block text-xs truncate" title={p.name}>
                           {p.name}
                         </span>
-                        <span className="text-[10px] font-mono font-semibold text-slate-400 block whitespace-nowrap">
+                        <span className="text-[10px] font-mono font-semibold text-slate-400 block truncate">
                           {p.sku}
                         </span>
                       </td>

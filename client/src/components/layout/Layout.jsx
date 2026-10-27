@@ -21,14 +21,14 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
-      {/* Compact Left Sidebar (width: 52 / 208px) */}
+      {/* Slim Compact Left Sidebar (width: 44 / 176px) */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main Content Area - Maximized Space for the Right */}
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-52">
+      {/* Main Content Area - Maximized Full-Frame Space */}
+      <div className="flex-1 flex flex-col min-w-0 lg:pl-44">
         <Header onOpenSidebar={() => setSidebarOpen(true)} title={title} />
 
-        <main className="flex-1 p-4 md:p-6 w-full max-w-[1600px] mx-auto">
+        <main className="flex-1 p-3 md:p-4 w-full max-w-[1600px] mx-auto overflow-x-hidden">
           <Outlet />
         </main>
       </div>
