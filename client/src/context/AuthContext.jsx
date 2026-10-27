@@ -4,20 +4,30 @@ import api from '../api/axios';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('kiranacloud_user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
 
   const checkAuth = async () => {
     try {
-      setLoading(true);
       const res = await api.get('/auth/me');
       if (res.data.success) {
         setUser(res.data.user);
+        localStorage.setItem('kiranacloud_user', JSON.stringify(res.data.user));
       }
     } catch (err) {
-      setUser(null);
-      localStorage.removeItem('kiranacloud_token');
+      if (err.response?.status === 401) {
+        setUser(null);
+        localStorage.removeItem('kiranacloud_token');
+        localStorage.removeItem('kiranacloud_user');
+      }
     } finally {
       setLoading(false);
     }
@@ -36,6 +46,7 @@ export const AuthProvider = ({ children }) => {
         if (res.data.token) {
           localStorage.setItem('kiranacloud_token', res.data.token);
         }
+        localStorage.setItem('kiranacloud_user', JSON.stringify(res.data.user));
         return { success: true };
       }
     } catch (err) {
@@ -63,6 +74,7 @@ export const AuthProvider = ({ children }) => {
         if (res.data.token) {
           localStorage.setItem('kiranacloud_token', res.data.token);
         }
+        localStorage.setItem('kiranacloud_user', JSON.stringify(res.data.user));
         return { success: true };
       }
     } catch (err) {
@@ -80,11 +92,16 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       localStorage.removeItem('kiranacloud_token');
+      localStorage.removeItem('kiranacloud_user');
     }
   };
 
   const updateProfile = (updatedData) => {
-    setUser((prev) => ({ ...prev, ...updatedData }));
+    setUser((prev) => {
+      const nextUser = { ...prev, ...updatedData };
+      localStorage.setItem('kiranacloud_user', JSON.stringify(nextUser));
+      return nextUser;
+    });
   };
 
   return (

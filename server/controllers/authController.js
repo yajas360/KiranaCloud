@@ -1,16 +1,24 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 
-const sendTokenResponse = (user, statusCode, res) => {
-  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+const sendTokenResponse = (user, statusCode, res, req) => {
+  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'kiranacloud_super_secret_jwt_key_2026_production', {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   });
 
+  const isHttps = Boolean(
+    req?.secure ||
+    req?.headers?.['x-forwarded-proto'] === 'https' ||
+    (process.env.CLIENT_URL && process.env.CLIENT_URL.startsWith('https://'))
+  );
+
   const cookieOptions = {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: isHttps,
+    sameSite: isHttps ? 'none' : 'lax',
+    path: '/',
   };
 
   res
@@ -83,7 +91,7 @@ export const register = async (req, res, next) => {
       storeAddress: storeAddress?.trim() || 'Main Market Road',
     });
 
-    sendTokenResponse(user, 201, res);
+    sendTokenResponse(user, 201, res, req);
   } catch (err) {
     next(err);
   }
@@ -129,16 +137,26 @@ export const login = async (req, res, next) => {
       });
     }
 
-    sendTokenResponse(user, 200, res);
+    sendTokenResponse(user, 200, res, req);
   } catch (err) {
     next(err);
   }
 };
 
 export const logout = (req, res) => {
-  res.cookie('token', 'none', {
-    expires: new Date(Date.now() + 5 * 1000),
+  const isHttps = Boolean(
+    req?.secure ||
+    req?.headers?.['x-forwarded-proto'] === 'https' ||
+    (process.env.CLIENT_URL && process.env.CLIENT_URL.startsWith('https://'))
+  );
+
+  res.cookie('token', '', {
+    expires: new Date(0),
+    maxAge: 0,
     httpOnly: true,
+    secure: isHttps,
+    sameSite: isHttps ? 'none' : 'lax',
+    path: '/',
   });
 
   res.status(200).json({

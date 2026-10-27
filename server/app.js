@@ -15,6 +15,8 @@ dotenv.config();
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
