@@ -199,33 +199,33 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border-2 border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/80">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-xs">
               <Calculator className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-black text-slate-900 tracking-tight">
+                <h3 className="text-base font-black text-slate-900 dark:text-white tracking-tight">
                   Day-Close & Cash Drawer Reconciliation
                 </h3>
                 {successRecord && (
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold border border-emerald-300 dark:border-emerald-800">
                     ✓ Closed
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 End-of-day register balancing & Z-Report for {storeName || 'KiranaCloud'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
+            className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -237,7 +237,7 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
           </div>
         ) : error ? (
           <div className="p-6">
-            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
+            <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-400 flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -246,60 +246,60 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
           <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
             {/* Today's Sales KPIs */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Total Bills</span>
-                <span className="text-xl font-black text-slate-900 mt-0.5 block font-mono">
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-400 block">Total Bills</span>
+                <span className="text-xl font-black text-slate-900 dark:text-white mt-0.5 block font-mono">
                   {summary?.totalBills || 0}
                 </span>
-                <span className="text-[10px] text-slate-400">Completed today</span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500">Completed today</span>
               </div>
-              <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200">
-                <span className="text-[10px] uppercase font-bold text-emerald-800 block">Gross Revenue</span>
-                <span className="text-xl font-black text-emerald-700 mt-0.5 block font-mono">
+              <div className="p-3 bg-emerald-50/60 dark:bg-emerald-950/30 rounded-xl border border-emerald-200 dark:border-emerald-800/60">
+                <span className="text-[10px] uppercase font-bold text-emerald-800 dark:text-emerald-300 block">Gross Revenue</span>
+                <span className="text-xl font-black text-emerald-700 dark:text-emerald-400 mt-0.5 block font-mono">
                   {formatCurrency(summary?.totalRevenue || 0, currency, currencySymbol)}
                 </span>
-                <span className="text-[10px] text-emerald-600">Total billings</span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400">Total billings</span>
               </div>
-              <div className="p-3 bg-purple-50/60 rounded-xl border border-purple-200">
-                <span className="text-[10px] uppercase font-bold text-purple-800 block">Gross Profit</span>
-                <span className="text-xl font-black text-purple-700 mt-0.5 block font-mono">
+              <div className="p-3 bg-purple-50/60 dark:bg-purple-950/30 rounded-xl border border-purple-200 dark:border-purple-800/60">
+                <span className="text-[10px] uppercase font-bold text-purple-800 dark:text-purple-300 block">Gross Profit</span>
+                <span className="text-xl font-black text-purple-700 dark:text-purple-400 mt-0.5 block font-mono">
                   {formatCurrency(summary?.totalProfit || 0, currency, currencySymbol)}
                 </span>
-                <span className="text-[10px] text-purple-600">Net over cost price</span>
+                <span className="text-[10px] text-purple-600 dark:text-purple-400">Net over cost price</span>
               </div>
             </div>
 
             {/* Payment Method Breakdown Pills */}
-            <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200 space-y-2">
-              <span className="text-xs font-bold text-slate-700 block">Payment Method Breakdown:</span>
+            <div className="p-3.5 bg-slate-50/80 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">Payment Method Breakdown:</span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 font-semibold block">Cash Sales</span>
-                  <span className="font-mono font-bold text-slate-900">
+                <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block">Cash Sales</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
                     {formatCurrency(cashSales, currency, currencySymbol)}
                   </span>
                 </div>
-                <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 font-semibold block">UPI Transfers</span>
-                  <span className="font-mono font-bold text-slate-900">
+                <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block">UPI Transfers</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
                     {formatCurrency(summary?.upiSales || 0, currency, currencySymbol)}
                   </span>
                 </div>
-                <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 font-semibold block">Cards / POS</span>
-                  <span className="font-mono font-bold text-slate-900">
+                <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block">Cards / POS</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
                     {formatCurrency(summary?.cardSales || 0, currency, currencySymbol)}
                   </span>
                 </div>
-                <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 font-semibold block">Khata Given</span>
-                  <span className="font-mono font-bold text-rose-600">
+                <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block">Khata Given</span>
+                  <span className="font-mono font-bold text-rose-600 dark:text-rose-400">
                     {formatCurrency(summary?.creditSales || 0, currency, currencySymbol)}
                   </span>
                 </div>
               </div>
               {khataCollected > 0 && (
-                <div className="text-[11px] text-emerald-700 font-semibold pt-1 flex items-center gap-1">
+                <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold pt-1 flex items-center gap-1">
                   <Check className="w-3.5 h-3.5" />
                   <span>
                     Additional {formatCurrency(khataCollected, currency, currencySymbol)} cash recovered from customer Khata dues today.
@@ -309,15 +309,15 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
             </div>
 
             {/* Cash Drawer Reconciliation Form */}
-            <div className="p-4 bg-white rounded-xl border border-slate-300 shadow-xs space-y-3">
-              <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Receipt className="w-3.5 h-3.5 text-emerald-600" />
+            <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-700 shadow-xs space-y-3">
+              <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                <Receipt className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Cash Drawer Balancing Calculation</span>
               </h4>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Opening Cash Float ({currencySymbol})
                   </label>
                   <input
@@ -327,15 +327,15 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
                     placeholder="e.g. 1000"
                     value={startingFloat}
                     onChange={(e) => setStartingFloat(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 bg-white hover:border-slate-400 font-mono font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-400 font-mono font-bold text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
                   />
-                  <span className="text-[10px] text-slate-500 mt-0.5 block font-medium">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 block font-medium">
                     Cash in drawer before store opened
                   </span>
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Actual Counted Cash ({currencySymbol}) *
                   </label>
                   <input
@@ -346,41 +346,41 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
                     placeholder="Physical cash counted..."
                     value={countedCash}
                     onChange={(e) => setCountedCash(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-emerald-500 focus:ring-2 focus:ring-emerald-500 font-mono font-black text-base text-slate-900 bg-emerald-50/40 shadow-sm"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-emerald-500 focus:ring-2 focus:ring-emerald-500 font-mono font-black text-base text-slate-900 dark:text-white bg-emerald-50/40 dark:bg-emerald-950/40 shadow-sm"
                   />
-                  <span className="text-[10px] text-slate-500 mt-0.5 block font-medium">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 block font-medium">
                     Count notes & coins in drawer right now
                   </span>
                 </div>
               </div>
 
               {/* Math Equation Bar */}
-              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs font-mono flex flex-wrap items-center justify-between gap-2">
+              <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs font-mono flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="text-slate-500">Expected:</span>
-                  <span className="font-bold text-slate-800 ml-1.5">
+                  <span className="text-slate-500 dark:text-slate-400">Expected:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-100 ml-1.5">
                     {formatCurrency(expectedCash, currency, currencySymbol)}
                   </span>
-                  <span className="text-[10px] text-slate-400 block font-sans">
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 block font-sans">
                     (Float {formatCurrency(numFloat, currency, currencySymbol)} + Sales {formatCurrency(cashSales + khataCollected, currency, currencySymbol)})
                   </span>
                 </div>
 
                 {isCountedValid && (
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-500 font-sans font-bold">Status:</span>
+                    <span className="text-slate-500 dark:text-slate-400 font-sans font-bold">Status:</span>
                     {isMatched ? (
-                      <span className="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center gap-1">
+                      <span className="px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1">
                         <Check className="w-3.5 h-3.5" />
                         <span>Matched (₹0.00)</span>
                       </span>
                     ) : isShortage ? (
-                      <span className="px-2.5 py-1 rounded-md bg-rose-100 text-rose-800 font-bold text-xs flex items-center gap-1">
+                      <span className="px-2.5 py-1 rounded-md bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-800 font-bold text-xs flex items-center gap-1">
                         <AlertTriangle className="w-3.5 h-3.5" />
                         <span>Shortage: -{formatCurrency(Math.abs(difference), currency, currencySymbol)}</span>
                       </span>
                     ) : (
-                      <span className="px-2.5 py-1 rounded-md bg-amber-100 text-amber-800 font-bold text-xs flex items-center gap-1">
+                      <span className="px-2.5 py-1 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 font-bold text-xs flex items-center gap-1">
                         <TrendingUp className="w-3.5 h-3.5" />
                         <span>Surplus: +{formatCurrency(difference, currency, currencySymbol)}</span>
                       </span>
@@ -390,7 +390,7 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Manager Closing Remarks / Shift Notes
                 </label>
                 <input
@@ -398,20 +398,20 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
                   placeholder="e.g. Day shift closed by Manager, ₹50 petty cash spent on cleaning"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-lg border-2 border-slate-300 bg-white hover:border-slate-400 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
+                  className="w-full px-3 py-2 text-xs rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-400 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
                 />
               </div>
             </div>
 
             {/* Footer Buttons */}
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={handlePrintZReport}
                 disabled={!isCountedValid}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition disabled:opacity-40"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded-lg transition disabled:opacity-40"
               >
-                <Printer className="w-4 h-4 text-slate-500" />
+                <Printer className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                 <span>Print Z-Report Slip</span>
               </button>
 
@@ -419,7 +419,7 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition"
                 >
                   Close
                 </button>
