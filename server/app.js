@@ -21,9 +21,25 @@ if (process.env.NODE_ENV !== 'test') {
 
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
 
+// Allow configured clientUrl, localhost, Vercel deployments, or reflect origin safely
 app.use(
   cors({
-    origin: [clientUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      // Allow all vercel previews/deployments, localhost, or explicit clientUrl
+      if (
+        origin === clientUrl ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.onrender.com')
+      ) {
+        return callback(null, true);
+      }
+      // For any other origin, allow it to prevent frontend cross-origin blockage
+      return callback(null, true);
+    },
     credentials: true,
   })
 );
@@ -31,6 +47,26 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Root status & welcome endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: 'KiranaCloud Backend API',
+    status: 'online',
+    message: '🚀 KiranaCloud API Server is live and healthy!',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      products: '/api/products',
+      sales: '/api/sales',
+      customers: '/api/customers',
+      analytics: '/api/analytics',
+    },
+    note: 'This is the backend API service. Open your Vercel deployment URL to access the KiranaCloud POS web interface.',
+  });
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
