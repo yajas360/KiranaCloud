@@ -10,7 +10,7 @@ export const getAiBusinessAdvice = async (req, res, next) => {
     const userId = req.user._id;
 
     const user = await User.findById(userId).select('+geminiApiKey');
-    const apiKey = user?.geminiApiKey || process.env.GEMINI_API_KEY || '';
+    const apiKey = process.env.GEMINI_API_KEY || user?.geminiApiKey;
 
     // Date boundaries
     const now = new Date();

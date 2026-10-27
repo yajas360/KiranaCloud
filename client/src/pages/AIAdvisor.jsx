@@ -3,35 +3,22 @@ import { Link } from 'react-router-dom';
 import {
   Sparkles,
   RefreshCw,
-  TrendingUp,
   AlertTriangle,
   ArrowRight,
   Package,
   Users,
-  ShieldCheck,
   CheckCircle2,
-  DollarSign,
   Tag,
-  Clock,
-  Key,
-  ExternalLink,
-  ChevronRight,
   Zap,
 } from 'lucide-react';
 import api from '../api/axios';
 import { formatCurrency } from '../utils/formatters';
-import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const AIAdvisor = () => {
-  const { user, updateUser } = useAuth();
   const [mode, setMode] = useState('daily'); // 'daily' | 'weekly'
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
-  const [apiKeyInput, setApiKeyInput] = useState('');
-  const [savingKey, setSavingKey] = useState(false);
-  const [showKeyInput, setShowKeyInput] = useState(false);
-  const [keySaveMessage, setKeySaveMessage] = useState('');
 
   const fetchAdvice = async (selectedMode = mode) => {
     try {
@@ -51,39 +38,12 @@ const AIAdvisor = () => {
     fetchAdvice(mode);
   }, [mode]);
 
-  const handleSaveApiKey = async (e) => {
-    e.preventDefault();
-    if (!apiKeyInput.trim()) return;
-
-    try {
-      setSavingKey(true);
-      const res = await api.patch('/auth/profile', { geminiApiKey: apiKeyInput.trim() });
-      if (res.data.success) {
-        updateUser(res.data.data);
-        setKeySaveMessage('✅ Free Gemini API Key saved successfully! Generating live AI briefing...');
-        setApiKeyInput('');
-        setShowKeyInput(false);
-        // Refresh with active key
-        setTimeout(() => {
-          setKeySaveMessage('');
-          fetchAdvice(mode);
-        }, 1200);
-      }
-    } catch (err) {
-      setKeySaveMessage('Failed to save API key. Please try again.');
-    } finally {
-      setSavingKey(false);
-    }
-  };
-
   const advice = data?.advice || {};
   const metrics = data?.storeMetrics || {};
-  const isAi = data?.isAiGenerated;
-  const hasKey = user?.hasGeminiApiKey || data?.hasKeyConfigured;
 
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
-      {/* Top Banner & Mode Toggle */}
+      {/* Top Header & Daily/Weekly Toggle */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl p-4 shadow-xs">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-xs">
@@ -94,42 +54,39 @@ const AIAdvisor = () => {
               <h1 className="text-base font-bold text-slate-900 dark:text-white">
                 AI Business Advisor
               </h1>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                isAi
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800'
-                  : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800'
-              }`}>
-                {isAi ? `⚡ ${data?.modelUsed || 'Gemini'} Active` : '📊 Calculated Business Logic'}
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                ⚡ Gemini 3.5 Flash Active
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Live actionable insights for pricing, inventory reorders, dead stock, and customer Khata.
+              Automated daily store briefings and weekly retail strategy powered by Google Gemini.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-          {/* Mode switch */}
+          {/* Daily vs Weekly Toggle */}
           <div className="inline-flex rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
             <button
               onClick={() => setMode('daily')}
               className={`px-3 py-1.5 rounded-md transition-all ${
                 mode === 'daily'
-                  ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                  ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs font-bold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
               }`}
             >
-              Daily Closing Brief
+              Daily Analysis
             </button>
             <button
               onClick={() => setMode('weekly')}
               className={`px-3 py-1.5 rounded-md transition-all ${
                 mode === 'weekly'
-                  ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                  ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs font-bold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
               }`}
             >
-              Weekly Strategy
+              Weekly Analysis
             </button>
           </div>
 
@@ -144,87 +101,18 @@ const AIAdvisor = () => {
         </div>
       </div>
 
-      {/* Free Gemini API Key Banner if not yet configured */}
-      {!hasKey && (
-        <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-blue-500/10 border border-emerald-500/20 rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
-              <Key className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                Unlock Real-time AI with your Free Google Gemini API Key
-              </p>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                Google provides 1,500 free requests per day. Zero cost, no credit card required.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <a
-              href="https://aistudio.google.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 underline underline-offset-2"
-            >
-              Get Free Key <ExternalLink className="w-3 h-3" />
-            </a>
-            <button
-              onClick={() => setShowKeyInput(!showKeyInput)}
-              className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-xs"
-            >
-              {showKeyInput ? 'Hide Input' : 'Add API Key'}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* API Key Input Form */}
-      {showKeyInput && (
-        <form onSubmit={handleSaveApiKey} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs space-y-2">
-          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-            Paste Google Gemini API Key
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="password"
-              value={apiKeyInput}
-              onChange={(e) => setApiKeyInput(e.target.value)}
-              placeholder="AIzaSy..."
-              className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:outline-emerald-600"
-            />
-            <button
-              type="submit"
-              disabled={savingKey || !apiKeyInput.trim()}
-              className="px-4 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white transition shadow-xs"
-            >
-              {savingKey ? 'Saving...' : 'Save & Analyze'}
-            </button>
-          </div>
-          <p className="text-[11px] text-slate-400">
-            Your key is encrypted and stored safely with your store account.
-          </p>
-        </form>
-      )}
-
-      {keySaveMessage && (
-        <div className="p-2.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-          {keySaveMessage}
-        </div>
-      )}
-
       {loading ? (
-        <div className="py-16">
-          <LoadingSpinner text={`Analyzing ${mode === 'daily' ? "today's store transactions" : 'weekly business trends'} with AI...`} size="md" />
+        <div className="py-20">
+          <LoadingSpinner text={`Generating live ${mode === 'daily' ? 'Daily Store Brief' : 'Weekly Business Strategy'} with Gemini AI...`} size="md" />
         </div>
       ) : (
         <>
-          {/* Executive Brief Card */}
+          {/* Gemini Executive Briefing Card */}
           <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl p-4 shadow-xs space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <span className="text-[10px] font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">
-                  {mode === 'daily' ? "Today's Executive Brief" : 'Weekly Executive Strategy'}
+                  {mode === 'daily' ? "Today's Executive Briefing" : 'Weekly Executive Strategy'}
                 </span>
                 <h2 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
                   {advice.headline || 'Store Operations Status'}
@@ -243,8 +131,8 @@ const AIAdvisor = () => {
               </div>
             </div>
 
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              {advice.executiveSummary || 'Store operations are performing steadily across counter sales, inventory reorders, and customer credit collections.'}
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+              {advice.executiveSummary || 'Store operations are performing steadily across counter checkout, inventory reorders, and customer credit collections.'}
             </p>
 
             {/* Quick KPI Strip */}
@@ -253,7 +141,7 @@ const AIAdvisor = () => {
                 <span className="text-[10px] font-semibold text-slate-400 block uppercase">
                   {mode === 'daily' ? 'Revenue Today' : '7-Day Revenue'}
                 </span>
-                <span className="text-sm font-black text-slate-900 dark:text-white mt-0.5 block">
+                <span className="text-sm font-black text-slate-900 dark:text-white mt-0.5 block font-mono">
                   {formatCurrency(mode === 'daily' ? metrics.figures?.today?.revenue : metrics.figures?.week?.revenue)}
                 </span>
               </div>
@@ -261,7 +149,7 @@ const AIAdvisor = () => {
                 <span className="text-[10px] font-semibold text-slate-400 block uppercase">
                   Gross Profit
                 </span>
-                <span className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-0.5 block">
+                <span className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-0.5 block font-mono">
                   {formatCurrency(mode === 'daily' ? metrics.figures?.today?.profit : metrics.figures?.week?.profit)}
                 </span>
               </div>
@@ -269,7 +157,7 @@ const AIAdvisor = () => {
                 <span className="text-[10px] font-semibold text-slate-400 block uppercase">
                   Profit Margin
                 </span>
-                <span className="text-sm font-black text-blue-600 dark:text-blue-400 mt-0.5 block">
+                <span className="text-sm font-black text-blue-600 dark:text-blue-400 mt-0.5 block font-mono">
                   {mode === 'daily' ? metrics.figures?.today?.marginPercent : metrics.figures?.week?.marginPercent}%
                 </span>
               </div>
@@ -277,16 +165,16 @@ const AIAdvisor = () => {
                 <span className="text-[10px] font-semibold text-slate-400 block uppercase">
                   Completed Bills
                 </span>
-                <span className="text-sm font-black text-slate-900 dark:text-white mt-0.5 block">
+                <span className="text-sm font-black text-slate-900 dark:text-white mt-0.5 block font-mono">
                   {mode === 'daily' ? metrics.figures?.today?.bills : metrics.figures?.week?.bills}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Grid of Actionable Cards */}
+          {/* Grid of Core Actionable Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* 1. Margin Leakage & Price Alerts */}
+            {/* 1. Margin & Pricing Analysis */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl p-4 shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -307,8 +195,8 @@ const AIAdvisor = () => {
                   {advice.marginAlerts && advice.marginAlerts.length > 0 ? (
                     advice.marginAlerts.map((item, idx) => (
                       <div key={idx} className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60 text-xs space-y-1">
-                        <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center justify-between">
-                          <span>{item.productName}</span>
+                        <div className="font-bold text-slate-900 dark:text-slate-100">
+                          {item.productName}
                         </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400">{item.issue}</p>
                         <p className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
@@ -319,7 +207,7 @@ const AIAdvisor = () => {
                   ) : (
                     <div className="text-center py-6 text-xs text-slate-400">
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
-                      All products currently have healthy gross profit margins.
+                      All products currently maintain healthy retail margins.
                     </div>
                   )}
                 </div>
@@ -336,7 +224,7 @@ const AIAdvisor = () => {
               </div>
             </div>
 
-            {/* 2. Priority Restock & Reorder */}
+            {/* 2. Priority Stock Reorders */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl p-4 shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -390,7 +278,7 @@ const AIAdvisor = () => {
               </div>
             </div>
 
-            {/* 3. Dead Stock Clearance & Bundles */}
+            {/* 3. Dead Stock Clearance Plans */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl p-4 shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -422,7 +310,7 @@ const AIAdvisor = () => {
                   ) : (
                     <div className="text-center py-6 text-xs text-slate-400">
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
-                      No slow-moving inventory detected this week.
+                      No slow-moving inventory detected this period.
                     </div>
                   )}
                 </div>
@@ -439,7 +327,7 @@ const AIAdvisor = () => {
               </div>
             </div>
 
-            {/* 4. Customer Khata & Debt Recovery */}
+            {/* 4. Customer Khata Credit & Recovery */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl p-4 shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -459,13 +347,13 @@ const AIAdvisor = () => {
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60 text-xs space-y-2">
                   <div className="flex justify-between items-center text-[11px]">
                     <span className="text-slate-500">Total Outstanding Debt:</span>
-                    <span className="font-bold text-rose-600 dark:text-rose-400">
+                    <span className="font-bold text-rose-600 dark:text-rose-400 font-mono">
                       {formatCurrency(metrics.khata?.totalDebt || 0)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-[11px]">
                     <span className="text-slate-500">Advance Customer Credit (Surplus):</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">
                       {formatCurrency(metrics.khata?.totalSurplus || 0)}
                     </span>
                   </div>
@@ -487,7 +375,7 @@ const AIAdvisor = () => {
             </div>
           </div>
 
-          {/* 5. Strategic Growth Initiatives */}
+          {/* 5. Weekly Strategic Growth Initiatives */}
           {advice.growthInitiatives && advice.growthInitiatives.length > 0 && (
             <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl p-4 shadow-xs space-y-3">
               <div className="flex items-center gap-2">
