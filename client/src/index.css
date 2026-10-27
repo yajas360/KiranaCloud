@@ -9,8 +9,13 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #edf4ee;
   color: #0f172a;
+}
+
+.dark body {
+  background-color: #020617;
+  color: #f8fafc;
 }
 
 /* Custom scrollbars */
@@ -26,6 +31,10 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
 }
 
 ::-webkit-scrollbar-thumb:hover {
