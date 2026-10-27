@@ -35,7 +35,6 @@ export const seedStoreData = async () => {
       currency: 'INR',
       currencySymbol: '₹',
       taxRate: 5,
-      geminiApiKey: process.env.GEMINI_API_KEY || '',
     });
 
     console.log('[Seed] Populating store inventory catalog...');

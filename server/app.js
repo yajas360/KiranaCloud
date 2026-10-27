@@ -9,7 +9,6 @@ import productRoutes from './routes/productRoutes.js';
 import saleRoutes from './routes/saleRoutes.js';
 import customerRoutes from './routes/customerRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
-import aiRoutes from './routes/aiRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 dotenv.config();
@@ -84,7 +83,6 @@ app.use('/api/products', productRoutes);
 app.use('/api/sales', saleRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/analytics', analyticsRoutes);
-app.use('/api/ai', aiRoutes);
 
 // Error Middleware
 app.use(notFound);

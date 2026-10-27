@@ -4,7 +4,6 @@ import {
   Store,
   ShoppingCart,
   LayoutDashboard,
-  Sparkles,
   Package,
   AlertTriangle,
   Receipt,
@@ -18,7 +17,6 @@ import { useAuth } from '../../context/AuthContext';
 const navigation = [
   { name: 'Billing Counter', to: '/pos', icon: ShoppingCart },
   { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-  { name: 'AI Advisor', to: '/ai-advisor', icon: Sparkles },
   { name: 'Inventory', to: '/inventory', icon: Package },
   { name: 'Reorder Sheet', to: '/reorder-sheet', icon: AlertTriangle },
   { name: 'Sales & Invoices', to: '/invoices', icon: Receipt },

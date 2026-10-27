@@ -10,7 +10,6 @@ import {
   ArrowRight,
   TrendingDown,
   Calculator,
-  Sparkles,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -78,47 +77,14 @@ const Dashboard = () => {
           <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Retail Performance Dashboard</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">Live overview of sales, profit margins, inventory health, and register balance.</p>
         </div>
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <Link
-            to="/ai-advisor"
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-xl shadow-xs transition"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Advisor</span>
-          </Link>
-          <button
-            onClick={() => setIsDayCloseOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-xs transition"
-            title="End of day register balancing and Z-Report"
-          >
-            <Calculator className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <span>Day-Close (Z-Report)</span>
-          </button>
-        </div>
-      </div>
-
-      {/* AI Business Intelligence Quick Bar */}
-      <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-blue-500/10 border-2 border-emerald-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
-              AI Retail Strategy & Store Briefing Available
-            </p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-              Review live pricing recommendations, dead stock clearance plans, and Khata credit risk alerts.
-            </p>
-          </div>
-        </div>
-        <Link
-          to="/ai-advisor"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/80 hover:bg-emerald-200 dark:hover:bg-emerald-900 rounded-xl transition shrink-0"
+        <button
+          onClick={() => setIsDayCloseOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-xs transition self-start sm:self-auto"
+          title="End of day register balancing and Z-Report"
         >
-          <span>Open AI Advisor</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+          <Calculator className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>Day-Close (Z-Report)</span>
+        </button>
       </div>
 
       {/* Low Stock Urgent Warning Banner */}
