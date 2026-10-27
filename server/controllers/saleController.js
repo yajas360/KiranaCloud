@@ -117,10 +117,10 @@ export const createSale = async (req, res, next) => {
     // 3. Khata Credit validation upfront (before decrementing inventory stock)
     let khataCustomer = null;
     if (paymentMethod === 'Credit') {
-      if (!sanitizedPhone || !/^[6-9]\d{9}$/.test(sanitizedPhone)) {
+      if (!sanitizedPhone || !/^\d{10}$/.test(sanitizedPhone)) {
         return res.status(400).json({
           success: false,
-          message: 'A valid 10-digit mobile number starting with 6, 7, 8, or 9 is required to record a Khata credit purchase.',
+          message: 'A valid 10-digit customer phone number is required to record a Khata credit purchase.',
         });
       }
 
@@ -152,10 +152,10 @@ export const createSale = async (req, res, next) => {
           excess: projectedDebt - creditLimit,
         });
       }
-    } else if (sanitizedPhone && !/^[6-9]\d{9}$/.test(sanitizedPhone)) {
+    } else if (sanitizedPhone && !/^\d{10}$/.test(sanitizedPhone)) {
       return res.status(400).json({
         success: false,
-        message: 'Optional customer phone must be a valid 10-digit mobile number.',
+        message: 'Optional customer phone must be a valid 10-digit number.',
       });
     }
 

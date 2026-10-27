@@ -49,10 +49,10 @@ const customerSchema = new mongoose.Schema(
       index: true,
       validate: {
         validator: function (v) {
-          return /^[6-9]\d{9}$/.test(v);
+          return /^\d{10}$/.test(v);
         },
         message: (props) =>
-          `"${props.value}" is not a valid 10-digit mobile number. Must be exactly 10 digits starting with 6, 7, 8, or 9.`,
+          `"${props.value}" is not a valid 10-digit phone number. Must be exactly 10 digits.`,
       },
     },
     balance: {

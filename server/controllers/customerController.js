@@ -70,11 +70,11 @@ export const createCustomer = async (req, res, next) => {
       cleanPhone = cleanPhone.slice(1);
     }
 
-    // Validate 10-digit mobile number format
-    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+    // Validate 10-digit phone number format (any 10 digits)
+    if (!/^\d{10}$/.test(cleanPhone)) {
       return res.status(400).json({
         success: false,
-        message: 'Phone number must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9 (e.g., 9876543210).',
+        message: 'Phone number must be a valid 10-digit number.',
       });
     }
 

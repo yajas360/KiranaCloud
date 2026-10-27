@@ -104,8 +104,8 @@ const CustomersKhata = () => {
     }
 
     const cleanPhone = newCustPhone.replace(/\D/g, '');
-    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
-      setAddError('Phone Number must be a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.');
+    if (!/^\d{10}$/.test(cleanPhone)) {
+      setAddError('Phone Number must be a valid 10-digit number.');
       return;
     }
 
@@ -610,20 +610,18 @@ const CustomersKhata = () => {
                     setNewCustPhone(digits);
                   }}
                   className={`w-full px-3.5 py-2.5 text-xs rounded-lg border-2 focus:outline-none focus:ring-2 font-mono shadow-sm transition ${
-                    newCustPhone.length === 10 && /^[6-9]\d{9}$/.test(newCustPhone)
-                      ? 'border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-slate-900 font-bold'
-                      : newCustPhone.length > 0 && (!/^[6-9]/.test(newCustPhone) || newCustPhone.length < 10)
+                    newCustPhone.length === 10
+                      ? 'border-emerald-500 focus:ring-emerald-500 bg-emerald-50/40 text-slate-900 font-bold'
+                      : newCustPhone.length > 0
                       ? 'border-amber-400 focus:ring-amber-400 bg-amber-50/20 text-slate-900 font-bold'
                       : 'border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:ring-emerald-500'
                   }`}
                 />
                 <p className="mt-1 text-[10px]">
-                  {newCustPhone.length === 10 && /^[6-9]\d{9}$/.test(newCustPhone) ? (
-                    <span className="text-emerald-600 font-medium">✓ Valid 10-digit mobile number</span>
-                  ) : newCustPhone.length > 0 && !/^[6-9]/.test(newCustPhone) ? (
-                    <span className="text-rose-500 font-medium">⚠ Indian mobile numbers must start with 6, 7, 8, or 9</span>
+                  {newCustPhone.length === 10 ? (
+                    <span className="text-emerald-600 font-medium">✓ Valid 10-digit phone number</span>
                   ) : (
-                    <span className="text-slate-400">Must be a 10-digit mobile number (starts with 6, 7, 8, or 9)</span>
+                    <span className="text-slate-500">Must be a 10-digit phone number ({newCustPhone.length}/10 entered)</span>
                   )}
                 </p>
               </div>

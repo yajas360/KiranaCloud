@@ -137,29 +137,28 @@ describe('Store Inventory & POS Billing Logic', () => {
     assert.equal(exactChange, 0);
   });
 
-  test('validates customer 10-digit mobile number format and credit limits', () => {
-    const isValidIndianMobile = (phone) => {
+  test('validates customer 10-digit phone number format and credit limits', () => {
+    const isValid10DigitPhone = (phone) => {
       let clean = String(phone || '').replace(/\D/g, '');
       if (clean.length === 12 && clean.startsWith('91')) clean = clean.slice(2);
       if (clean.length === 11 && clean.startsWith('0')) clean = clean.slice(1);
-      return /^[6-9]\d{9}$/.test(clean);
+      return /^\d{10}$/.test(clean);
     };
 
-    // Valid 10-digit phone numbers
-    assert.equal(isValidIndianMobile('9876543210'), true);
-    assert.equal(isValidIndianMobile('+91 98765 43210'), true);
-    assert.equal(isValidIndianMobile('09876543210'), true);
-    assert.equal(isValidIndianMobile('8123456789'), true);
-    assert.equal(isValidIndianMobile('7012345678'), true);
-    assert.equal(isValidIndianMobile('6398765432'), true);
+    // Valid 10-digit phone numbers (any initial digit allowed)
+    assert.equal(isValid10DigitPhone('9876543210'), true);
+    assert.equal(isValid10DigitPhone('+91 98765 43210'), true);
+    assert.equal(isValid10DigitPhone('09876543210'), true);
+    assert.equal(isValid10DigitPhone('1234567890'), true);
+    assert.equal(isValid10DigitPhone('2345678901'), true);
+    assert.equal(isValid10DigitPhone('8123456789'), true);
+    assert.equal(isValid10DigitPhone('5551234567'), true);
 
     // Invalid phone numbers
-    assert.equal(isValidIndianMobile('1234567890'), false); // starts with 1
-    assert.equal(isValidIndianMobile('0123456789'), false); // starts with 1 after strip
-    assert.equal(isValidIndianMobile('987654321'), false);  // 9 digits
-    assert.equal(isValidIndianMobile('98765432100'), false); // 11 digits
-    assert.equal(isValidIndianMobile('abcdefghij'), false); // letters
-    assert.equal(isValidIndianMobile(''), false); // empty
+    assert.equal(isValid10DigitPhone('987654321'), false);   // 9 digits
+    assert.equal(isValid10DigitPhone('98765432100'), false); // 11 digits
+    assert.equal(isValid10DigitPhone('abcdefghij'), false);  // letters
+    assert.equal(isValid10DigitPhone(''), false);            // empty
 
     // Customer credit limit bounds
     const validateCreditLimit = (limit) => {
