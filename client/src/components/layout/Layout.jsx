@@ -5,7 +5,7 @@ import Header from './Header';
 
 const pageTitles = {
   '/dashboard': 'Store Performance & Profit',
-  '/pos': 'POS Billing Terminal',
+  '/pos': 'Billing Counter',
   '/inventory': 'Stock Inventory',
   '/reorder-sheet': 'Low-Stock Reorder Sheet',
   '/invoices': 'Invoice History',

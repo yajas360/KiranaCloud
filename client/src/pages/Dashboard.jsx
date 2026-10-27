@@ -167,7 +167,7 @@ const Dashboard = () => {
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-bold hover:bg-emerald-100 transition"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
-              <span>Counter POS</span>
+              <span>Billing Counter</span>
             </Link>
           </div>
 

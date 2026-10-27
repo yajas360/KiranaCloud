@@ -73,55 +73,87 @@ export const createSale = async (req, res, next) => {
       });
     }
 
-    // 2. Decrement stock for all items
+    // 2. Compute bill math upfront
+    const numDiscount = Math.max(0, parseFloat(discount) || 0);
+    const numTax = Math.max(0, parseFloat(tax) || 0);
+    const grandTotal = Math.max(0, subtotal - numDiscount + numTax);
+    const netProfit = (subtotal - numDiscount) - totalCost;
+
+    const numTendered = parseFloat(amountTendered) || grandTotal;
+    const changeDue = Math.max(0, numTendered - grandTotal);
+
+    // 3. Khata Credit validation upfront (before decrementing inventory stock)
+    let khataCustomer = null;
+    if (paymentMethod === 'Credit') {
+      if (!customerPhone || !customerPhone.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Customer phone number is required to record a Khata credit purchase.',
+        });
+      }
+
+      khataCustomer = await Customer.findOne({
+        user: req.user._id,
+        phone: customerPhone.trim(),
+      });
+
+      const currentBalance = khataCustomer ? khataCustomer.balance : 0;
+      const creditLimit = khataCustomer ? (khataCustomer.creditLimit || 5000) : 5000;
+      const projectedDebt = currentBalance + grandTotal;
+
+      if (projectedDebt > creditLimit && !req.body.overrideCreditLimit) {
+        return res.status(400).json({
+          success: false,
+          creditLimitExceeded: true,
+          message: `Customer credit limit of ₹${creditLimit} exceeded! Current debt: ₹${currentBalance}. Adding ₹${grandTotal} reaches ₹${projectedDebt} (₹${projectedDebt - creditLimit} over limit).`,
+          creditLimit,
+          currentBalance,
+          projectedDebt,
+          excess: projectedDebt - creditLimit,
+        });
+      }
+    }
+
+    // 4. Decrement stock for all items
     for (const item of saleItems) {
       await Product.findByIdAndUpdate(item.product, {
         $inc: { stockQuantity: -item.quantity },
       });
     }
 
-    // 3. Compute final bill math
-    const numDiscount = Math.max(0, parseFloat(discount) || 0);
-    const numTax = Math.max(0, parseFloat(tax) || 0);
-    const grandTotal = Math.max(0, subtotal - numDiscount + numTax);
-    const netProfit = grandTotal - numDiscount - totalCost;
-
-    const numTendered = parseFloat(amountTendered) || grandTotal;
-    const changeDue = Math.max(0, numTendered - grandTotal);
-
-    // Sequential / timestamped Invoice Number
+    // 5. Sequential / timestamped Invoice Number
     const count = await Sale.countDocuments({ user: req.user._id });
     const invoiceNumber = `INV-${String(count + 1).padStart(4, '0')}`;
 
-    // 4. Handle Customer Khata Credit if selected
+    // 6. Handle Customer Khata Credit ledger update
     if (paymentMethod === 'Credit' && customerPhone) {
-      let customer = await Customer.findOne({ user: req.user._id, phone: customerPhone.trim() });
-      if (!customer) {
-        customer = await Customer.create({
+      if (!khataCustomer) {
+        khataCustomer = await Customer.create({
           user: req.user._id,
-          name: customerName.trim(),
+          name: customerName?.trim() || 'Credit Customer',
           phone: customerPhone.trim(),
           balance: grandTotal,
+          creditLimit: 5000,
           history: [
             {
               type: 'PURCHASE',
               amount: grandTotal,
               invoiceNumber,
-              notes: 'Credit sale at checkout',
+              notes: 'Credit sale at Billing Counter',
               date: new Date(),
             },
           ],
         });
       } else {
-        customer.balance += grandTotal;
-        customer.history.push({
+        khataCustomer.balance += grandTotal;
+        khataCustomer.history.push({
           type: 'PURCHASE',
           amount: grandTotal,
           invoiceNumber,
-          notes: 'Credit sale at checkout',
+          notes: 'Credit sale at Billing Counter',
           date: new Date(),
         });
-        await customer.save();
+        await khataCustomer.save();
       }
     }
 

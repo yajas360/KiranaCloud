@@ -85,9 +85,15 @@ const PosCounter = () => {
         setCart([]);
         // Re-fetch products to reflect the newly decremented stock!
         fetchProducts();
+        return { success: true };
       }
     } catch (err) {
-      alert(err.response?.data?.message || 'Checkout failed.');
+      const msg = err.response?.data?.message || 'Checkout failed.';
+      return {
+        success: false,
+        message: msg,
+        creditLimitExceeded: err.response?.data?.creditLimitExceeded || false,
+      };
     } finally {
       setCheckoutLoading(false);
     }
@@ -96,7 +102,7 @@ const PosCounter = () => {
   return (
     <div className="h-[calc(100vh-7rem)] flex flex-col">
       {loadingProducts ? (
-        <LoadingSpinner text="Initializing POS terminal & products..." size="lg" />
+        <LoadingSpinner text="Initializing Billing Counter & products..." size="lg" />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full min-h-0">
           {/* Left Column: Product Search & Grid */}

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   AlertTriangle,
-  Printer,
   PackageCheck,
   ArrowDownCircle,
   Truck,
@@ -43,10 +42,6 @@ const ReorderSheet = () => {
     fetchReorderSheet();
   }, []);
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -63,16 +58,6 @@ const ReorderSheet = () => {
           <p className="text-xs text-slate-500 mt-0.5 ml-6">
             Auto-compiled purchase requisition for products currently below safety stock thresholds.
           </p>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={handlePrint}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition shadow-sm"
-          >
-            <Printer className="w-4 h-4 text-slate-500" />
-            <span>Print Reorder Sheet</span>
-          </button>
         </div>
       </div>
 

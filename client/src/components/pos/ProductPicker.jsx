@@ -7,6 +7,7 @@ const ProductPicker = ({ products = [], cart = [], onAddToCart }) => {
   const { currency, currencySymbol } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('default');
 
   const categories = [
     'All',
@@ -16,19 +17,34 @@ const ProductPicker = ({ products = [], cart = [], onAddToCart }) => {
     'Snacks & Packaged Foods',
     'Personal Care',
     'Household & Cleaning',
+    'Fruits & Vegetables',
     'Stationery & General',
+    'Other',
   ];
 
-  const filteredProducts = products.filter((p) => {
-    const matchesCategory =
-      selectedCategory === 'All' || p.category === selectedCategory;
-    const matchesSearch =
-      searchTerm.trim() === '' ||
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.sku.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredProducts = products
+    .filter((p) => {
+      const matchesCategory =
+        selectedCategory === 'All' || p.category === selectedCategory;
+      const matchesSearch =
+        searchTerm.trim() === '' ||
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.sku.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return matchesCategory && matchesSearch;
-  });
+      return matchesCategory && matchesSearch;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'price-asc') {
+        return a.sellingPrice - b.sellingPrice;
+      }
+      if (sortBy === 'price-desc') {
+        return b.sellingPrice - a.sellingPrice;
+      }
+      if (sortBy === 'name-asc') {
+        return a.name.localeCompare(b.name);
+      }
+      return 0; // default order
+    });
 
   const getCartQuantity = (productId) => {
     const found = cart.find((item) => item.product._id === productId);
@@ -37,35 +53,43 @@ const ProductPicker = ({ products = [], cart = [], onAddToCart }) => {
 
   return (
     <div className="flex flex-col h-full space-y-3">
-      {/* Search and Category Filter Bar */}
-      <div className="space-y-2">
-        <div className="relative">
+      {/* Search, Category Dropdown, and Sort Controls */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
           <input
             type="text"
             placeholder="Scan barcode, SKU, or search item name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-white border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 shadow-sm"
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-white border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 shadow-sm font-medium"
           />
         </div>
 
-        {/* Category horizontal scroll */}
-        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        {/* Category Dropdown (default All) */}
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="px-3 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 shadow-sm"
+        >
           {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${
-                selectedCategory === cat
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {cat}
-            </button>
+            <option key={cat} value={cat}>
+              Category: {cat}
+            </option>
           ))}
-        </div>
+        </select>
+
+        {/* Sort by Price & Name Dropdown */}
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="px-3 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 shadow-sm"
+        >
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Name: A to Z</option>
+        </select>
       </div>
 
       {/* Product Cards Grid */}

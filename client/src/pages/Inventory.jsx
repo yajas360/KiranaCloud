@@ -41,6 +41,7 @@ const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [stockStatus, setStockStatus] = useState('ALL');
+  const [sortBy, setSortBy] = useState('default');
 
   // Modals state
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -164,6 +165,19 @@ const Inventory = () => {
             <option value="OUT_OF_STOCK">🚫 Out of Stock Only</option>
             <option value="IN_STOCK">✅ Healthy Stock Only</option>
           </select>
+
+          {/* Sort By Price Dropdown */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="px-3 py-2 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          >
+            <option value="default">Sort: Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A to Z</option>
+            <option value="stock-asc">Stock: Low to High</option>
+          </select>
         </div>
       </div>
 
@@ -198,7 +212,15 @@ const Inventory = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
-                {products.map((p) => {
+                {[...products]
+                  .sort((a, b) => {
+                    if (sortBy === 'price-asc') return a.sellingPrice - b.sellingPrice;
+                    if (sortBy === 'price-desc') return b.sellingPrice - a.sellingPrice;
+                    if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+                    if (sortBy === 'stock-asc') return a.stockQuantity - b.stockQuantity;
+                    return 0;
+                  })
+                  .map((p) => {
                   const marginAmount = p.sellingPrice - p.costPrice;
                   const marginPct =
                     p.sellingPrice > 0 ? Math.round((marginAmount / p.sellingPrice) * 100) : 0;

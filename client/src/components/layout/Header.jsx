@@ -30,7 +30,7 @@ const Header = ({ onOpenSidebar, title = 'StorePulse' }) => {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-95 rounded-lg shadow-sm transition"
           >
             <ShoppingCart className="w-3.5 h-3.5" />
-            <span>POS Counter</span>
+            <span>Billing Counter</span>
           </Link>
         )}
 

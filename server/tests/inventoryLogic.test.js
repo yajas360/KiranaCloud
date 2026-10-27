@@ -61,4 +61,18 @@ describe('Store Inventory & POS Billing Logic', () => {
     const hasSufficientStock = availableStock >= requestedQuantity;
     assert.equal(hasSufficientStock, false);
   });
+
+  test('validates customer credit limit ceiling during Khata credit sales', () => {
+    const customer = { balance: 4200, creditLimit: 5000 };
+    const billAmount = 1000;
+    const projectedDebt = customer.balance + billAmount;
+
+    // Without override: rejected
+    const isExceeded = projectedDebt > customer.creditLimit;
+    assert.equal(isExceeded, true);
+
+    // Over-limit excess calculation
+    const excess = projectedDebt - customer.creditLimit;
+    assert.equal(excess, 200);
+  });
 });

@@ -30,6 +30,8 @@ const CartDrawer = ({
   const [amountTendered, setAmountTendered] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [overrideCreditLimit, setOverrideCreditLimit] = useState(false);
+  const [showCreditOverride, setShowCreditOverride] = useState(false);
   const [error, setError] = useState(null);
 
   // Math Calculations
@@ -42,7 +44,7 @@ const CartDrawer = ({
   const numTendered = parseFloat(amountTendered) || grandTotal;
   const changeDue = Math.max(0, numTendered - grandTotal);
 
-  const handleCheckoutSubmit = (e) => {
+  const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
@@ -70,9 +72,19 @@ const CartDrawer = ({
       changeDue,
       customerName: customerName.trim() || 'Walk-in Customer',
       customerPhone: customerPhone.trim(),
+      overrideCreditLimit,
     };
 
-    onCheckout(payload);
+    const res = await onCheckout(payload);
+    if (res && !res.success) {
+      setError(res.message);
+      if (res.creditLimitExceeded) {
+        setShowCreditOverride(true);
+      }
+    } else {
+      setShowCreditOverride(false);
+      setOverrideCreditLimit(false);
+    }
   };
 
   return (
@@ -163,9 +175,32 @@ const CartDrawer = ({
       {cart.length > 0 && (
         <form onSubmit={handleCheckoutSubmit} className="p-3.5 border-t border-slate-200 bg-slate-50/70 space-y-3 flex-shrink-0">
           {error && (
-            <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-[11px] text-rose-700 flex items-center gap-1.5">
-              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-              <span>{error}</span>
+            <div className="space-y-1.5">
+              <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-[11px] text-rose-700 flex items-start gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                <span className="leading-tight">{error}</span>
+              </div>
+              {showCreditOverride && (
+                <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-900 flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="overrideCredit"
+                    checked={overrideCreditLimit}
+                    onChange={(e) => setOverrideCreditLimit(e.target.checked)}
+                    className="rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                  />
+                  <label htmlFor="overrideCredit" className="font-bold cursor-pointer text-xs">
+                    Authorize Store Manager Override
+                  </label>
+                </div>
+              )}
+            </div>
+          )}
+
+          {paymentMethod === 'Credit' && !error && (
+            <div className="p-2 rounded-lg bg-slate-100/90 border border-slate-200 text-[11px] text-slate-700 flex items-center justify-between">
+              <span>Khata Credit Mode</span>
+              <span className="text-[10px] font-bold text-slate-500">Subject to ₹5,000 safety limit</span>
             </div>
           )}
 
