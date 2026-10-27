@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import PosCounter from './pages/PosCounter';
+import AIAdvisor from './pages/AIAdvisor';
 import Inventory from './pages/Inventory';
 import ReorderSheet from './pages/ReorderSheet';
 import Invoices from './pages/Invoices';
@@ -33,6 +34,7 @@ function App() {
               <Route element={<Layout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/pos" element={<PosCounter />} />
+                <Route path="/ai-advisor" element={<AIAdvisor />} />
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/reorder-sheet" element={<ReorderSheet />} />
                 <Route path="/invoices" element={<Invoices />} />

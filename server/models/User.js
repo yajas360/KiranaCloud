@@ -56,6 +56,12 @@ const userSchema = new mongoose.Schema(
       type: Number, // Percentage, e.g. 5%
       default: 5,
     },
+    geminiApiKey: {
+      type: String,
+      default: '',
+      trim: true,
+      select: false,
+    },
   },
   {
     timestamps: true,

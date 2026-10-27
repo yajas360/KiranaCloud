@@ -111,6 +111,11 @@ export const logout = (req, res) => {
 };
 
 export const getMe = async (req, res) => {
+  const user = await User.findById(req.user._id).select('+geminiApiKey');
+  const storedKey = user?.geminiApiKey || '';
+  const envKey = process.env.GEMINI_API_KEY || '';
+  const activeKey = storedKey || envKey;
+
   res.status(200).json({
     success: true,
     user: {
@@ -124,14 +129,16 @@ export const getMe = async (req, res) => {
       currency: req.user.currency,
       currencySymbol: req.user.currencySymbol,
       taxRate: req.user.taxRate,
+      hasGeminiApiKey: Boolean(activeKey),
+      geminiKeyMasked: activeKey ? `••••••••${activeKey.slice(-4)}` : '',
     },
   });
 };
 
 export const updateStoreProfile = async (req, res, next) => {
   try {
-    const { name, storeName, storePhone, storeAddress, taxRate, currency, currencySymbol } = req.body;
-    const user = await User.findById(req.user._id);
+    const { name, storeName, storePhone, storeAddress, taxRate, currency, currencySymbol, geminiApiKey } = req.body;
+    const user = await User.findById(req.user._id).select('+geminiApiKey');
 
     if (name) user.name = name.trim();
     if (storeName) user.storeName = storeName.trim();
@@ -140,8 +147,11 @@ export const updateStoreProfile = async (req, res, next) => {
     if (taxRate !== undefined) user.taxRate = parseFloat(taxRate) || 0;
     if (currency) user.currency = currency.toUpperCase();
     if (currencySymbol) user.currencySymbol = currencySymbol;
+    if (geminiApiKey !== undefined) user.geminiApiKey = geminiApiKey.trim();
 
     await user.save();
+
+    const activeKey = user.geminiApiKey || process.env.GEMINI_API_KEY || '';
 
     res.status(200).json({
       success: true,
@@ -156,6 +166,8 @@ export const updateStoreProfile = async (req, res, next) => {
         taxRate: user.taxRate,
         currency: user.currency,
         currencySymbol: user.currencySymbol,
+        hasGeminiApiKey: Boolean(activeKey),
+        geminiKeyMasked: activeKey ? `••••••••${activeKey.slice(-4)}` : '',
       },
     });
   } catch (err) {

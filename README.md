@@ -142,6 +142,14 @@ During peak evening rush hours (6:00 PM – 9:30 PM), shopkeepers face four recu
 - **Top 5 Bestsellers:** Ranked by unit sales and revenue contribution.
 - **Invoice Auditing & Voiding:** Search historical bills, view itemized slips, and void accidental invoices with automatic shelf stock restoration.
 
+### 🤖 7. AI Business Advisor (Powered by Google Gemini)
+- **Daily Closing Briefing:** 10-second end-of-day executive summary covering revenue trends, profit health scores, and register audit context.
+- **Weekly Strategy & Forecast:** Identifies dead inventory (>14 days with zero movement) tying up working capital and suggests actionable clearance bundles.
+- **Margin Leakage Alerts:** Flags items with razor-thin margins (<8%) and suggests exact retail price adjustments to protect profitability.
+- **Priority Reorder Forecast:** Direct deep-link recommendations to replenish critical low-stock items with estimated distributor budgets.
+- **Khata Risk Scoring:** Spots overdue credit balances and provides one-click reminders to prevent bad debts.
+- **Zero-Cost Operation:** Powered by the free Google Gemini 1.5 Flash API tier (1,500 free requests per day, zero credit card required). Includes an intelligent heuristic fallback mode if no API key is provided.
+
 ---
 
 ## ⌨️ POS Keyboard Shortcuts Cheat Sheet
@@ -339,12 +347,13 @@ All protected endpoints require a valid JWT passed via `Authorization: Bearer <t
 | `POST` | `/api/customers/:id/refund` | Record a cash refund when settling advance surplus balance |
 | `DELETE` | `/api/customers/:id` | Delete customer account (only if balance is ₹0) |
 
-### Analytics & Day-Close Auditing
+### Analytics, Day-Close Auditing & AI Advisor
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/analytics/metrics` | Retrieve dashboard KPI cards, 7-day revenue/profit, and category split |
 | `GET` | `/api/analytics/day-close/summary`| Live register summary (starting float, cash sales, Khata cash) |
 | `POST` | `/api/analytics/day-close` | Submit cashier's physical cash count and store daily Z-Report |
+| `GET` | `/api/ai/advisor?mode=daily` | Get live AI store closing briefing or weekly strategic plan |
 
 ---
 
