@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Store, User, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { Store, User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
+  const [loginMethod, setLoginMethod] = useState('phone'); // 'phone' | 'email'
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -15,9 +16,9 @@ const Login = () => {
 
   const handleIdentifierChange = (e) => {
     const val = e.target.value;
-    // If the input consists purely of digits, enforce 10-digit limit for Indian phone numbers
-    if (/^\d+$/.test(val)) {
-      setIdentifier(val.slice(0, 10));
+    if (loginMethod === 'phone') {
+      const onlyDigits = val.replace(/\D/g, '').slice(0, 10);
+      setIdentifier(onlyDigits);
     } else {
       setIdentifier(val);
     }
@@ -27,14 +28,13 @@ const Login = () => {
     e.preventDefault();
     setError(null);
 
-    // If identifier is numeric, ensure it is exactly 10 digits
-    if (/^\d+$/.test(identifier) && identifier.length !== 10) {
+    if (loginMethod === 'phone' && (identifier.length !== 10 || !/^\d{10}$/.test(identifier))) {
       setError('Phone number must be exactly 10 digits.');
       return;
     }
 
     if (!identifier.trim()) {
-      setError('Please enter a valid email or 10-digit phone number.');
+      setError(`Please enter your ${loginMethod === 'phone' ? '10-digit phone number' : 'email address'}.`);
       return;
     }
 
@@ -63,12 +63,28 @@ const Login = () => {
           </div>
           <span className="text-2xl font-black text-slate-900 tracking-tight">KiranaCloud</span>
         </Link>
-        <h2 className="text-xl font-bold text-slate-800">Sign in to Store Terminal</h2>
+        <h2 className="text-xl font-bold text-slate-800">Store Staff Authentication</h2>
         <p className="text-xs text-slate-500 mt-1">Access your POS billing counter and inventory</p>
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+        <div className="bg-white py-6 px-6 sm:px-10 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          {/* Segmented Auth Mode Switch (Sign In vs Register Store) */}
+          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
+            <Link
+              to="/login"
+              className="flex-1 py-2 text-center rounded-lg bg-white text-emerald-600 shadow-xs font-bold transition"
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/register"
+              className="flex-1 py-2 text-center rounded-lg text-slate-500 hover:text-slate-900 transition"
+            >
+              Register Store
+            </Link>
+          </div>
+
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -76,19 +92,60 @@ const Login = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 pt-1">
+            {/* Login Method Toggle (Mobile vs Email) */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Email or Phone Number
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-bold text-slate-700">
+                  {loginMethod === 'phone' ? '10-Digit Mobile Number' : 'Email Address'}
+                </label>
+                <div className="inline-flex rounded-lg bg-slate-100 p-0.5 text-[10px] font-bold border border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginMethod('phone');
+                      setIdentifier('');
+                      setError(null);
+                    }}
+                    className={`px-2.5 py-0.5 rounded-md transition ${
+                      loginMethod === 'phone'
+                        ? 'bg-white text-emerald-600 shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    Mobile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginMethod('email');
+                      setIdentifier('');
+                      setError(null);
+                    }}
+                    className={`px-2.5 py-0.5 rounded-md transition ${
+                      loginMethod === 'email'
+                        ? 'bg-white text-emerald-600 shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    Email
+                  </button>
+                </div>
+              </div>
+
               <div className="relative">
-                <User className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+                {loginMethod === 'phone' ? (
+                  <Phone className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+                ) : (
+                  <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+                )}
                 <input
-                  type="text"
+                  type={loginMethod === 'phone' ? 'tel' : 'email'}
                   required
+                  maxLength={loginMethod === 'phone' ? 10 : 100}
                   value={identifier}
                   onChange={handleIdentifierChange}
-                  className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold font-mono"
                 />
               </div>
             </div>
