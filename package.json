@@ -1,0 +1,16 @@
+{
+  "name": "storepulse-pos",
+  "version": "1.0.0",
+  "description": "StorePulse — Retail Inventory & Point-of-Sale Billing System (MERN)",
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "seed": "cd server && npm run seed",
+    "test": "cd server && npm test",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start"
+  },
+  "keywords": ["mern", "inventory", "pos", "retail", "billing", "store-management"],
+  "author": "",
+  "license": "MIT"
+}
