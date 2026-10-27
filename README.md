@@ -1,4 +1,4 @@
-# StorePulse POS — Smart Retail Inventory & Point-of-Sale Billing System
+# KiranaCloud POS — Smart Retail Inventory & Point-of-Sale Billing System
 
 > Production-ready, full-stack **MERN** Retail Management & Point-of-Sale solution designed for physical retail shops, supermarkets, kirana stores, and daily-needs businesses.
 
@@ -6,7 +6,7 @@
 
 ## 1. Project Overview
 
-- **Project Name:** StorePulse POS
+- **Project Name:** KiranaCloud POS
 - **Architecture:** Full-Stack MERN (MongoDB, Express.js, React.js with Vite, Node.js)
 - **Target Audience:** Supermarkets, convenience stores, grocery retailers, and shop managers needing fast counter checkout, live inventory tracking, customer credit (Khata) management, and daily cash drawer balancing.
 
@@ -40,7 +40,7 @@ Small and mid-size retail stores struggle with four major daily problems:
 - **Full SKU Management:** Track Selling Price, Wholesale Cost Price, Stock Quantity, Units, Safety Thresholds, and Suppliers.
 - **Price Updating Anytime:** Update both selling price and wholesale cost price anytime via the edit modal or directly during inbound restocking.
 - **Bulk CSV Import:** Upload `.csv` spreadsheets with pre-import table previews to create or batch update hundreds of items in seconds.
-- **Sample Template Download:** Download a pre-formatted `storepulse_products_template.csv` template with sample rows.
+- **Sample Template Download:** Download a pre-formatted `kiranacloud_products_template.csv` template with sample rows.
 - **Inventory CSV Export:** 1-click export of the full inventory catalog with dated file naming.
 
 ### 📋 3. Supplier Reorder Sheet
@@ -160,8 +160,8 @@ Create `server/.env` (or copy from `server/.env.example`):
 ```env
 PORT=5000
 NODE_ENV=development
-MONGODB_URI=mongodb://127.0.0.1:27017/storepulse
-JWT_SECRET=storepulse_super_secret_jwt_key_2026_production
+MONGODB_URI=mongodb://127.0.0.1:27017/kiranacloud
+JWT_SECRET=kiranacloud_super_secret_jwt_key_2026_production
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
 ```
@@ -178,9 +178,8 @@ npm run seed
 ```
 
 **Pre-configured Credentials:**
-- **Email:** `owner@storepulse.com`
+- **Email:** `owner@kiranacloud.com`
 - **Password:** `password123`
-*(Or simply click the "Explore Demo Store" button on the login screen for 1-click access!)*
 
 ### Step 4: Run the Application
 Open two terminal tabs:

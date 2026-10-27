@@ -26,7 +26,7 @@ const ReceiptModal = ({ isOpen, onClose, saleData }) => {
   } = saleData;
 
   const generateReceiptText = () => {
-    const sName = store.storeName || 'StorePulse Superstore';
+    const sName = store.storeName || 'KiranaCloud Retail';
     const sAddr = store.storeAddress || 'Main Market Road';
     const sPhone = store.storePhone || '+91 98765 43210';
     const dt = new Date(date).toLocaleString('en-IN', {

@@ -10,13 +10,13 @@ const startServer = async () => {
   try {
     await connectDB();
     const server = app.listen(PORT, () => {
-      console.log(`[StorePulse Server] Running on http://localhost:${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+      console.log(`[KiranaCloud Server] Running on http://localhost:${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
     });
 
     const shutdown = () => {
-      console.log('[StorePulse Server] Gracefully shutting down...');
+      console.log('[KiranaCloud Server] Gracefully shutting down...');
       server.close(() => {
-        console.log('[StorePulse Server] Closed remaining connections.');
+        console.log('[KiranaCloud Server] Closed remaining connections.');
         process.exit(0);
       });
     };
@@ -24,7 +24,7 @@ const startServer = async () => {
     process.on('SIGTERM', shutdown);
     process.on('SIGINT', shutdown);
   } catch (err) {
-    console.error('[StorePulse Server] Failed to start:', err.message);
+    console.error('[KiranaCloud Server] Failed to start:', err.message);
     process.exit(1);
   }
 };

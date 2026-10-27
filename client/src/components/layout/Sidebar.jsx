@@ -49,7 +49,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
             <div>
               <span className="text-xs font-black text-slate-900 tracking-tight block leading-none">
-                StorePulse
+                KiranaCloud
               </span>
               <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">
                 Retail Terminal

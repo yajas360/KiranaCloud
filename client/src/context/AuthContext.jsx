@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       setUser(null);
-      localStorage.removeItem('storepulse_token');
+      localStorage.removeItem('kiranacloud_token');
     } finally {
       setLoading(false);
     }
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       if (res.data.success) {
         setUser(res.data.user);
         if (res.data.token) {
-          localStorage.setItem('storepulse_token', res.data.token);
+          localStorage.setItem('kiranacloud_token', res.data.token);
         }
         return { success: true };
       }
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       if (res.data.success) {
         setUser(res.data.user);
         if (res.data.token) {
-          localStorage.setItem('storepulse_token', res.data.token);
+          localStorage.setItem('kiranacloud_token', res.data.token);
         }
         return { success: true };
       }
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
       console.warn('Logout error', err);
     } finally {
       setUser(null);
-      localStorage.removeItem('storepulse_token');
+      localStorage.removeItem('kiranacloud_token');
     }
   };
 

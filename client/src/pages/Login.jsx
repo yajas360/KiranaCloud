@@ -35,7 +35,7 @@ const Login = () => {
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-sm">
             <Store className="w-6 h-6" />
           </div>
-          <span className="text-2xl font-black text-slate-900 tracking-tight">StorePulse</span>
+          <span className="text-2xl font-black text-slate-900 tracking-tight">KiranaCloud</span>
         </Link>
         <h2 className="text-xl font-bold text-slate-800">Sign in to Store Terminal</h2>
         <p className="text-xs text-slate-500 mt-1">Access your POS billing counter and inventory</p>
@@ -59,7 +59,7 @@ const Login = () => {
                 <input
                   type="email"
                   required
-                  placeholder="owner@storepulse.com"
+                  placeholder="owner@kiranacloud.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold"

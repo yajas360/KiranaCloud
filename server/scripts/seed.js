@@ -13,7 +13,7 @@ export const seedStoreData = async () => {
     await connectDB();
 
     console.log('[Seed] Clearing previous demo data...');
-    const demoEmail = 'owner@storepulse.com';
+    const demoEmail = 'owner@kiranacloud.com';
     const existingUser = await User.findOne({ email: demoEmail });
 
     if (existingUser) {
@@ -368,7 +368,7 @@ export const seedStoreData = async () => {
     });
 
     console.log('[Seed] Done! Demo store owner ready:');
-    console.log('       Email:    owner@storepulse.com');
+    console.log('       Email:    owner@kiranacloud.com');
     console.log('       Password: password123');
 
     return user;

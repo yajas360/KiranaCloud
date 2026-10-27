@@ -28,7 +28,7 @@ const Landing = () => {
               <Store className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xl font-black text-slate-900 tracking-tight">StorePulse</span>
+              <span className="text-xl font-black text-slate-900 tracking-tight">KiranaCloud</span>
             </div>
           </div>
 
@@ -101,7 +101,7 @@ const Landing = () => {
               <div className="flex flex-wrap items-center justify-between border-b border-slate-100 pb-4 gap-2">
                 <div>
                   <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">
-                    StorePulse Architecture
+                    KiranaCloud Architecture
                   </span>
                   <h3 className="text-lg font-bold text-slate-900">Atomic Stock Deduction & Margin Math</h3>
                 </div>
@@ -196,7 +196,7 @@ const Landing = () => {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
-        <p>StorePulse POS &bull; End-Term Software Engineering Project &bull; Built with MERN Stack</p>
+        <p>KiranaCloud POS &bull; End-Term Software Engineering Project &bull; Built with MERN Stack</p>
       </footer>
     </div>
   );

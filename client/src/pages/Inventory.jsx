@@ -211,7 +211,7 @@ const Inventory = () => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `storepulse_inventory_${new Date().toISOString().split('T')[0]}.csv`);
+      link.setAttribute('download', `kiranacloud_inventory_${new Date().toISOString().split('T')[0]}.csv`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -230,7 +230,7 @@ const Inventory = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'storepulse_products_template.csv';
+    a.download = 'kiranacloud_products_template.csv';
     a.click();
     URL.revokeObjectURL(url);
   };

@@ -336,7 +336,7 @@ export const exportProductsCSV = async (req, res, next) => {
     const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
 
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename="storepulse_inventory.csv"');
+    res.setHeader('Content-Disposition', 'attachment; filename="kiranacloud_inventory.csv"');
     res.status(200).send(csvContent);
   } catch (err) {
     next(err);

@@ -4,7 +4,7 @@ import { User } from '../models/User.js';
 const sendTokenResponse = (user, statusCode, res) => {
   const token = jwt.sign(
     { id: user._id },
-    process.env.JWT_SECRET || 'storepulse_super_secret_jwt_key_2026_production',
+    process.env.JWT_SECRET || 'kiranacloud_super_secret_jwt_key_2026_production',
     {
       expiresIn: process.env.JWT_EXPIRES_IN || '7d',
     }

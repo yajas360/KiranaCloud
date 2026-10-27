@@ -1,7 +1,7 @@
 {
-  "name": "storepulse-pos",
+  "name": "kiranacloud-pos",
   "version": "1.0.0",
-  "description": "StorePulse — Retail Inventory & Point-of-Sale Billing System (MERN)",
+  "description": "KiranaCloud — Retail Inventory & Point-of-Sale Billing System (MERN)",
   "scripts": {
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",

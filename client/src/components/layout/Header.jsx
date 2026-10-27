@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, ShoppingCart } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
-const Header = ({ onOpenSidebar, title = 'StorePulse' }) => {
+const Header = ({ onOpenSidebar, title = 'KiranaCloud' }) => {
   const { currencySymbol, taxRate } = useAuth();
   const location = useLocation();
   const isPosPage = location.pathname === '/pos';

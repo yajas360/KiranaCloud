@@ -17,7 +17,7 @@ const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  const title = pageTitles[location.pathname] || 'StorePulse POS';
+  const title = pageTitles[location.pathname] || 'KiranaCloud POS';
 
   return (
     <div className="min-h-screen bg-slate-50 flex">

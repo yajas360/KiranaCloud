@@ -37,7 +37,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'StorePulse Inventory & POS API',
+    service: 'KiranaCloud Inventory & POS API',
   });
 });
 

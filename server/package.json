@@ -1,7 +1,7 @@
 {
-  "name": "storepulse-server",
+  "name": "kiranacloud-server",
   "version": "1.0.0",
-  "description": "Backend API for StorePulse Retail Inventory & POS Billing System",
+  "description": "Backend API for KiranaCloud Retail Inventory & POS Billing System",
   "main": "server.js",
   "type": "module",
   "scripts": {

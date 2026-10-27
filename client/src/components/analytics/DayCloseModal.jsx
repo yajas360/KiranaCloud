@@ -120,7 +120,7 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Z-Report - ${storeName || 'StorePulse'}</title>
+        <title>Z-Report - ${storeName || 'KiranaCloud'}</title>
         <style>
           body { font-family: monospace; width: 300px; margin: 0 auto; padding: 15px; color: #111; font-size: 12px; }
           .header { text-align: center; border-bottom: 1px dashed #444; padding-bottom: 8px; margin-bottom: 10px; }
@@ -136,7 +136,7 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
       </head>
       <body>
         <div class="header">
-          <div class="title">${storeName || 'StorePulse Retail'}</div>
+          <div class="title">${storeName || 'KiranaCloud Retail'}</div>
           <div class="sub">DAILY Z-REPORT / REGISTER CLOSE</div>
           <div class="sub">${new Date().toLocaleString()}</div>
         </div>
@@ -219,7 +219,7 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
                 )}
               </div>
               <p className="text-xs text-slate-500">
-                End-of-day register balancing & Z-Report for {storeName || 'StorePulse'}
+                End-of-day register balancing & Z-Report for {storeName || 'KiranaCloud'}
               </p>
             </div>
           </div>
