@@ -87,3 +87,12 @@ export const getCategoryColor = (category) => {
   };
   return colors[category] || 'bg-slate-100 text-slate-800 border-slate-200';
 };
+
+export const formatUnit = (unit) => {
+  if (!unit) return 'pcs';
+  const lower = String(unit).trim().toLowerCase();
+  if (lower === 'liter' || lower === 'litre' || lower === 'ltr' || lower === 'litres' || lower === 'l') {
+    return 'litres';
+  }
+  return unit;
+};

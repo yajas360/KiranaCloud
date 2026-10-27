@@ -8,7 +8,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import api from '../api/axios';
-import { formatCurrency, getCategoryColor } from '../utils/formatters';
+import { formatCurrency, getCategoryColor, formatUnit } from '../utils/formatters';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import RestockModal from '../components/inventory/RestockModal';
@@ -152,14 +152,14 @@ const ReorderSheet = () => {
                       <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                         item.currentStock === 0 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'
                       }`}>
-                        {item.currentStock} {item.unit}
+                        {item.currentStock} {formatUnit(item.unit)}
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-center text-slate-500 font-semibold">
-                      {item.minThreshold} {item.unit}
+                      {item.minThreshold} {formatUnit(item.unit)}
                     </td>
                     <td className="px-4 py-3.5 text-center font-black text-emerald-700 text-sm">
-                      +{item.suggestedOrderQty} {item.unit}
+                      +{item.suggestedOrderQty} {formatUnit(item.unit)}
                     </td>
                     <td className="px-4 py-3.5 text-right text-slate-600">
                       {formatCurrency(item.costPrice, currency, currencySymbol)}

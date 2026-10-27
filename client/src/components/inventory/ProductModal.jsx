@@ -15,7 +15,16 @@ const CATEGORIES = [
   'Other',
 ];
 
-const UNITS = ['pcs', 'kg', 'gm', 'liter', 'ml', 'packet', 'box'];
+const UNITS = ['pcs', 'kg', 'gm', 'litres', 'ml', 'packet', 'box'];
+
+const normalizeUnit = (u) => {
+  if (!u) return 'pcs';
+  const lower = String(u).trim().toLowerCase();
+  if (lower === 'liter' || lower === 'litre' || lower === 'litres' || lower === 'ltr' || lower === 'l') {
+    return 'litres';
+  }
+  return u;
+};
 
 const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => {
   const { currencySymbol } = useAuth();
@@ -47,7 +56,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
         sellingPrice: initialProduct.sellingPrice ?? '',
         stockQuantity: initialProduct.stockQuantity ?? '',
         minThreshold: initialProduct.minThreshold ?? '5',
-        unit: initialProduct.unit || 'pcs',
+        unit: normalizeUnit(initialProduct.unit),
         supplier: initialProduct.supplier || '',
         shelfLocation: initialProduct.shelfLocation || '',
         description: initialProduct.description || '',

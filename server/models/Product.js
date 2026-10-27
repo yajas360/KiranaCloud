@@ -12,7 +12,21 @@ export const STORE_CATEGORIES = [
   'Other',
 ];
 
-export const PRODUCT_UNITS = ['pcs', 'kg', 'gm', 'liter', 'ml', 'packet', 'box', 'pack', 'bottle', 'can'];
+export const PRODUCT_UNITS = [
+  'pcs',
+  'kg',
+  'gm',
+  'litres',
+  'litre',
+  'liter',
+  'ml',
+  'packet',
+  'box',
+  'pack',
+  'bottle',
+  'can',
+  'ltr',
+];
 
 const productSchema = new mongoose.Schema(
   {
@@ -66,6 +80,14 @@ const productSchema = new mongoose.Schema(
     },
     unit: {
       type: String,
+      set: (v) => {
+        if (!v) return 'pcs';
+        const lower = String(v).trim().toLowerCase();
+        if (lower === 'liter' || lower === 'litre' || lower === 'ltr' || lower === 'litres' || lower === 'l') {
+          return 'litres';
+        }
+        return lower;
+      },
       enum: PRODUCT_UNITS,
       default: 'pcs',
     },

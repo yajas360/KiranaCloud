@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ArrowDownCircle, Check, AlertCircle } from 'lucide-react';
 import api from '../../api/axios';
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency, formatUnit } from '../../utils/formatters';
 import { useAuth } from '../../context/AuthContext';
 
 const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
@@ -95,7 +95,7 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
             <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 text-xs">
               <span className="text-slate-500">Current Stock:</span>
               <span className="font-bold text-slate-800">
-                {currentStock} {product.unit}
+                {currentStock} {formatUnit(product.unit)}
               </span>
             </div>
           </div>
@@ -103,7 +103,7 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Additional Quantity Received ({product.unit}) *
+                Additional Quantity Received ({formatUnit(product.unit)}) *
               </label>
               <input
                 type="number"
@@ -116,7 +116,7 @@ const RestockModal = ({ isOpen, onClose, onSuccess, product }) => {
                 className="w-full px-3.5 py-2.5 text-sm rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-bold font-mono shadow-sm transition"
               />
               <span className="text-[11px] text-emerald-700 font-semibold block mt-1">
-                New resulting inventory: {projectedStock} {product.unit}
+                New resulting inventory: {projectedStock} {formatUnit(product.unit)}
               </span>
             </div>
 

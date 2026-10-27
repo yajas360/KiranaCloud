@@ -4,6 +4,7 @@ import ProductPicker from '../components/pos/ProductPicker';
 import CartDrawer from '../components/pos/CartDrawer';
 import ReceiptModal from '../components/pos/ReceiptModal';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { formatUnit } from '../utils/formatters';
 
 const PosCounter = () => {
   const [products, setProducts] = useState([]);
@@ -37,7 +38,7 @@ const PosCounter = () => {
       const existing = prevCart.find((item) => item.product._id === product._id);
       if (existing) {
         if (existing.quantity >= product.stockQuantity) {
-          alert(`Maximum stock reached (${product.stockQuantity} ${product.unit}) for ${product.name}`);
+          alert(`Maximum stock reached (${product.stockQuantity} ${formatUnit(product.unit)}) for ${product.name}`);
           return prevCart;
         }
         return prevCart.map((item) =>

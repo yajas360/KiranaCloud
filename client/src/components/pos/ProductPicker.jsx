@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, Minus, Package } from 'lucide-react';
-import { formatCurrency, getStockStatus } from '../../utils/formatters';
+import { formatCurrency, getStockStatus, formatUnit } from '../../utils/formatters';
 import { useAuth } from '../../context/AuthContext';
 
 const ProductPicker = ({
@@ -165,7 +165,7 @@ const ProductPicker = ({
                             ? '0 left (Out of stock)'
                             : isMaxInCart
                             ? '0 left (Max added)'
-                            : `${availableLeft} ${p.unit} left`}
+                            : `${availableLeft} ${formatUnit(p.unit)} left`}
                         </span>
                       </span>
                     </div>

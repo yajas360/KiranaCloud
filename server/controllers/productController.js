@@ -380,11 +380,11 @@ export const bulkImportProducts = async (req, res, next) => {
         rawUnit = 'packet';
       } else if (rawUnit === 'bottle' || rawUnit === 'bottles' || rawUnit === 'jar' || rawUnit === 'jars' || rawUnit === 'bar') {
         rawUnit = 'pcs';
-      } else if (rawUnit === 'l' || rawUnit === 'litre') {
-        rawUnit = 'liter';
+      } else if (rawUnit === 'l' || rawUnit === 'litre' || rawUnit === 'litres' || rawUnit === 'liter' || rawUnit === 'ltr') {
+        rawUnit = 'litres';
       } else if (rawUnit === 'g' || rawUnit === 'gram' || rawUnit === 'grams') {
         rawUnit = 'gm';
-      } else if (!['pcs', 'kg', 'gm', 'liter', 'ml', 'packet', 'box', 'pack', 'bottle', 'can'].includes(rawUnit)) {
+      } else if (!PRODUCT_UNITS.includes(rawUnit)) {
         rawUnit = 'pcs';
       }
       const unit = rawUnit;
