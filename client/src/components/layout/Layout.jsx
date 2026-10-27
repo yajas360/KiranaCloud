@@ -20,7 +20,7 @@ const Layout = () => {
   const title = pageTitles[location.pathname] || 'KiranaCloud POS';
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex transition-colors">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex transition-colors">
       {/* Slim Compact Left Sidebar (width: 44 / 176px) */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
