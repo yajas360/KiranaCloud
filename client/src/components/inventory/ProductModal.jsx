@@ -139,7 +139,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
                 placeholder="e.g. Amul Taaza Milk (1L), Parle-G Biscuit"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold shadow-sm transition"
               />
             </div>
 
@@ -152,7 +152,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
                 placeholder="Auto-generated if empty"
                 value={formData.sku}
                 onChange={(e) => setFormData({ ...formData, sku: e.target.value.toUpperCase() })}
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono uppercase"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono uppercase shadow-sm transition"
               />
             </div>
           </div>
@@ -164,7 +164,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-white"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium shadow-sm transition"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -179,7 +179,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
               <select
                 value={formData.unit}
                 onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-white"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium shadow-sm transition"
               >
                 {UNITS.map((u) => (
                   <option key={u} value={u}>
@@ -191,7 +191,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
           </div>
 
           {/* Pricing: Cost Price vs. Selling Price */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-slate-100 rounded-2xl border border-slate-200">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Cost Price ({currencySymbol}) *
@@ -203,9 +203,9 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
                 placeholder="Wholesale Purchase Cost"
                 value={formData.costPrice}
                 onChange={(e) => setFormData({ ...formData, costPrice: e.target.value })}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border-2 border-slate-300 bg-white hover:border-slate-400 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold shadow-sm transition"
               />
-              <span className="text-[10px] text-slate-400">Wholesale cost from supplier</span>
+              <span className="text-[10px] text-slate-500 font-medium">Wholesale cost from supplier</span>
             </div>
 
             <div>
@@ -219,9 +219,9 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
                 placeholder="Retail Customer Price"
                 value={formData.sellingPrice}
                 onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-700"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border-2 border-slate-300 bg-white hover:border-slate-400 text-emerald-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold shadow-sm transition"
               />
-              <span className="text-[10px] text-slate-400">
+              <span className="text-[10px] text-slate-500 font-medium">
                 Margin:{' '}
                 {formData.sellingPrice && formData.costPrice
                   ? `₹${(parseFloat(formData.sellingPrice) - parseFloat(formData.costPrice)).toFixed(2)} / unit`
@@ -242,7 +242,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
                 placeholder="e.g. 25"
                 value={formData.stockQuantity}
                 onChange={(e) => setFormData({ ...formData, stockQuantity: e.target.value })}
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-bold"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-bold shadow-sm transition"
               />
             </div>
 
@@ -256,9 +256,9 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
                 placeholder="e.g. 5"
                 value={formData.minThreshold}
                 onChange={(e) => setFormData({ ...formData, minThreshold: e.target.value })}
-                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold shadow-sm transition"
               />
-              <span className="text-[10px] text-slate-400">Triggers Low Stock warning when reached</span>
+              <span className="text-[10px] text-slate-500 font-medium">Triggers Low Stock warning when reached</span>
             </div>
           </div>
 
@@ -271,7 +271,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
                 placeholder="e.g. Aisle 2, Rack C"
                 value={formData.shelfLocation}
                 onChange={(e) => setFormData({ ...formData, shelfLocation: e.target.value })}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm transition"
               />
             </div>
 
@@ -282,7 +282,7 @@ const ProductModal = ({ isOpen, onClose, onSuccess, initialProduct = null }) => 
                 placeholder="e.g. Metro Cash & Carry, ITC Ltd"
                 value={formData.supplier}
                 onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                className="w-full px-3.5 py-2 text-xs rounded-xl border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm transition"
               />
             </div>
           </div>

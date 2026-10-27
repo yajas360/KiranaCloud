@@ -358,7 +358,7 @@ const CustomersKhata = () => {
                   placeholder="e.g. 500"
                   value={paymentAmount}
                   onChange={(e) => setPaymentAmount(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-bold"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-lg border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold shadow-sm transition"
                 />
                 <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {payingCustomer.balance > 0 && (
@@ -588,7 +588,7 @@ const CustomersKhata = () => {
                   placeholder="e.g. Ramesh Kumar"
                   value={newCustName}
                   onChange={(e) => setNewCustName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-semibold"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-lg border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold shadow-sm transition"
                 />
               </div>
 
@@ -609,12 +609,12 @@ const CustomersKhata = () => {
                     const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
                     setNewCustPhone(digits);
                   }}
-                  className={`w-full px-3.5 py-2.5 text-xs rounded-lg border focus:outline-none focus:ring-1 font-mono transition ${
+                  className={`w-full px-3.5 py-2.5 text-xs rounded-lg border-2 focus:outline-none focus:ring-2 font-mono shadow-sm transition ${
                     newCustPhone.length === 10 && /^[6-9]\d{9}$/.test(newCustPhone)
-                      ? 'border-emerald-500 focus:ring-emerald-500 bg-emerald-50/20'
+                      ? 'border-emerald-500 focus:ring-emerald-500 bg-emerald-50/30 text-slate-900 font-bold'
                       : newCustPhone.length > 0 && (!/^[6-9]/.test(newCustPhone) || newCustPhone.length < 10)
-                      ? 'border-amber-400 focus:ring-amber-400'
-                      : 'border-slate-200 focus:ring-emerald-500'
+                      ? 'border-amber-400 focus:ring-amber-400 bg-amber-50/20 text-slate-900 font-bold'
+                      : 'border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:ring-emerald-500'
                   }`}
                 />
                 <p className="mt-1 text-[10px]">
@@ -645,7 +645,7 @@ const CustomersKhata = () => {
                       setNewCustLimit(val);
                     }
                   }}
-                  className="w-full px-3.5 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  className="w-full px-3.5 py-2 text-xs rounded-lg border-2 border-slate-300 bg-slate-50 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold shadow-sm transition"
                 />
               </div>
 

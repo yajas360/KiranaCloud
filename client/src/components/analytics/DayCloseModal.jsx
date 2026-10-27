@@ -327,9 +327,9 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
                     placeholder="e.g. 1000"
                     value={startingFloat}
                     onChange={(e) => setStartingFloat(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 font-mono font-bold text-slate-800"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-300 bg-white hover:border-slate-400 font-mono font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
                   />
-                  <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  <span className="text-[10px] text-slate-500 mt-0.5 block font-medium">
                     Cash in drawer before store opened
                   </span>
                 </div>
@@ -346,9 +346,9 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
                     placeholder="Physical cash counted..."
                     value={countedCash}
                     onChange={(e) => setCountedCash(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-1 focus:ring-emerald-500 font-mono font-black text-base text-slate-900 bg-emerald-50/20"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-emerald-500 focus:ring-2 focus:ring-emerald-500 font-mono font-black text-base text-slate-900 bg-emerald-50/40 shadow-sm"
                   />
-                  <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  <span className="text-[10px] text-slate-500 mt-0.5 block font-medium">
                     Count notes & coins in drawer right now
                   </span>
                 </div>
@@ -398,7 +398,7 @@ const DayCloseModal = ({ isOpen, onClose, onClosedSuccess }) => {
                   placeholder="e.g. Day shift closed by Manager, ₹50 petty cash spent on cleaning"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200"
+                  className="w-full px-3 py-2 text-xs rounded-lg border-2 border-slate-300 bg-white hover:border-slate-400 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
                 />
               </div>
             </div>

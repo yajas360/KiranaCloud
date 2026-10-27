@@ -307,7 +307,7 @@ const CartDrawer = ({
                 placeholder="Customer Name (Optional)"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs"
+                className="px-2.5 py-1.5 rounded-lg border-2 border-slate-300 bg-white hover:border-slate-400 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs shadow-sm"
               />
               <input
                 type="tel"
@@ -315,7 +315,7 @@ const CartDrawer = ({
                 placeholder="Phone (10 digits)"
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs font-mono"
+                className="px-2.5 py-1.5 rounded-lg border-2 border-slate-300 bg-white hover:border-slate-400 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs font-mono shadow-sm"
               />
             </div>
           )}
@@ -377,7 +377,7 @@ const CartDrawer = ({
                   }
                   setAmountTendered(val);
                 }}
-                className="w-20 px-1.5 py-0.5 text-xs font-mono font-bold rounded border border-slate-200 text-right"
+                className="w-24 px-2 py-1 text-xs font-mono font-bold rounded-lg border-2 border-slate-300 bg-white hover:border-slate-400 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-right shadow-sm"
               />
               <span className="text-slate-300">|</span>
               <span className="text-slate-500 font-semibold">Change:</span>
@@ -429,7 +429,7 @@ const CartDrawer = ({
                   }
                   setDiscount(val);
                 }}
-                className="w-16 px-1.5 py-0.5 text-xs text-right rounded border border-slate-200 bg-white"
+                className="w-20 px-2 py-1 text-xs font-mono font-bold text-right rounded-lg border-2 border-slate-300 bg-white hover:border-slate-400 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
                 title={`Max discount allowed is 50% (${currencySymbol}${maxDiscount})`}
               />
             </div>
