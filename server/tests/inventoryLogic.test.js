@@ -75,4 +75,21 @@ describe('Store Inventory & POS Billing Logic', () => {
     const excess = projectedDebt - customer.creditLimit;
     assert.equal(excess, 200);
   });
+
+  test('strictly enforces maximum 50% discount ceiling on bill value', () => {
+    const subtotal = 400;
+    const maxAllowedDiscount = Math.round(subtotal * 0.5 * 100) / 100;
+    assert.equal(maxAllowedDiscount, 200);
+
+    const validDiscount = 150;
+    const isUnderMax = validDiscount <= maxAllowedDiscount;
+    assert.equal(isUnderMax, true);
+
+    const excessiveDiscount = 250;
+    const clampedDiscount = Math.min(maxAllowedDiscount, Math.max(0, excessiveDiscount));
+    assert.equal(clampedDiscount, 200);
+
+    const isExcessiveBlocked = excessiveDiscount > maxAllowedDiscount;
+    assert.equal(isExcessiveBlocked, true);
+  });
 });

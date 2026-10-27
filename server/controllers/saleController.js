@@ -81,7 +81,17 @@ export const createSale = async (req, res, next) => {
     }
 
     // 2. Compute bill math upfront
-    const numDiscount = Math.max(0, parseFloat(discount) || 0);
+    const maxAllowedDiscount = Math.round(subtotal * 0.5 * 100) / 100;
+    const rawDiscount = parseFloat(discount) || 0;
+
+    if (rawDiscount > maxAllowedDiscount) {
+      return res.status(400).json({
+        success: false,
+        message: `Discount cannot exceed 50% of the bill value (Maximum allowed: ${maxAllowedDiscount}).`,
+      });
+    }
+
+    const numDiscount = Math.min(maxAllowedDiscount, Math.max(0, rawDiscount));
     const numTax = Math.max(0, parseFloat(tax) || 0);
     const grandTotal = Math.max(0, subtotal - numDiscount + numTax);
     const netProfit = (subtotal - numDiscount) - totalCost;

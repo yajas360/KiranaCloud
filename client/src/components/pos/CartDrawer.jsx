@@ -58,7 +58,8 @@ const CartDrawer = ({
 
   // Math Calculations
   const subtotal = cart.reduce((sum, item) => sum + item.product.sellingPrice * item.quantity, 0);
-  const numDiscount = Math.min(subtotal, Math.max(0, parseFloat(discount) || 0));
+  const maxDiscount = Math.round(subtotal * 0.5 * 100) / 100;
+  const numDiscount = Math.min(maxDiscount, Math.max(0, parseFloat(discount) || 0));
   const discountedSubtotal = Math.max(0, subtotal - numDiscount);
   const tax = applyTax ? Math.round((discountedSubtotal * (taxRate || 5)) / 100) : 0;
   const grandTotal = discountedSubtotal + tax;
@@ -77,6 +78,11 @@ const CartDrawer = ({
 
     if (parseFloat(discount) < 0) {
       setError('Discount cannot be a negative amount.');
+      return;
+    }
+
+    if (parseFloat(discount) > maxDiscount) {
+      setError(`Discount cannot exceed 50% of bill value (Max: ${currencySymbol}${maxDiscount}).`);
       return;
     }
 
@@ -361,10 +367,13 @@ const CartDrawer = ({
             </div>
 
             <div className="flex justify-between items-center">
-              <span>Discount ({currencySymbol}):</span>
+              <span>
+                Discount ({currencySymbol}) <span className="text-[10px] text-slate-400 font-sans font-medium">(max 50%)</span>:
+              </span>
               <input
                 type="number"
                 min="0"
+                max={maxDiscount}
                 step="1"
                 placeholder="0"
                 value={discount}
@@ -384,9 +393,14 @@ const CartDrawer = ({
                     setDiscount('0');
                     return;
                   }
+                  if (num > maxDiscount) {
+                    setDiscount(maxDiscount.toString());
+                    return;
+                  }
                   setDiscount(val);
                 }}
                 className="w-16 px-1.5 py-0.5 text-xs text-right rounded border border-slate-200 bg-white"
+                title={`Max discount allowed is 50% (${currencySymbol}${maxDiscount})`}
               />
             </div>
 
