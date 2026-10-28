@@ -1,6 +1,6 @@
 # 🛒 KiranaCloud POS — Retail Inventory & Point-of-Sale System
 
-> 🎥 **Demo Video:** This is my Google Drive link for demo video for this project: [https://drive.google.com/file/d/1GjaussN0jCkrH0PcBMTW1FPOabsVEvnK/view?usp=sharing](https://drive.google.com/file/d/1GjaussN0jCkrH0PcBMTW1FPOabsVEvnK/view?usp=sharing)
+> 🎥 **Demo Video:** This is my Google Drive link for demo video for this project: [https://drive.google.com/file/d/1yhSgSt081xPWFZNXecobyC359Iliy8M8/view?usp=sharing](https://drive.google.com/file/d/1yhSgSt081xPWFZNXecobyC359Iliy8M8/view?usp=sharing)
 
 [![Live Demo](https://img.shields.io/badge/Demo-kirana--cloud--4cxc.vercel.app-10b981?style=for-the-badge&logo=vercel)](https://kirana-cloud-4cxc.vercel.app/)
 [![Build Status](https://img.shields.io/badge/Client_Build-Passing-emerald?style=for-the-badge&logo=vite)](https://kirana-cloud-4cxc.vercel.app/)
@@ -15,7 +15,7 @@
 ## 🌐 Live Deployment & Credentials
 
 - **Production URL:** [https://kirana-cloud-4cxc.vercel.app](https://kirana-cloud-4cxc.vercel.app)
-- **Demo Video (Google Drive):** [https://drive.google.com/file/d/1GjaussN0jCkrH0PcBMTW1FPOabsVEvnK/view?usp=sharing](https://drive.google.com/file/d/1GjaussN0jCkrH0PcBMTW1FPOabsVEvnK/view?usp=sharing)
+- **Demo Video (Google Drive):** [https://drive.google.com/file/d/1yhSgSt081xPWFZNXecobyC359Iliy8M8/view?usp=sharing](https://drive.google.com/file/d/1yhSgSt081xPWFZNXecobyC359Iliy8M8/view?usp=sharing)
 - **Demo Store Credentials:**
   - **Email / Phone:** `owner@kiranacloud.com` or `9811234567`
   - **Password:** `password123`
