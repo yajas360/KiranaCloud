@@ -2,7 +2,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Demo-kirana--cloud--4cxc.vercel.app-10b981?style=for-the-badge&logo=vercel)](https://kirana-cloud-4cxc.vercel.app/)
 [![Build Status](https://img.shields.io/badge/Client_Build-Passing-emerald?style=for-the-badge&logo=vite)](https://kirana-cloud-4cxc.vercel.app/)
-[![Test Suite](https://img.shields.io/badge/Tests-11%2F11_Passing-success?style=for-the-badge&logo=node.js)](file:///server/tests)
+[![Test Suite](https://img.shields.io/badge/Tests-14%2F14_Passing-success?style=for-the-badge&logo=node.js)](file:///server/tests)
 [![Node Version](https://img.shields.io/badge/Node-%3E%3D18.0.0-339933?style=for-the-badge&logo=node.js)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
@@ -50,6 +50,147 @@
 │  - Auto-Fallback: Built-in MongoMemoryServer for zero-config local runs│
 └────────────────────────────────────────────────────────────────────────┘
 ```
+
+### 📂 Directory & File Structure
+
+```text
+mern-end-term-final/
+├── package.json                         # Root project scripts (concurrent start, test, build, seed)
+├── README.md                            # Complete architectural & operational documentation
+├── kiranacloud_inventory_import.csv     # Pre-formatted sample FMCG inventory CSV dataset
+├── .gitignore                           # Git exclusions (node_modules, .env, build outputs)
+│
+├── client/                              # React 18 Single Page Application (Vite + Tailwind CSS)
+│   ├── .env.example                     # Client environment template (VITE_API_URL)
+│   ├── index.html                       # HTML5 entry template with viewport configuration
+│   ├── package.json                     # Client dependencies (lucide-react, recharts, axios)
+│   ├── postcss.config.js                # PostCSS build configuration for Tailwind CSS
+│   ├── tailwind.config.js               # Tailwind design system tokens, themes & colors
+│   ├── vercel.json                      # Vercel production deployment SPA rewrite rules
+│   ├── vite.config.js                   # Vite builder configuration with /api reverse proxy
+│   └── src/
+│       ├── main.jsx                     # React DOM entry point & root renderer
+│       ├── App.jsx                      # Application router and layout provider
+│       ├── index.css                    # Tailwind CSS directives & global scrollbar styling
+│       ├── api/
+│       │   └── axios.js                 # Axios instance with Bearer JWT request interceptor
+│       ├── components/
+│       │   ├── analytics/
+│       │   │   └── DayCloseModal.jsx    # Cash drawer balancing & printable thermal Z-Report modal
+│       │   ├── common/
+│       │   │   ├── EmptyState.jsx       # Reusable zero-data placeholder illustration
+│       │   │   ├── LoadingSpinner.jsx   # Async loading state spinner indicator
+│       │   │   └── StockBadge.jsx       # Real-time stock status badge (In Stock, Low, Out)
+│       │   ├── inventory/
+│       │   │   ├── ProductModal.jsx     # SKU create/edit modal (CP, SP, Category, Unit, Shelf)
+│       │   │   └── RestockModal.jsx     # Supplier replenishment modal with wholesale CP updater
+│       │   ├── layout/
+│       │   │   ├── Header.jsx           # Store brand banner, active clock & profile switch
+│       │   │   ├── Layout.jsx           # Responsive shell container layout
+│       │   │   └── Sidebar.jsx          # Module navigation sidebar with authenticated logout
+│       │   └── pos/
+│       │       ├── CartDrawer.jsx       # Active bill drawer, discount ceiling & cash tender math
+│       │       ├── ProductPicker.jsx    # Product search grid with category filters & keyboard nav
+│       │       └── ReceiptModal.jsx     # Printable thermal receipt slip & WhatsApp text copy
+│       ├── context/
+│       │   ├── AuthContext.jsx          # User state, JWT storage, login/logout & profile methods
+│       │   └── ThemeContext.jsx         # UI theme provider
+│       ├── pages/
+│       │   ├── CustomersKhata.jsx       # Khata ledgers, credit limits, advance surplus & payments
+│       │   ├── Dashboard.jsx            # KPI cards, gross margin tracking & revenue breakdown
+│       │   ├── Inventory.jsx            # Catalog management table, search, filters & CSV import/export
+│       │   ├── Invoices.jsx             # Historical invoices ledger, reprint & void invoice actions
+│       │   ├── Landing.jsx              # Public landing page with feature walkthrough & 60s demo guide
+│       │   ├── Login.jsx                # Authentication page (Mobile/Email login & demo quick-fill)
+│       │   ├── PosCounter.jsx           # Full-screen POS billing counter with keyboard hotkeys
+│       │   ├── Register.jsx             # Store owner onboarding & store registration form
+│       │   ├── ReorderSheet.jsx         # Supplier replenishment table with buffer stock math
+│       │   └── Settings.jsx             # Store profile configuration, tax rate & currency settings
+│       ├── routes/
+│       │   └── ProtectedRoute.jsx       # Authentication guard redirecting unauthenticated users
+│       └── utils/
+│           └── formatters.js            # Currency (₹ INR), date, unit, and phone number helpers
+│
+└── server/                              # Node.js / Express.js REST API Backend
+    ├── .env                             # Active environment configuration
+    ├── .env.example                     # Environment template (PORT, JWT_SECRET, MONGODB_URI)
+    ├── app.js                           # Express app configuration, CORS, cookie parser & routes
+    ├── package.json                     # Server dependencies & test/dev scripts
+    ├── server.js                        # HTTP server bootstrap, DB connection & demo self-healing
+    ├── config/
+    │   └── db.js                        # Mongoose connection with automatic MongoMemoryServer fallback
+    ├── controllers/
+    │   ├── analyticsController.js       # Live KPI calculations, gross margin & day-close balancing
+    │   ├── authController.js            # Authentication (email/phone), JWT cookies & store profile
+    │   ├── customerController.js        # Khata accounts, debt tracking, advance surplus & refunds
+    │   ├── productController.js         # Inventory CRUD, restock, reorder sheet & CSV engine
+    │   └── saleController.js            # Atomic POS checkout, stock deductions & invoice voiding
+    ├── middleware/
+    │   ├── authMiddleware.js            # JWT verification via HTTP-only cookie & Bearer header
+    │   ├── errorMiddleware.js           # Centralized HTTP error handler & response sanitizer
+    │   └── validateRequest.js           # Express-validator result parser
+    ├── models/
+    │   ├── Customer.js                  # Customer Khata schema: phone, debt, advance surplus & ledger
+    │   ├── DayClose.js                  # Day-close Z-Report schema: expected cash, counted & variance
+    │   ├── Product.js                   # Product SKU schema: CP, SP, units, stock & safety thresholds
+    │   ├── Sale.js                      # Sale invoice schema: line items, profit, discount & tender
+    │   └── User.js                      # Store owner schema: bcrypt hash, store metadata & tax rate
+    ├── routes/
+    │   ├── analyticsRoutes.js           # /api/analytics endpoints (metrics, day-close)
+    │   ├── authRoutes.js                # /api/auth endpoints (login, register, me, profile)
+    │   ├── customerRoutes.js            # /api/customers endpoints (khata, debt, surplus, refund)
+    │   ├── productRoutes.js             # /api/products endpoints (catalog, restock, CSV)
+    │   └── saleRoutes.js                # /api/sales endpoints (checkout, invoices, void)
+    ├── scripts/
+    │   └── seed.js                      # FMCG catalog & demo store owner seeder script
+    └── tests/
+        ├── authRoutes.test.js           # Tests for mobile/email authentication & demo credentials
+        └── inventoryLogic.test.js       # Tests for stock ceilings, profit margins & khata logic
+```
+
+### 🗄️ Database Models & Entity Architecture
+
+| Model | File | Description & Key Fields |
+|---|---|---|
+| **User** | `server/models/User.js` | Store owner account. Fields: `name`, `email`, `password` (bcrypt hash), `storeName`, `storePhone`, `storeAddress`, `role`, `currency`, `currencySymbol`, `taxRate`. |
+| **Product** | `server/models/Product.js` | Inventory catalog SKU. Fields: `user` (ref), `name`, `sku`, `category`, `costPrice` (CP), `sellingPrice` (SP), `stockQuantity`, `minThreshold`, `unit` (`packet`, `kg`, `litres`, `box`, `pcs`, etc.), `supplier`, `shelfLocation`. |
+| **Sale** | `server/models/Sale.js` | Completed counter transaction. Fields: `user` (ref), `invoiceNumber`, `items` (`product`, `name`, `costPrice`, `sellingPrice`, `quantity`, `unit`, `total`), `subtotal`, `discount`, `tax`, `grandTotal`, `totalCost`, `netProfit`, `paymentMethod` (`CASH`, `UPI`, `CARD`, `CREDIT`), `amountTendered`, `changeDue`, `customerName`, `customerPhone`, `status` (`COMPLETED`, `VOIDED`). |
+| **Customer** | `server/models/Customer.js` | Khata credit account. Fields: `user` (ref), `name`, `phone` (10 digits), `creditLimit`, `currentDebt`, `advanceBalance` (overpayment surplus credit), `transactions` (`type`, `amount`, `notes`, `saleId`, `date`). |
+| **DayClose** | `server/models/DayClose.js` | End-of-day register audit (Z-Report). Fields: `user` (ref), `date`, `startingFloat`, `cashSalesTotal`, `khataCashCollected`, `expectedCash`, `countedCash`, `discrepancy`, `status` (`MATCHED`, `SHORTAGE`, `SURPLUS`), `notes`. |
+
+### 💻 How the MERN Stack is Implemented in KiranaCloud
+
+KiranaCloud leverages each layer of the **MERN (MongoDB, Express.js, React, Node.js)** stack to provide high-throughput counter billing, atomic stock consistency, and real-time retail intelligence:
+
+#### 🍃 M — MongoDB (NoSQL Database & Mongoose ODM)
+* **Document-Centric FMCG Modeling:** Utilizes Mongoose models (`User`, `Product`, `Sale`, `Customer`, `DayClose`) to store retail entities without rigid joins, ideal for fast counter reads.
+* **Atomic Concurrency & Stock Locks:** Checkouts use atomic MongoDB `$inc` updates with `$gte` balance locks (`stockQuantity: { $gte: item.quantity }`) in `saleController.js`, preventing inventory race conditions and negative shelf quantities during peak store traffic.
+* **Embedded Subdocuments:** Invoices store historical line items directly as embedded documents within `Sale`, preserving frozen item cost and retail prices at the exact instant of sale even if the product is later modified.
+* **Customer Khata Subdocument Ledgers:** Customer debt ledgers embed chronological arrays of transactions (`DEBT`, `PAYMENT`, `REFUND`) for atomic balance updates and instant statement rendering.
+* **Dual-Environment Architecture:** Seamlessly connects to **MongoDB Atlas** in production while including an automated **MongoMemoryServer** fallback for zero-configuration, offline local evaluation without installing a local MongoDB daemon.
+
+#### 🚂 E — Express.js (REST API Web Framework)
+* **Modular Router Organization:** Endpoints are decoupled into domain routers mounted under `/api` (`/auth`, `/products`, `/sales`, `/customers`, `/analytics`).
+* **Multi-Layered Middleware Pipeline:**
+  * **Authentication (`authMiddleware.js`):** Intercepts requests to verify JWT tokens from either secure HTTP-only cookies or `Authorization: Bearer <token>` headers, attaching the authenticated store owner to `req.user`.
+  * **Input Validation (`validateRequest.js` + `express-validator`):** Enforces strict data contracts, including 10-digit phone regex validation, email formatting, discount caps ($\le 50\%$), and non-negative tender amounts before hitting controllers.
+  * **Global Error Handler (`errorMiddleware.js`):** Catches uncaught exceptions and database constraint violations (e.g., duplicate SKUs), sanitizing stack traces and outputting predictable JSON payloads (`{ success: false, message: ... }`).
+* **Streaming CSV Data Pipelines:** Express handles batch inventory ingestion with streaming CSV parsers and generates live downloadable CSV exports on the fly.
+
+#### ⚛️ R — React 18 (Frontend Client & POS Terminal)
+* **High-Speed Keyboard-Driven POS Terminal:** Engineered for cashiers with hotkey event listeners (`F2` search focus, `F9` instant checkout, `Esc` dismiss, `+` / `-` item quantity steppers) to eliminate mouse dependency at billing counters.
+* **Component-Based Modular Architecture:** Interface is structured into reusable design system components (`pos/`, `inventory/`, `analytics/`, `layout/`, `common/`) powered by Tailwind CSS.
+* **Centralized Context State Management:**
+  * `AuthContext.jsx`: Provides reactive authentication state, auto-refreshes sessions via `/api/auth/me`, and manages synchronized local storage token fallbacks.
+  * `ThemeContext.jsx`: Manages UI presentation themes.
+* **Real-Time Data Visualization:** Integrates **Recharts** to render dynamic 7-day revenue vs. profit bar charts and interactive product category revenue split charts.
+* **Thermal Receipt Printing & WhatsApp API:** Implements print-specific CSS media queries (`@media print`) tailored for 80mm/58mm thermal receipt printers, and generates pre-encoded `https://wa.me/` URLs for one-click digital Khata receipts sent directly to customer phones.
+
+#### 🟢 N — Node.js (Runtime Engine & Asynchronous Server)
+* **Non-Blocking Asynchronous Event Loop:** Handles high-volume parallel requests—such as concurrent POS checkouts, catalog lookups, and analytics calculations—with zero thread blocking.
+* **Cryptographic Security:** Utilizes `bcryptjs` (with 10 salt rounds) for password hashing and `jsonwebtoken` for issuing and validating signed stateless session tokens.
+* **Automated Self-Healing Bootstrapper:** `server.js` executes startup hooks that verify database connectivity, detect missing or fresh databases, and automatically seed demo FMCG datasets and store credentials so the system runs out-of-the-box.
+* **Native Zero-Dependency Test Suite:** Uses Node's built-in `node:test` and `node:assert/strict` harness to validate core business invariants (gross margins, stock deductions, Khata surplus drawdown, drawer balancing) in milliseconds without bulky external test dependencies.
 
 ---
 
@@ -172,7 +313,7 @@ cd client && npm run dev
 
 ---
 
-## 🧪 Automated Test Suite (11/11 Passing)
+## 🧪 Automated Test Suite (14/14 Passing)
 
 Run tests using:
 ```bash
@@ -191,6 +332,9 @@ npm test
 9. 10-digit Indian phone number formatting and validation.
 10. Advance surplus credit creation on overpayment and live drawdown.
 11. Multi-step Gopal ledger reconciliation scenario.
+12. Seeded demo store owner authentication via email (`owner@kiranacloud.com`).
+13. Seeded demo store owner authentication via 10-digit mobile (`9811234567`).
+14. Strict identifier format validation for both mobile phone and email login.
 
 ---
 

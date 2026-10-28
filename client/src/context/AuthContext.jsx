@@ -37,10 +37,14 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (identifier, password) => {
     setAuthError(null);
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', {
+        email: identifier,
+        identifier: identifier,
+        password,
+      });
       if (res.data.success) {
         setUser(res.data.user);
         if (res.data.token) {

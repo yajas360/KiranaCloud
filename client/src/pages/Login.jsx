@@ -14,6 +14,13 @@ const Login = () => {
   const { login, isAuthenticated, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
+  const handleQuickFillDemo = (method = 'phone') => {
+    setLoginMethod(method);
+    setIdentifier(method === 'phone' ? '9811234567' : 'owner@kiranacloud.com');
+    setPassword('password123');
+    setError(null);
+  };
+
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       navigate('/dashboard', { replace: true });
@@ -102,6 +109,59 @@ const Login = () => {
             </Link>
           </div>
 
+          {/* Quick Demo Credentials Assistant */}
+          <div className="p-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl text-xs">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="font-bold flex items-center gap-1.5 text-[11px] text-emerald-900">
+                <Store className="w-3.5 h-3.5 text-emerald-600" />
+                Demo Store Credentials
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => handleQuickFillDemo('phone')}
+                  className="text-[10px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2 py-0.5 rounded-md transition active:scale-95 shadow-xs"
+                >
+                  Fill Mobile
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickFillDemo('email')}
+                  className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded-md border border-slate-200 transition active:scale-95"
+                >
+                  Fill Email
+                </button>
+              </div>
+            </div>
+            <div className="text-[11px] text-slate-600 flex flex-col gap-0.5">
+              <div>
+                <span className="font-semibold text-slate-700">Mobile:</span>{' '}
+                <button
+                  type="button"
+                  onClick={() => handleQuickFillDemo('phone')}
+                  className="bg-emerald-100/70 hover:bg-emerald-200/80 px-1.5 py-0.5 rounded text-emerald-800 font-mono text-[10px] font-semibold transition"
+                >
+                  9811234567
+                </button>{' '}
+                <span className="text-slate-400">|</span>{' '}
+                <span className="font-semibold text-slate-700">Email:</span>{' '}
+                <button
+                  type="button"
+                  onClick={() => handleQuickFillDemo('email')}
+                  className="bg-emerald-100/70 hover:bg-emerald-200/80 px-1.5 py-0.5 rounded text-emerald-800 font-mono text-[10px] font-semibold transition"
+                >
+                  owner@kiranacloud.com
+                </button>
+              </div>
+              <div>
+                <span className="font-semibold text-slate-700">Password:</span>{' '}
+                <code className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-800 font-mono text-[10px]">
+                  password123
+                </code>
+              </div>
+            </div>
+          </div>
+
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -160,6 +220,7 @@ const Login = () => {
                   type={loginMethod === 'phone' ? 'tel' : 'email'}
                   required
                   maxLength={loginMethod === 'phone' ? 10 : 100}
+                  placeholder={loginMethod === 'phone' ? 'e.g. 9811234567' : 'e.g. owner@kiranacloud.com'}
                   value={identifier}
                   onChange={handleIdentifierChange}
                   className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold font-mono"
@@ -174,6 +235,7 @@ const Login = () => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
+                  placeholder="Enter password (e.g. password123)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-10 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-semibold"
